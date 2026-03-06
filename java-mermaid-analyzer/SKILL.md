@@ -1,3 +1,4 @@
+
 ---
 name: java-mermaid-analyzer
 description: Professional Java code execution path analysis and precise Mermaid flowchart generation. Based on Java code provided by users and specified entry methods, deeply trace execution logic, identify conditional branches, loops, method calls, and external interface interactions, and output syntax-strict flowchart TD diagrams. Applicable for: visualizing Java method execution flows, understanding complex business logic call chains, documenting core method execution paths, tracking code conditional branches and loop logic, identifying external dependencies and interface calls. Trigger keywords: analyze Java code flow, generate Mermaid diagrams, trace method call chains, visualize execution logic.

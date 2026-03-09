@@ -1,6 +1,6 @@
 ---
 name: first-principles-thinking
-description: Rigorous requirements analysis and system architecture expertise using first-principles reasoning. Critically examines requirements for validity, identifies root problems, optimizes implementation paths, and provides structured breakdowns. Use when: (1) Analyzing new requirements or feature requests, (2) Evaluating implementation approaches, (3) Breaking down complex problems into components, (4) Needing expert architectural guidance, or (5) When requirements seem unclear or potentially suboptimal.
+description: Rigorous requirements analysis using first-principles thinking. Validates requirements, optimizes implementation paths, and provides structured breakdowns with Socratic questioning.
 ---
 
 # First Principles Thinking

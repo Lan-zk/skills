@@ -49,6 +49,28 @@ This skill helps visualize and understand Java code by:
 
 ---
 
+### first-principles-thinking
+
+A **Rigorous Requirements Analysis and System Architecture Expert** that applies first-principles thinking to critically examine requirements, optimize implementation paths, and provide structured breakdowns.
+
+**Features:**
+- **Phase 1: Motivation & Goal Review** - Validates requirements by asking Socratic questions to uncover root problems
+- **Phase 2: Path Optimization** - Evaluates proposed solutions and suggests better alternatives when suboptimal
+- **Phase 3: First Principles Breakdown** - Provides MECE-based module division and granular task breakdowns
+- **Rigorous Approach** - Rejects blind execution, maintains skepticism, and seeks the shortest path to solutions
+- **Comprehensive Examples** - Includes real-world scenarios for unclear requirements and suboptimal paths
+
+**Usage:**
+This skill helps ensure requirements are well-founded and solutions are optimal by:
+1. Questioning unclear or potentially flawed requirements before proceeding
+2. Suggesting simpler, more efficient implementation paths
+3. Breaking down validated requirements into clear, actionable tasks
+4. Identifying edge cases, risks, and success criteria
+
+**Documentation:** See [`first-principles-thinking/SKILL.md`](first-principles-thinking/SKILL.md) for detailed specifications.
+
+---
+
 ## Contributing
 
 This repository contains specialized skills for AI-assisted development. Each skill is contained in its own directory with a `SKILL.md` file describing its purpose and constraints.

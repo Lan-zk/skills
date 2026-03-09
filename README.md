@@ -71,6 +71,30 @@ This skill helps ensure requirements are well-founded and solutions are optimal 
 
 ---
 
+### skill-creator-with-validation
+
+An **Enhanced Skill Creator with Skills CLI Validation Expert** that guides users in creating, modifying, and validating skills for Skills CLI compatibility, ensuring proper format and avoiding common pitfalls.
+
+**Features:**
+- **Skills CLI Specification Analysis** - Validates SKILL.md front matter, YAML header, and description length constraints
+- **Common Pitfalls Detection** - Identifies issues like blank lines before YAML headers, overly long descriptions, missing fields
+- **Validation Checklist** - Provides comprehensive pre-publishing verification steps
+- **Testing Commands** - Offers local testing commands using `npx skills add .`
+- **Real-World Examples** - Includes fixed examples of Java Mermaid Analyzer and Java Arch Designer skills
+- **Troubleshooting Guide** - Helps diagnose and fix common Skills CLI errors
+
+**Usage:**
+This skill helps create and fix Skills CLI compatible skills by:
+1. Validating SKILL.md format against strict specifications
+2. Identifying and fixing common formatting errors
+3. Providing concise, actionable feedback on skill structure
+4. Offering testing commands and debugging guidance
+5. Maintaining consistency across skill repositories
+
+**Documentation:** See [`skill-creator-with-validation/SKILL.md`](skill-creator-with-validation/SKILL.md) for detailed specifications.
+
+---
+
 ## Contributing
 
 This repository contains specialized skills for AI-assisted development. Each skill is contained in its own directory with a `SKILL.md` file describing its purpose and constraints.

@@ -66,3 +66,8 @@ pytest_cache/
 hs_err_pid*
 dependency-reduced-pom.xml
 target/
+
+# Visual Cast runtime artifacts and source docs
+visual-cast/node_modules/
+visual-cast/tmp/
+visual-cast/需求说明文档.md

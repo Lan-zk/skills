@@ -95,6 +95,37 @@ This skill helps create and fix Skills CLI compatible skills by:
 
 ---
 
+### visual-cast
+
+A **Runnable OpenClaw Visual Rendering Skill** that converts upstream text, Markdown, or normalized items into shareable PNG cards or merged long images.
+
+**Features:**
+- Normalizes upstream content into card-safe structured items
+- Renders PNG images with `Satori` plus `@resvg/resvg-js`
+- Supports `single_cards` and `merged_long_image`
+- Supports `glassmorphism`, `linear_vercel`, and `bento_ui`
+- Accepts file input, stdin input, or bundled mock payloads
+- Returns either PNG file paths or base64 payloads for downstream OpenClaw nodes
+
+**Usage:**
+This skill helps OpenClaw workflows render visual outputs by:
+1. Accepting raw content or pre-normalized items
+2. Converting them into render-safe card data
+3. Generating one or more PNG images
+4. Returning structured metadata for downstream delivery
+
+**Quick Start:**
+```bash
+cd visual-cast
+npm install
+node scripts/render_visual_cast.mjs --input examples/news-input.json --output-dir ./tmp/news
+node scripts/render_visual_cast.mjs --mock github --output-dir ./tmp/github
+```
+
+**Documentation:** See [`visual-cast/SKILL.md`](visual-cast/SKILL.md) for the skill definition and [`visual-cast/references/openclaw-integration.md`](visual-cast/references/openclaw-integration.md) for runtime contract details.
+
+---
+
 ## Contributing
 
 This repository contains specialized skills for AI-assisted development. Each skill is contained in its own directory with a `SKILL.md` file describing its purpose and constraints.

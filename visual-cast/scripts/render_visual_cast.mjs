@@ -7,6 +7,7 @@ import { DEFAULT_OUTPUT_ENCODING, DEFAULT_OUTPUT_MODE, DEFAULT_THEME_STYLE } fro
 import { loadFonts } from "./runtime/fonts.mjs";
 import { ensureDir, getRootDir, readJsonFile, resolveMockPayload, writeFile } from "./runtime/io.mjs";
 import { normalizeFromPayload } from "./runtime/normalize.mjs";
+import { canUseLLM, normalizeWithLLM } from "./runtime/llm.mjs";
 import { renderMergedImage, renderSingleCards } from "./runtime/render.mjs";
 
 function parseArgs(argv) {
@@ -20,6 +21,8 @@ function parseArgs(argv) {
     jsonOutput: undefined,
     mock: undefined,
     stdin: false,
+    disableLLM: false,
+    model: undefined,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -62,6 +65,13 @@ function parseArgs(argv) {
       case "--stdin":
         args.stdin = true;
         break;
+      case "--disable-llm":
+        args.disableLLM = true;
+        break;
+      case "--model":
+        args.model = next;
+        index += 1;
+        break;
       case "--help":
         printHelp();
         process.exit(0);
@@ -85,6 +95,8 @@ Options:
   --input <file>            Read OpenClaw payload JSON from file
   --stdin                   Read payload JSON from stdin
   --mock <news|github>      Use bundled mock payload
+  --disable-llm             Force local heuristic normalization only
+  --model <name>            Override OpenAI model for normalization
   --output-mode <mode>      Override output mode
   --theme-style <theme>     Override theme style
   --output-encoding <enc>   base64 | file
@@ -187,7 +199,22 @@ async function main() {
   const outputEncoding = args.outputEncoding || payload.output_encoding || DEFAULT_OUTPUT_ENCODING;
   const width = args.width || payload.width || 1200;
 
-  const items = normalizeFromPayload(payload);
+  let items;
+  let normalization;
+
+  if (canUseLLM(payload, args)) {
+    normalization = await normalizeWithLLM(payload, { disableLLM: args.disableLLM, model: args.model });
+    items = normalization.items;
+  } else {
+    items = normalizeFromPayload(payload);
+    normalization = {
+      metadata: {
+        enabled: false,
+        reason: args.disableLLM ? "disabled" : process.env.OPENAI_API_KEY ? "not_needed" : "missing_api_key",
+      },
+    };
+  }
+
   const { fonts, resolved } = await loadFonts();
   const renderOptions = {
     width,
@@ -214,6 +241,7 @@ async function main() {
         output_mode: outputMode,
         theme_style: themeStyle,
         normalized_items: items.length,
+        normalization: normalization.metadata,
         fonts: resolved,
         images: images.map(toPublicImage),
       },
@@ -238,6 +266,7 @@ async function main() {
       output_mode: outputMode,
       theme_style: themeStyle,
       normalized_items: items.length,
+      normalization: normalization.metadata,
       fonts: resolved,
       image,
     },

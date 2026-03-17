@@ -32,6 +32,30 @@ The renderer supports:
 - bundled mock payloads
 - `file` or `base64` image output encoding
 
+## LLM Normalization Runtime
+
+When `OPENAI_API_KEY` is present and the payload only contains `content`, the runtime will:
+
+```text
+content
+-> OpenAI Responses API
+-> structured JSON array
+-> local sanitization
+-> Satori
+-> PNG
+```
+
+Environment variables:
+
+- `OPENAI_API_KEY`: required to enable live LLM normalization
+- `OPENAI_BASE_URL`: optional for compatible gateways
+- `OPENAI_MODEL`: optional, defaults to `gpt-4o-mini`
+
+CLI controls:
+
+- `--disable-llm`: skip the live model call and use heuristic normalization
+- `--model <name>`: override the model for one run
+
 ## Recommended Input Shape
 
 ```json

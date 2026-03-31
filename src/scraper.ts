@@ -1,0 +1,109 @@
+import axios from 'axios';
+import axiosRetry from 'axios-retry';
+import * as cheerio from 'cheerio';
+import { SkillInput, TrendingItem } from './types';
+
+// Configure axios with retries and timeout
+const client = axios.create({
+  timeout: 10000,
+  headers: {
+    'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+  },
+});
+
+axiosRetry(client, {
+  retries: 3,
+  retryDelay: axiosRetry.exponentialDelay,
+});
+
+/**
+ * Mock LLM function for summarizing missing descriptions or translating.
+ * In a real OpenClaw skill environment, this would call the provided LLM service.
+ */
+async function mockLlmProcess(text: string, task: 'summarize' | 'translate'): Promise<string> {
+  // Mocking the LLM behavior
+  if (task === 'summarize') {
+    return `[Summarized] ${text.substring(0, 50)}...`;
+  }
+  return `[Translated] ${text}`;
+}
+
+export async function scrapeTrending(input: SkillInput): Promise<TrendingItem[]> {
+  const { time_range = 'daily', language = '', spoken_language_code = '' } = input;
+
+  // Construct URL
+  const baseUrl = 'https://github.com/trending';
+  const urlPath = language ? `/${encodeURIComponent(language)}` : '';
+  const params = new URLSearchParams();
+  if (time_range) params.append('since', time_range);
+  if (spoken_language_code) params.append('spoken_language_code', spoken_language_code);
+
+  const url = `${baseUrl}${urlPath}?${params.toString()}`;
+
+  try {
+    const response = await client.get(url);
+    const $ = cheerio.load(response.data);
+
+    const items: TrendingItem[] = [];
+    const articles = $('article.Box-row').slice(0, 10);
+
+    for (const element of articles) {
+      const $el = $(element);
+
+      // Extract Name
+      const nameNode = $el.find('h2.h3 a');
+      const name = nameNode.text().replace(/\s+/g, '').trim();
+
+      // Extract Description
+      let description = $el.find('p').text().trim();
+
+      if (!description) {
+        // Fallback: Fetch repo page to get description
+        try {
+          const repoUrl = `https://github.com/${name}`;
+          const repoRes = await client.get(repoUrl);
+          const $repo = cheerio.load(repoRes.data);
+          const about = $repo('p.f4').first().text().trim() || $repo('meta[name="description"]').attr('content') || '';
+          description = await mockLlmProcess(about || name, 'summarize');
+        } catch {
+          description = 'No description available.';
+        }
+      } else {
+        // Translate using mock LLM
+        description = await mockLlmProcess(description, 'translate');
+      }
+
+      // Extract Language and Color
+      const langNode = $el.find('span[itemprop="programmingLanguage"]');
+      const languageText = langNode.length ? langNode.text().trim() : 'Unknown';
+      const colorNode = $el.find('.repo-language-color');
+      const hexMatch = colorNode.attr('style')?.match(/background-color:\s*(#[0-9a-fA-F]{3,6})/);
+      const hex = hexMatch ? hexMatch[1] : '#cccccc';
+
+      // Extract Stars
+      const starLink = $el.find('a[href$="/stargazers"]');
+      const stars = starLink.length ? starLink.text().trim().replace(/,/g, '') : '0';
+
+      // Extract New Stars
+      const newStarsNode = $el.find('span.float-sm-right');
+      const newStarsText = newStarsNode.text().trim();
+      const newStarsMatch = newStarsText.match(/([\d,]+)\s*stars today/);
+      const new_stars = newStarsMatch ? newStarsMatch[1].replace(/,/g, '') : '0';
+
+      items.push({
+        name,
+        description,
+        language: languageText,
+        hex,
+        stars,
+        new_stars,
+      });
+    }
+
+    return items;
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to scrape GitHub trending: ${msg}`, { cause: error });
+  }
+}

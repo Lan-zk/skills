@@ -10,14 +10,16 @@ description: Fetches the latest GitHub Trending data and generates high-resoluti
 This skill automates the process of converting GitHub's trending open-source repositories into high-quality PNG images. It is completely stateless and handles the entire pipeline:
 
 1. **Data Scraping**: Fetches the top 10 trending repositories based on optional time range and language filters.
-2. **Data Zoning**: Injects the scraped data into an aesthetic HTML/CSS template.
-3. **Rendering & Export**: Uses headless Chromium to render the template and export it as high-resolution PNGs (Base64 encoded).
+2. **Description Fallback**: When a repository has no description on the trending page, fetches the repo page for meta description.
+3. **Rendering & Export**: Injects the data into an HTML/CSS template and uses headless Chromium to export it as high-resolution PNGs (Base64 encoded).
+
+**Note:** The skill returns raw description text. Translation/enrichment is handled by the invoking Agent.
 
 ## When to Use
 
 - When a user asks to see what's trending on GitHub in a visual format.
 - When you need to generate images for a daily/weekly open-source newsletter.
-- When you need to summarize and translate trending repository descriptions for Chinese audiences (simulated).
+- When you need high-quality GitHub trending cards for social media or content distribution.
 
 ## Usage
 

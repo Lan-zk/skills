@@ -17,18 +17,6 @@ axiosRetry(client, {
   retryDelay: axiosRetry.exponentialDelay,
 });
 
-/**
- * Mock LLM function for summarizing missing descriptions or translating.
- * In a real OpenClaw skill environment, this would call the provided LLM service.
- */
-async function mockLlmProcess(text: string, task: 'summarize' | 'translate'): Promise<string> {
-  // Mocking the LLM behavior
-  if (task === 'summarize') {
-    return `[Summarized] ${text.substring(0, 50)}...`;
-  }
-  return `[Translated] ${text}`;
-}
-
 export async function scrapeTrending(input: SkillInput): Promise<TrendingItem[]> {
   const { time_range = 'daily', language = '', spoken_language_code = '' } = input;
 
@@ -65,13 +53,12 @@ export async function scrapeTrending(input: SkillInput): Promise<TrendingItem[]>
           const repoRes = await client.get(repoUrl);
           const $repo = cheerio.load(repoRes.data);
           const about = $repo('p.f4').first().text().trim() || $repo('meta[name="description"]').attr('content') || '';
-          description = await mockLlmProcess(about || name, 'summarize');
+          description = about || name;
         } catch {
           description = 'No description available.';
         }
       } else {
-        // Translate using mock LLM
-        description = await mockLlmProcess(description, 'translate');
+        // No LLM translation — return raw description text
       }
 
       // Extract Language and Color

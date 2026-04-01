@@ -44,7 +44,7 @@ describe('scraper.ts - scrapeTrending', () => {
     expect(items.length).toBe(1);
     expect(items[0]).toEqual({
       name: 'owner/repo',
-      description: '[Translated] A great project', // Because mockLlmProcess appends [Translated]
+      description: 'A great project',
       language: 'TypeScript',
       hex: '#3178c6',
       stars: '1234',
@@ -78,7 +78,7 @@ describe('scraper.ts - scrapeTrending', () => {
     const items = await scrapeTrending({ time_range: 'weekly' });
 
     expect(items.length).toBe(1);
-    expect(items[0].description).toBe('[Summarized] This is from repo page meta...');
+    expect(items[0].description).toBe('This is from repo page meta');
     expect(items[0].name).toBe('owner/repo-no-desc');
   });
 
@@ -99,7 +99,7 @@ describe('scraper.ts - scrapeTrending', () => {
     expect(items.length).toBe(1);
     expect(items[0]).toEqual({
       name: 'owner/repo-empty',
-      description: '[Translated] Has desc',
+      description: 'Has desc',
       language: 'Unknown',
       hex: '#cccccc',
       stars: '0',

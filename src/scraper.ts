@@ -57,8 +57,6 @@ export async function scrapeTrending(input: SkillInput): Promise<TrendingItem[]>
         } catch {
           description = 'No description available.';
         }
-      } else {
-        // No LLM translation — return raw description text
       }
 
       // Extract Language and Color

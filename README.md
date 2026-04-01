@@ -12,8 +12,7 @@ npx playwright install chromium
 
 ## ⚙️ 配置 (Configuration)
 
-无需复杂的环境变量配置，所有参数通过入口函数传入即可。如果需要真实的 LLM 接入，可在 `src/scraper.ts` 中替换 `mockLlmProcess` 为实际的 LLM 调用。
-
+无需复杂的环境变量配置，所有参数通过入口函数传入即可。
 ## 🚀 本地运行 (Local Run)
 
 直接运行入口文件测试（会默认抓取 daily 数据并生成 base64 数组长度输出）：

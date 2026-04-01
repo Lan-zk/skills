@@ -1,5 +1,6 @@
 import { SkillInput, SkillOutput } from './types';
 import { scrapeTrending } from './scraper';
+import { translateDescriptions } from './translator';
 import { renderCards, closeBrowser } from './renderer';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -14,13 +15,19 @@ export async function executeSkill(input: SkillInput): Promise<SkillOutput> {
   try {
     // 1. Scrape data
     const trendingItems = await scrapeTrending(input);
-    
+
     if (trendingItems.length === 0) {
       throw new Error('No trending items found.');
     }
 
-    // 2. Render cards
-    const trending_cards = await renderCards(trendingItems);
+    // 2. Translate descriptions (if enabled)
+    const translatedItems =
+      input.translate_to_chinese !== false
+        ? await translateDescriptions(trendingItems)
+        : trendingItems;
+
+    // 3. Render cards
+    const trending_cards = await renderCards(translatedItems);
 
     return {
       trending_cards,

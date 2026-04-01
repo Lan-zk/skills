@@ -52,12 +52,14 @@ describe('renderer.ts - renderCards', () => {
   it('should render cards and return base64 images', async () => {
     const items = [
       {
-        name: 'test/repo',
+        owner: 'test',
+        name: 'repo',
         description: 'desc',
         language: 'TS',
         hex: '#000',
         stars: '10',
         new_stars: '1',
+        timestamp: '2026-04-01 00:00',
       },
     ];
 
@@ -65,7 +67,7 @@ describe('renderer.ts - renderCards', () => {
 
     expect(results).toHaveLength(1);
     expect(results[0]).toBe(Buffer.from('mock-image-data').toString('base64'));
-    expect(mockPage.setContent).toHaveBeenCalledWith('<div>test/repo</div>', { waitUntil: 'networkidle' });
+    expect(mockPage.setContent).toHaveBeenCalledWith('<div>repo</div>', { waitUntil: 'networkidle' });
     expect(mockPage.$).toHaveBeenCalledWith('.card-container');
     expect(mockElementHandle.screenshot).toHaveBeenCalledWith({ type: 'png' });
   });
@@ -73,12 +75,14 @@ describe('renderer.ts - renderCards', () => {
   it('should reuse browser instance', async () => {
     const items = [
       {
-        name: 'test/repo',
+        owner: 'test',
+        name: 'repo',
         description: 'desc',
         language: 'TS',
         hex: '#000',
         stars: '10',
         new_stars: '1',
+        timestamp: '2026-04-01 00:00',
       },
     ];
 
@@ -98,12 +102,14 @@ describe('renderer.ts - renderCards', () => {
 
     const items = [
       {
-        name: 'test/repo',
+        owner: 'test',
+        name: 'repo',
         description: 'desc',
         language: 'TS',
         hex: '#000',
         stars: '10',
         new_stars: '1',
+        timestamp: '2026-04-01 00:00',
       },
     ];
 

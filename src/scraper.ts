@@ -36,12 +36,20 @@ export async function scrapeTrending(input: SkillInput): Promise<TrendingItem[]>
     const items: TrendingItem[] = [];
     const articles = $('article.Box-row').slice(0, 10);
 
+    // Generate timestamp once per scrape — same for all 10 cards
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
     for (const element of articles) {
       const $el = $(element);
 
-      // Extract Name
+      // Extract Owner and Name
       const nameNode = $el.find('h2.h3 a');
-      const name = nameNode.text().replace(/\s+/g, '').trim();
+      const fullName = nameNode.text().replace(/\s+/g, '').trim();
+      const slashIndex = fullName.indexOf('/');
+      const owner = slashIndex > -1 ? fullName.substring(0, slashIndex) : '';
+      const name = slashIndex > -1 ? fullName.substring(slashIndex + 1) : fullName;
 
       // Extract Description
       let description = $el.find('p').text().trim();
@@ -77,12 +85,14 @@ export async function scrapeTrending(input: SkillInput): Promise<TrendingItem[]>
       const new_stars = newStarsMatch ? newStarsMatch[1].replace(/,/g, '') : '0';
 
       items.push({
+        owner,
         name,
         description,
         language: languageText,
         hex,
         stars,
         new_stars,
+        timestamp,
       });
     }
 

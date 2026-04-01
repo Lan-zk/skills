@@ -4,6 +4,7 @@ export interface SkillInput {
   time_range?: TimeRange;
   language?: string;
   spoken_language_code?: string;
+  translate_to_chinese?: boolean; // default: true
 }
 
 export interface SkillOutput {
@@ -11,10 +12,12 @@ export interface SkillOutput {
 }
 
 export interface TrendingItem {
+  owner: string;
   name: string;
   description: string;
   language: string;
   hex: string;
   stars: string;
   new_stars: string;
+  timestamp: string;
 }

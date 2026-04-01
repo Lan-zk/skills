@@ -42,14 +42,16 @@ describe('scraper.ts - scrapeTrending', () => {
     const items = await scrapeTrending({ time_range: 'daily' });
 
     expect(items.length).toBe(1);
-    expect(items[0]).toEqual({
-      name: 'owner/repo',
+    expect(items[0]).toMatchObject({
+      owner: 'owner',
+      name: 'repo',
       description: 'A great project',
       language: 'TypeScript',
       hex: '#3178c6',
       stars: '1234',
       new_stars: '100',
     });
+    expect(items[0].timestamp).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/);
   });
 
   it('should handle missing description via fallback', async () => {
@@ -79,7 +81,8 @@ describe('scraper.ts - scrapeTrending', () => {
 
     expect(items.length).toBe(1);
     expect(items[0].description).toBe('This is from repo page meta');
-    expect(items[0].name).toBe('owner/repo-no-desc');
+    expect(items[0].owner).toBe('owner');
+    expect(items[0].name).toBe('repo-no-desc');
   });
 
   it('should handle missing fields gracefully', async () => {
@@ -97,14 +100,16 @@ describe('scraper.ts - scrapeTrending', () => {
     const items = await scrapeTrending({ time_range: 'daily' });
 
     expect(items.length).toBe(1);
-    expect(items[0]).toEqual({
-      name: 'owner/repo-empty',
+    expect(items[0]).toMatchObject({
+      owner: 'owner',
+      name: 'repo-empty',
       description: 'Has desc',
       language: 'Unknown',
       hex: '#cccccc',
       stars: '0',
       new_stars: '0',
     });
+    expect(items[0].timestamp).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/);
   });
 
   it('should handle error without message', async () => {

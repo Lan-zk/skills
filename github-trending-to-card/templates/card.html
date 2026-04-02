@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080, height=1350">
+  <title>GitHub Trending Card</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    /* === Spacing Scale === */
+    /* xs: 8   — micro gaps between tightly related items
+       sm: 12  — default sibling gap
+       md: 20  — group-internal separation
+       lg: 32  — section separation
+       xl: 48  — major section gaps
+       2xl: 64 — container padding / large breathing room */
+
+    /* === Type Scale === */
+    /* display : 42px — repo name (gradient, primary focus)
+       title   : 28px — brand header
+       body    : 24px — description text
+       label-lg: 20px — stat numbers, language name
+       label   : 18px — owner handle
+       caption : 16px — stat labels, subtitle
+       tiny    : 14px — watermark
+       micro   : 12px — timestamp */
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans SC', 'JetBrains Mono', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-kerning: normal;
+      font-feature-settings: "kern" 1, "liga" 1;
+      background: transparent;
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+    }
+
+    .card-container {
+      width: 1080px;
+      height: 1350px;
+      background: linear-gradient(160deg, #0d1117 0%, #161b22 40%, #1a1f2e 100%);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 64px 56px;
+      overflow: hidden;
+    }
+
+    /* ---- Decorative background elements ---- */
+    .card-container::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(88,166,255,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .card-container::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(139,148,158,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ---- Top branded header ---- */
+    .top-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .github-icon {
+      width: 48px;
+      height: 48px;
+      fill: #c9d1d9;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #e6edf3;
+      letter-spacing: -0.3px;
+      line-height: 1.15;
+    }
+
+    .brand-subtitle {
+      font-size: 16px;
+      color: #7d8590;
+      font-weight: 400;
+      letter-spacing: 0.8px;
+      line-height: 1.4;
+    }
+
+    /* ---- HOT badge — orange-red gradient replaces emoji + plain blue ---- */
+    .top-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #ff6b35 0%, #f72c25 100%);
+      border-radius: 20px;
+      padding: 8px 18px 8px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: 0.8px;
+      box-shadow: 0 2px 16px rgba(255, 107, 53, 0.3);
+      border: none;
+    }
+
+    .badge-flame {
+      width: 16px;
+      height: 16px;
+      fill: #ffffff;
+    }
+
+    /* ---- Divider line ---- */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(88,166,255,0.3) 0%, rgba(139,148,158,0.1) 50%, transparent 100%);
+      position: relative;
+      z-index: 1;
+      /* Tight to header — section boundary, not additional breathing room */
+    }
+
+    /* ---- Main content area ---- */
+    .main-content {
+      flex: 1;
+      /* Removed justify-content: center — repo content anchors to top of main area,
+         with generous space expanding downward toward the stats footer */
+      display: flex;
+      flex-direction: column;
+      padding-top: 56px;   /* Generous opening — repos deserve air above */
+      padding-bottom: 0px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ---- Repo icon + name row ---- */
+    .repo-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 20px;  /* Tight to description — same visual group */
+    }
+
+    .repo-icon-wrap {
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+      background: rgba(139,148,158,0.06);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(139,148,158,0.12);
+      /* Subtle language-color tint via box-shadow from template */
+    }
+
+    .repo-icon {
+      width: 36px;
+      height: 36px;
+      fill: #8b949e;
+    }
+
+    .repo-name-wrap {
+      flex: 1;
+      padding-top: 4px;
+    }
+
+    .repo-owner {
+      font-size: 18px;
+      font-weight: 500;
+      color: #7d8590;
+      margin-bottom: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0;
+      line-height: 1;
+    }
+
+    .repo-name {
+      font-size: 42px;
+      font-weight: 700;
+      background: linear-gradient(100deg, #58a6ff 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      word-break: break-word;
+      line-height: 1.05;
+      letter-spacing: -0.5px;
+    }
+
+    /* ---- Description ---- */
+    /* Aligns with repo-icon-wrap baseline (64px wide + 20px gap = 84px total) */
+    .repo-desc {
+      font-size: 24px;
+      color: #c9d1d9;
+      line-height: 1.6;
+      margin-top: 16px;
+      margin-bottom: 0px;
+      padding-left: 84px;
+      padding-right: 16px;
+      max-width: 920px;
+    }
+
+    /* ---- Footer stats row ---- */
+    .footer {
+      display: flex;
+      align-items: center;
+      gap: 16px;           /* Tight within the stats group */
+      flex-wrap: wrap;
+      padding-left: 84px;  /* Aligned with description */
+      margin-top: auto;    /* Pushes to bottom of flex container */
+      padding-bottom: 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(139,148,158,0.06);
+      border: 1px solid rgba(139,148,158,0.12);
+      border-top: 2px solid currentColor;
+      border-radius: 14px;
+      padding: 14px 20px;
+    }
+
+    /* Each stat card gets its own semantic top-border color */
+    .stat-item.repo-lang {
+      color: #58a6ff;           /* Language = blue accent */
+    }
+
+    .stat-item.repo-stars-total {
+      color: #f0c14b;            /* Total stars = gold */
+    }
+
+    .stat-item.stars-new {
+      color: #3fb950;            /* New stars = green growth */
+    }
+
+    .repo-lang {
+      gap: 14px;
+      padding: 14px 24px;
+    }
+
+    .lang-color {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 0 8px rgba(255,255,255,0.1);
+    }
+
+    .lang-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #e6edf3;
+      line-height: 1;
+    }
+
+    .star-icon {
+      width: 24px;
+      height: 24px;
+      fill: #f0c14b;
+      flex-shrink: 0;
+    }
+
+    .stat-text {
+      font-size: 20px;
+      font-weight: 600;
+      color: #e6edf3;
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.3px;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      font-weight: 400;
+      color: #7d8590;
+      margin-left: 4px;
+      line-height: 1;
+      letter-spacing: 0.2px;
+    }
+
+    .stars-new .star-icon {
+      fill: #3fb950;
+    }
+
+    /* ---- Bottom watermark ---- */
+    .bottom-watermark {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 20px;
+      border-top: 1px solid rgba(139,148,158,0.08);
+      position: relative;
+      z-index: 1;
+      margin-top: 0;       /* No extra margin — border provides visual separation */
+    }
+
+    .watermark-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #484f58;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      line-height: 1;
+    }
+
+    .watermark-icon {
+      width: 16px;
+      height: 16px;
+      fill: #484f58;
+      flex-shrink: 0;
+    }
+
+    .watermark-right {
+      font-size: 12px;
+      color: #3d4249;
+      font-weight: 400;
+      letter-spacing: 0.2px;
+      line-height: 1;
+    }
+
+    /* ---- Floating accent ---- */
+    .accent-dot {
+      position: absolute;
+      bottom: 220px;
+      right: 60px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(88,166,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ---- Corner bracket decorations — card framing ---- */
+    .corner {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .corner-tl {
+      top: 20px;
+      left: 20px;
+      border-top: 1.5px solid rgba(88,166,255,0.25);
+      border-left: 1.5px solid rgba(88,166,255,0.25);
+      border-radius: 4px 0 0 0;
+    }
+    .corner-tr {
+      top: 20px;
+      right: 20px;
+      border-top: 1.5px solid rgba(88,166,255,0.25);
+      border-right: 1.5px solid rgba(88,166,255,0.25);
+      border-radius: 0 4px 0 0;
+    }
+    .corner-bl {
+      bottom: 20px;
+      left: 20px;
+      border-bottom: 1.5px solid rgba(88,166,255,0.25);
+      border-left: 1.5px solid rgba(88,166,255,0.25);
+      border-radius: 0 0 0 4px;
+    }
+    .corner-br {
+      bottom: 20px;
+      right: 20px;
+      border-bottom: 1.5px solid rgba(88,166,255,0.25);
+      border-right: 1.5px solid rgba(88,166,255,0.25);
+      border-radius: 0 0 4px 0;
+    }
+
+    /* ---- Timestamp badge — "freshness" signal ---- */
+    .timestamp-badge {
+      position: absolute;
+      top: 28px;
+      right: 80px;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(139,148,158,0.45);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.5px;
+      z-index: 2;
+    }
+
+    /* ---- Language color bottom bar — extends card language identity ---- */
+    .lang-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      z-index: 2;
+      border-radius: 0 0 0 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="card-container">
+    <!-- Corner bracket decorations -->
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+
+    <!-- Background decorative elements -->
+    <div class="accent-dot"></div>
+
+    <!-- Timestamp -->
+    <div class="timestamp-badge">{{timestamp}}</div>
+
+    <!-- Language color bottom bar -->
+    <div class="lang-bar" style="background-color: {{hex}};"></div>
+
+    <!-- Top header -->
+    <div class="top-header">
+      <div class="brand-left">
+        <svg class="github-icon" viewBox="0 0 24 24" version="1.1" aria-hidden="true">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"></path>
+        </svg>
+        <div class="brand-text">
+          <div class="brand-title">GitHub Trending</div>
+          <div class="brand-subtitle">今日开源热门项目</div>
+        </div>
+      </div>
+      <div class="top-badge">
+        <svg class="badge-flame" viewBox="0 0 24 24" version="1.1" aria-hidden="true">
+          <path d="M12 23c-3.866 0-7-3.134-7-7 0-2.577 1.406-4.832 3.5-6.018C8.25 9.5 8 8.5 8 7.5c0-1.5 1-3 2.5-3.5-.167 1-1 2-1 3 1.5-.5 2.5-2 2.5-3.5 0-.1-.01-.2-.03-.3C13.425 3.525 15 2.5 15 1c0 2 1.5 3.5 3 4.5 0 1-.25 2-.5 3.5 2.094 1.186 3.5 3.441 3.5 6.018 0 3.866-3.134 6.982-7 6.982z"></path>
+        </svg>
+        HOT
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Main content -->
+    <div class="main-content">
+      <div class="repo-header">
+        <div class="repo-icon-wrap">
+          <svg class="repo-icon" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+            <path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path>
+          </svg>
+        </div>
+        <div class="repo-name-wrap">
+          <div class="repo-owner">{{owner}}</div>
+          <div class="repo-name">{{name}}</div>
+        </div>
+      </div>
+
+      <div class="repo-desc">{{description}}</div>
+    </div>
+
+    <!-- Footer stats -->
+    <div class="footer">
+      <div class="stat-item repo-lang">
+        <span class="lang-color" style="background-color: {{hex}};"></span>
+        <span class="lang-name">{{language}}</span>
+      </div>
+
+      <div class="stat-item repo-stars-total">
+        <svg class="star-icon" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+          <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.312a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.311L7.327.668A.75.75 0 018 .25z"></path>
+        </svg>
+        <span class="stat-text">{{stars}}</span>
+        <span class="stat-label">stars</span>
+      </div>
+
+      <div class="stat-item repo-stars-total stars-new">
+        <svg class="star-icon" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+          <path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm11.646-2.646a.5.5 0 01.708.708l-5 5a.5.5 0 01-.708 0l-2.5-2.5a.5.5 0 11.708-.708L7 10.293l4.646-4.647z"></path>
+        </svg>
+        <span class="stat-text">{{new_stars}}</span>
+        <span class="stat-label">stars today</span>
+      </div>
+    </div>
+
+    <!-- Bottom watermark -->
+    <div class="bottom-watermark">
+      <div class="watermark-left">
+        <svg class="watermark-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"></path>
+        </svg>
+        github.com/trending
+      </div>
+      <div class="watermark-right">Generated by GitHub Trending Card</div>
+    </div>
+  </div>
+</body>
+</html>

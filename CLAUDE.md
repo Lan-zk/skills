@@ -10,11 +10,14 @@ This is a **Skills repository** — a collection of Claude Code skills for AI-as
 
 | Skill | Purpose |
 |-------|---------|
-| `github-trending-to-card/` | Scrapes GitHub Trending, translates descriptions to Chinese via LLM, renders 1080×1080 PNG cards with editorial print aesthetic |
+| `github-trending-to-card/` | Scrapes GitHub Trending, renders 1080×1440 PNG cards (translation handled by invoking Agent) |
+| `visual-cast/` | Converts upstream text/Markdown into PNG cards or merged long images via Satori + resvg |
 | `java-arch-designer/` | Complex business logic architect — selects GoF design patterns and generates Service layer code skeletons |
 | `java-mermaid-analyzer/` | Analyzes Java execution paths and generates Mermaid flowcharts |
 | `first-principles-thinking/` | Rigorous requirements analysis with Socratic questioning and 3-phase validation |
 | `skill-creator-with-validation/` | Creates and validates Skills CLI-compatible skills |
+
+> Note: `github-trending-to-card/` has its own `CLAUDE.md` with detailed architecture docs.
 
 ## Skill Format (Critical)
 
@@ -54,7 +57,7 @@ npx skills list .
 
 ## In-Progress Projects
 
-- **`skills-design/`** — Research documents on skills design patterns and architecture (Chinese).
+- **`docs/superpowers/`** — Planning and spec documents for new skills (e.g., `github-trending-to-card/` was designed here before implementation)
 
 ## Architecture Notes
 

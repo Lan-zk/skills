@@ -23,4 +23,8 @@ export interface TrendingItem {
   contributors: string;
   license: string;
   timestamp: string;
+  /** GitHub API /users/{owner} */
+  owner_avatar?: string;
+  owner_repos?: string;
+  owner_followers?: string;
 }

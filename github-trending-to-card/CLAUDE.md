@@ -29,7 +29,7 @@ scrapeTrending()  →  translateDescriptions()  →  renderCards()
 
 | File | Role |
 |------|------|
-| `src/scraper.ts` | Fetches GitHub trending page + individual repo pages for metadata (contributors, license). Returns `TrendingItem[]` |
+| `src/scraper.ts` | Fetches GitHub trending page + individual repo pages for metadata (contributors, license). Fetches owner profile from GitHub REST API (`/users/{owner}`) for avatar, repos count, followers. Returns `TrendingItem[]` |
 | `src/translator.ts` | Batches descriptions → single LLM call → parses numbered translations back into items |
 | `src/renderer.ts` | Compiles Handlebars template → Playwright renders HTML → screenshots `.card-container` div → returns base64 PNG |
 | `src/types.ts` | `TrendingItem` (11 fields) and `SkillInput` interfaces |
@@ -39,7 +39,7 @@ scrapeTrending()  →  translateDescriptions()  →  renderCards()
 
 Templates use **Mustache** (`{{placeholder}}`) syntax. The renderer reads `templates/card.html` and compiles it with `handlebars.compile()`. All CSS values should use `var()` tokens — never hard-code colors or sizes.
 
-Card dimensions: **1080×1080 px**, viewport configured in `renderer.ts` with `deviceScaleFactor: 2` (renders at 2160×2160 retina resolution).
+Card dimensions: **1080×1440 px** (3:4 ratio, Xiaohongshu-optimized), viewport configured in `renderer.ts` with `deviceScaleFactor: 2` (renders at 2160×2880 retina resolution).
 
 ### Env variables
 
@@ -57,7 +57,7 @@ Card follows an **editorial print aesthetic** — warm paper background (`#faf9f
 
 The CSS token system lives in `:root` in the HTML template. Key tokens:
 
-- `--text-masthead` (64px), `--text-repo-name` (44px), `--text-body` (22px), `--text-label` (11px), `--text-meta` (10px)
+- `--text-masthead` (64px), `--text-repo-name` (44px), `--text-body` (22px), `--text-label` (14px), `--text-meta` (12px)
 - `--color-ink`, `--color-accent`, `--color-paper`, `--color-steel`
 - `--sp-N` (8px grid), `--shadow-card`, `--radius-sm/md`
 
@@ -67,4 +67,4 @@ Tests are in `evals/`. The scraper and renderer are tested with mocked HTTP and 
 
 ## Output
 
-`output/YYYY-MM-DD/card-NN.png` — one PNG per trending repo, max 10 cards per run.
+`output/YYYY-MM-DD/card-NN.png` — one PNG per trending repo, max 10 cards per run. Output is 1080×1440px (3:4 Xiaohongshu format).

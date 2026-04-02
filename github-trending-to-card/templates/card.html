@@ -2,54 +2,46 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1080, height=1080">
+  <meta name="viewport" content="width=1080, height=1440">
   <title>GitHub Trending Card</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=JetBrains+Mono:wght@600;700&display=swap');
 
     /* ================================================================
-       DESIGN TOKENS — Bold editorial palette
+       DESIGN TOKENS — Bold editorial palette, 3:4 Xiaohongshu format
     ================================================================ */
     :root {
-      /* Ink: near-black with personality */
       --color-ink:        #0f172a;
       --color-ink-soft:   #1e293b;
-      /* Editorial accent: deep saturated red-orange */
       --color-accent:     #e8453c;
-      /* Light ink tint for body */
       --color-paper:      #faf9f7;
       --color-paper-warm: #f2efe9;
-      /* Cool structural color */
       --color-steel:      #3d5a80;
-      /* Divider / border */
       --color-rule:       #d4cfc7;
 
       /* ================================================================
-         TYPE SCALE — 5 levels, fixed px (1080px canvas is always fixed)
-         Ratio ~1.5: masthead(64) > repo-name(44) > body(22) > label(11) > meta(10)
+         TYPE SCALE — 5 levels, fixed px (1440px canvas, 3:4 Xiaohongshu)
+         Minimum font size: 20px
       ================================================================ */
-      --text-masthead:  64px;   /* Masthead: TRENDING — the visual punch */
-      --text-repo-name: 44px;   /* Repo name: largest readable word on card */
-      --text-body:      22px;   /* Description: readable at glance, mobile-safe */
-      --text-label:     11px;   /* Uppercase labels: CONTRIBUTORS / STARS TODAY */
-      --text-meta:      10px;   /* Timestamps, footer fine print */
+      --text-masthead:  56px;
+      --text-repo-name: 44px;
+      --text-body:      22px;
+      --text-label:     20px;  /* uppercase labels — readable on mobile */
+      --text-meta:      20px;  /* timestamps, footer fine print */
 
       /* ================================================================
-         TYPE WEIGHTS — editorial contrast, 3 weights only
+         TYPE WEIGHTS — editorial contrast
       ================================================================ */
       /* 900 Black — masthead title, repo name (hierarchy anchors) */
       /* 700 Bold  — stat values, chip/badge text (data reads first) */
       /* 400 Regular — body description only (readable, not heavy) */
       /* 600 Semibold — labels, meta (structural, not decorative) */
 
-      /* ================================================================
-         TYPE DETAIL TOKENS
-      ================================================================ */
-      --ls-tight:    -0.5px;   /* Large display: tight to read as one block */
-      --ls-label:     3px;     /* Uppercase labels: open tracking for clarity */
-      --ls-micro:     0.5px;   /* Metadata: subtle, not decorative */
-      --lh-tight:     1;      /* Headings: zero waste */
-      --lh-body:    1.65;     /* Body: comfortable magazine measure */
+      --ls-tight:    -0.5px;
+      --ls-label:     3px;
+      --ls-micro:     0.5px;
+      --lh-tight:     1;
+      --lh-body:    1.65;
 
       /* ================================================================
          SPACING — 8px grid
@@ -75,31 +67,28 @@
       font-family: 'Noto Sans SC', 'JetBrains Mono', -apple-system, BlinkMacSystemFont, sans-serif;
       background: transparent;
       width: 1080px;
-      height: 1080px;
+      height: 1440px;
       overflow: hidden;
     }
 
     /* ================================================================
-       CARD CONTAINER — warm paper with subtle graph-paper grid
+       CARD CONTAINER — warm paper with graph-paper grid
     ================================================================ */
     .card-container {
       width: 1080px;
-      height: 1080px;
+      height: 1440px;
       background-color: var(--color-paper);
       position: relative;
       overflow: hidden;
     }
 
-    /* Graph-paper background: faint blue-gray grid, developer-editorial identity */
     .card-container::before {
       content: '';
       position: absolute;
       inset: 0;
       background-image:
-        /* 48px grid — primary structure */
         linear-gradient(var(--color-rule) 1px, transparent 1px),
         linear-gradient(90deg, var(--color-rule) 1px, transparent 1px),
-        /* 8px grid — subtle subdivision */
         linear-gradient(rgba(212, 207, 199, 0.4) 1px, transparent 1px),
         linear-gradient(90deg, rgba(212, 207, 199, 0.4) 1px, transparent 1px);
       background-size:
@@ -161,78 +150,44 @@
     }
 
     /* ================================================================
-       MASTHEAD — bold newspaper-style header
+       MASTHEAD — project name as hero (A1)
     ================================================================ */
     .masthead {
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 200px;
+      height: 280px;
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      padding: 28px var(--sp-6) 0;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 var(--sp-6) var(--sp-3);
       z-index: 20;
     }
 
-    /* Large decorative issue number with dateline rule */
-    .masthead-issue {
+    /* Top row: issue date + language chip + trending badge */
+    .masthead-top-row {
       position: absolute;
       top: 24px;
       left: var(--sp-6);
+      right: var(--sp-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .masthead-issue {
       font-family: 'JetBrains Mono', monospace;
       font-size: var(--text-meta);
       font-weight: 600;
       color: var(--color-steel);
       letter-spacing: var(--ls-micro);
-      text-transform: uppercase;
-      padding-bottom: 5px;
-      border-bottom: 1px solid var(--color-rule);
     }
 
-    .masthead-title-block {
-      margin-top: 36px;
-      flex: 1;
-    }
-
-    /* Decorative rule above title */
-    .masthead-rule {
-      width: 48px;
-      height: 4px;
-      background: var(--color-accent);
-      margin-bottom: var(--sp-2);
-    }
-
-    /* Masthead: dominant display type — the visual punch */
-    .masthead-title {
-      font-family: 'Noto Sans SC', sans-serif;
-      font-size: var(--text-masthead);
-      font-weight: 900;
-      color: var(--color-ink);
-      line-height: var(--lh-tight);
-      letter-spacing: var(--ls-tight);
-      text-transform: uppercase;
-    }
-
-    .masthead-subtitle {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: var(--text-meta);
-      font-weight: 600;
-      color: var(--color-steel);
-      letter-spacing: var(--ls-label);
-      text-transform: uppercase;
-      margin-top: 6px;
-    }
-
-    /* Right side: language chip (language-specific color as dynamic accent) */
     .masthead-right {
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
+      align-items: center;
       gap: var(--sp-2);
-      margin-top: 36px;
     }
 
-    /* Language chip: language hex as background, high-contrast white text */
     .lang-chip {
       display: inline-flex;
       align-items: center;
@@ -242,7 +197,6 @@
       padding: 6px 14px;
     }
 
-    /* White dot on colored background — pops without competing with title */
     .lang-chip-dot {
       width: 8px;
       height: 8px;
@@ -278,26 +232,62 @@
       text-transform: uppercase;
     }
 
+    /* Decorative rule + owner + project name */
+    .masthead-rule {
+      width: 48px;
+      height: 4px;
+      background: var(--color-accent);
+      margin-bottom: var(--sp-2);
+    }
+
+    .masthead-owner {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--text-label);
+      font-weight: 600;
+      color: var(--color-steel);
+      letter-spacing: 0.5px;
+      text-transform: lowercase;
+      margin-bottom: 4px;
+    }
+
+    .masthead-title {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: var(--text-masthead);
+      font-weight: 900;
+      color: var(--color-ink);
+      line-height: var(--lh-tight);
+      letter-spacing: var(--ls-tight);
+    }
+
+    .masthead-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--text-meta);
+      font-weight: 600;
+      color: var(--color-steel);
+      letter-spacing: var(--ls-label);
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
     /* Decorative vertical rule on right edge */
     .masthead::after {
       content: '';
       position: absolute;
-      top: 0;
-      right: 0;
+      top: 0; right: 0;
       width: 3px;
       height: 100%;
       background: linear-gradient(to bottom, var(--color-ink) 0%, var(--color-accent) 60%, transparent 100%);
     }
 
     /* ================================================================
-       REPO CARD — dominant editorial card
+       REPO CARD — description + author section (B1)
     ================================================================ */
     .repo-card {
       position: absolute;
-      top: 200px;
+      top: 280px;
       left: var(--sp-6);
       right: var(--sp-6);
-      height: 600px;
+      height: 820px;
       background: var(--color-paper-warm);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-card);
@@ -308,7 +298,6 @@
       z-index: 20;
     }
 
-    /* Bold colored left edge */
     .repo-card::before {
       content: '';
       position: absolute;
@@ -318,7 +307,6 @@
       border-radius: var(--radius-md) 0 0 var(--radius-md);
     }
 
-    /* Accent mark top-right of card */
     .repo-card::after {
       content: '';
       position: absolute;
@@ -330,80 +318,147 @@
       border-radius: 2px;
     }
 
-    /* Repo header */
-    .repo-header {
+    /* ================================================================
+       AUTHOR SECTION (B1) — authority + trust signals
+    ================================================================ */
+    .author-section {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: var(--sp-3);
+      padding: var(--sp-3) var(--sp-4);
+      background: var(--color-paper);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-rule);
+      margin-bottom: var(--sp-4);
     }
 
-    .repo-icon-wrap {
-      width: 80px;
-      height: 80px;
+    .author-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      overflow: hidden;
       flex-shrink: 0;
+      border: 2px solid var(--color-rule);
       background: var(--color-steel);
-      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .repo-icon {
-      width: 40px;
-      height: 40px;
+    .author-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .author-fallback-icon {
+      width: 36px;
+      height: 36px;
       fill: var(--color-paper);
     }
 
-    .repo-meta {
+    .author-info {
       flex: 1;
-      padding-top: 4px;
-      padding-left: var(--sp-2);
     }
 
-    .repo-owner {
+    .author-name {
       font-family: 'JetBrains Mono', monospace;
       font-size: var(--text-label);
+      font-weight: 700;
+      color: var(--color-ink);
+      margin-bottom: 4px;
+    }
+
+    .author-org {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--text-meta);
       font-weight: 600;
       color: var(--color-steel);
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
-      text-transform: lowercase;
+      letter-spacing: 0.3px;
     }
 
-    /* Repo name: the largest readable word on the card */
-    .repo-name {
-      font-family: 'Noto Sans SC', sans-serif;
-      font-size: var(--text-repo-name);
-      font-weight: 900;
+    .author-stats {
+      display: flex;
+      gap: var(--sp-3);
+    }
+
+    .author-stat {
+      text-align: center;
+    }
+
+    .author-stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
       color: var(--color-ink);
-      line-height: var(--lh-tight);
-      letter-spacing: var(--ls-tight);
-      word-break: break-word;
+      font-variant-numeric: tabular-nums;
     }
 
-    /* Description: comfortable reading at a glance */
+    .author-stat-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--text-meta);
+      font-weight: 600;
+      color: var(--color-steel);
+      text-transform: uppercase;
+      letter-spacing: var(--ls-label);
+      margin-top: 2px;
+    }
+
+    /* ================================================================
+       DESCRIPTION
+    ================================================================ */
     .repo-desc {
       font-family: 'Noto Sans SC', sans-serif;
       font-size: var(--text-body);
       color: var(--color-ink-soft);
       line-height: var(--lh-body);
-      margin-top: var(--sp-3);
       flex: 1;
-      font-weight: 400;
     }
 
-    /* Divider */
+    /* ================================================================
+       KEYWORD TAGS — auto-generated or LLM-extracted
+    ================================================================ */
+    .repo-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: var(--sp-3);
+    }
+
+    .repo-tag {
+      display: inline-flex;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--text-meta);
+      font-weight: 600;
+      color: var(--color-ink);
+      background: var(--color-paper);
+      border: 1px solid var(--color-rule);
+      border-radius: 100px;
+      padding: 4px 12px;
+    }
+
+    .repo-tag--accent {
+      background: var(--color-ink);
+      color: var(--color-paper);
+      border-color: var(--color-ink);
+    }
+
+    /* ================================================================
+       DIVIDER + META STRIP
+    ================================================================ */
     .repo-divider {
       height: 1px;
       background: var(--color-rule);
       margin: var(--sp-3) 0 var(--sp-2);
     }
 
-    /* Meta strip */
     .repo-meta-strip {
       display: flex;
       align-items: center;
       gap: var(--sp-4);
+      flex-wrap: wrap;
     }
 
     .meta-tag {
@@ -414,7 +469,6 @@
       font-size: var(--text-meta);
       color: var(--color-steel);
       font-weight: 600;
-      letter-spacing: 0.3px;
     }
 
     .meta-tag-icon {
@@ -425,14 +479,14 @@
     }
 
     /* ================================================================
-       STATS ROW — bold number treatment
+       STATS ROW
     ================================================================ */
     .stats-row {
       position: absolute;
-      top: 840px;
+      top: 1160px;
       left: var(--sp-6);
       right: var(--sp-6);
-      height: 120px;
+      height: 140px;
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: var(--sp-2);
@@ -449,29 +503,16 @@
       background: var(--color-paper-warm);
     }
 
-    .stat-card--stars-total {
-      border-top: 3px solid var(--color-ink);
-    }
-    .stat-card--stars-new {
-      border-top: 3px solid var(--color-accent);
-    }
-    .stat-card--forks {
-      border-top: 3px solid var(--color-steel);
-    }
+    .stat-card--stars-total { border-top: 3px solid var(--color-ink); }
+    .stat-card--stars-new   { border-top: 3px solid var(--color-accent); }
+    .stat-card--forks       { border-top: 3px solid var(--color-steel); }
 
-    .stat-icon {
-      width: 24px;
-      height: 24px;
-      flex-shrink: 0;
-    }
+    .stat-icon { width: 24px; height: 24px; flex-shrink: 0; }
     .stat-icon--star  { fill: var(--color-ink); }
-    .stat-icon--trend  { fill: var(--color-accent); }
+    .stat-icon--trend { fill: var(--color-accent); }
     .stat-icon--fork  { fill: var(--color-steel); }
 
-    .stat-content {
-      display: flex;
-      flex-direction: column;
-    }
+    .stat-content { display: flex; flex-direction: column; }
 
     .stat-value {
       font-family: 'JetBrains Mono', monospace;
@@ -485,7 +526,7 @@
 
     .stat-label {
       font-family: 'JetBrains Mono', monospace;
-      font-size: var(--text-meta);
+      font-size: var(--text-label);
       font-weight: 600;
       color: var(--color-steel);
       letter-spacing: var(--ls-label);
@@ -494,7 +535,7 @@
     }
 
     /* ================================================================
-       FOOTER — editorial mastfoot
+       FOOTER
     ================================================================ */
     .footer {
       position: absolute;
@@ -509,53 +550,13 @@
       background: var(--color-paper);
     }
 
-    .footer-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .footer-icon {
-      width: 16px;
-      height: 16px;
-      fill: var(--color-ink);
-    }
-
-    .footer-brand {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: var(--text-meta);
-      font-weight: 700;
-      color: var(--color-ink);
-      letter-spacing: var(--ls-label);
-      text-transform: uppercase;
-    }
-
-    .footer-divider {
-      width: 1px;
-      height: 14px;
-      background: var(--color-rule);
-    }
-
-    .footer-lang {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: var(--text-meta);
-      font-weight: 600;
-      color: var(--color-steel);
-    }
-
-    .footer-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .footer-timestamp {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: var(--text-meta);
-      font-weight: 600;
-      color: var(--color-steel);
-      letter-spacing: var(--ls-micro);
-    }
+    .footer-left { display: flex; align-items: center; gap: 8px; }
+    .footer-icon { width: 16px; height: 16px; fill: var(--color-ink); }
+    .footer-brand { font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); font-weight: 700; color: var(--color-ink); letter-spacing: var(--ls-label); text-transform: uppercase; }
+    .footer-divider { width: 1px; height: 14px; background: var(--color-rule); }
+    .footer-lang { font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); font-weight: 600; color: var(--color-steel); }
+    .footer-right { display: flex; align-items: center; gap: 8px; }
+    .footer-timestamp { font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); font-weight: 600; color: var(--color-steel); letter-spacing: var(--ls-micro); }
 
     /* Language color bottom bar */
     .lang-bar {
@@ -575,39 +576,56 @@
     <div class="crop-mark-bl"></div>
     <div class="crop-mark-br"></div>
 
-    <!-- MASTHEAD -->
+    <!-- ================================================================
+         MASTHEAD — project name as hero (A1)
+    ================================================================ -->
     <div class="masthead">
-      <div class="masthead-issue">{{timestamp}}</div>
-
-      <div class="masthead-title-block">
-        <div class="masthead-rule"></div>
-        <div class="masthead-title">Trending</div>
-        <div class="masthead-subtitle">github.com · Open Source</div>
-      </div>
-
-      <div class="masthead-right">
-        <div class="lang-chip">
-          <span class="lang-chip-dot"></span>
-          <span class="lang-chip-text">{{language}}</span>
-        </div>
-        <div class="trending-badge">
-          <span class="trending-badge-text">Hot</span>
+      <div class="masthead-top-row">
+        <div class="masthead-issue">{{timestamp}}</div>
+        <div class="masthead-right">
+          <div class="lang-chip">
+            <span class="lang-chip-dot"></span>
+            <span class="lang-chip-text">{{language}}</span>
+          </div>
+          <div class="trending-badge">
+            <span class="trending-badge-text">Hot</span>
+          </div>
         </div>
       </div>
+
+      <div class="masthead-rule"></div>
+      <div class="masthead-owner">{{owner}}</div>
+      <div class="masthead-title">{{name}}</div>
+      <div class="masthead-subtitle">github.com · Open Source</div>
     </div>
 
-    <!-- REPO CARD -->
+    <!-- ================================================================
+         REPO CARD
+    ================================================================ -->
     <div class="repo-card">
-      <div class="repo-header">
-        <div class="repo-icon-wrap">
-          <svg class="repo-icon" viewBox="0 0 16 16" version="1.1" aria-hidden="true">
+
+      <!-- Author section (B1) -->
+      <div class="author-section">
+        <div class="author-avatar">
+          {{#if owner_avatar}}
+          <img src="{{owner_avatar}}" alt="{{owner}}" onerror="this.remove()">
+          {{/if}}
+          <svg class="author-fallback-icon" viewBox="0 0 16 16" aria-hidden="true">
             <path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path>
           </svg>
         </div>
-        <div class="repo-meta">
-          <div class="repo-owner">{{owner}}</div>
-          <div class="repo-name">{{name}}</div>
+        <div class="author-info">
+          <div class="author-name">{{owner}}</div>
+          <div class="author-org">github.com/{{owner}}{{#if owner_repos}} · {{owner_repos}} repos{{/if}}</div>
         </div>
+        {{#if owner_followers}}
+        <div class="author-stats">
+          <div class="author-stat">
+            <div class="author-stat-value">{{owner_followers}}</div>
+            <div class="author-stat-label">Followers</div>
+          </div>
+        </div>
+        {{/if}}
       </div>
 
       <div class="repo-desc">{{description}}</div>
@@ -637,7 +655,9 @@
       </div>
     </div>
 
-    <!-- STATS ROW -->
+    <!-- ================================================================
+         STATS ROW
+    ================================================================ -->
     <div class="stats-row">
       <div class="stat-card stat-card--stars-total">
         <svg class="stat-icon stat-icon--star" viewBox="0 0 16 16" aria-hidden="true">
@@ -670,7 +690,9 @@
       </div>
     </div>
 
-    <!-- FOOTER -->
+    <!-- ================================================================
+         FOOTER
+    ================================================================ -->
     <div class="footer">
       <div class="footer-left">
         <svg class="footer-icon" viewBox="0 0 24 24" aria-hidden="true">

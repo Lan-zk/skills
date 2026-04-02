@@ -119,6 +119,19 @@ export async function scrapeTrending(input: SkillInput): Promise<TrendingItem[]>
         // ignore — contributors/license are optional
       }
 
+      // Fetch owner data from GitHub API (public, no auth required)
+      let ownerAvatar = '';
+      let ownerRepos = '';
+      let ownerFollowers = '';
+      try {
+        const userRes = await client.get(`https://api.github.com/users/${owner}`);
+        ownerAvatar = userRes.data.avatar_url || '';
+        ownerRepos = userRes.data.public_repos != null ? String(userRes.data.public_repos) : '';
+        ownerFollowers = userRes.data.followers != null ? String(userRes.data.followers) : '';
+      } catch {
+        // ignore — owner data is optional, card falls back gracefully
+      }
+
       items.push({
         owner,
         name,
@@ -131,6 +144,9 @@ export async function scrapeTrending(input: SkillInput): Promise<TrendingItem[]>
         contributors,
         license,
         timestamp,
+        owner_avatar: ownerAvatar,
+        owner_repos: ownerRepos,
+        owner_followers: ownerFollowers,
       });
     }
 

@@ -15,13 +15,45 @@ jest.mock('axios', () => {
   };
 });
 
-// Import the mocked instance so we can configure it
 const client = axios.create();
 
 describe('scraper.ts - scrapeTrending', () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
+
+  // Helper: build mock implementation based on URL pattern
+  const withUserApi = (
+    mockHtml: string,
+    opts: {
+      repoHtml?: string;
+      ownerData?: { avatar_url: string; public_repos: number; followers: number };
+      repoPageError?: boolean;
+      ownerApiError?: boolean;
+    } = {},
+  ) => {
+    (client.get as jest.Mock).mockImplementation(async (url: string) => {
+      if (url.includes('/trending')) {
+        return { data: mockHtml };
+      }
+      if (url.includes('/api.github.com/users/')) {
+        if (opts.ownerApiError) throw new Error('User not found');
+        return {
+          data: opts.ownerData ?? {
+            avatar_url: 'https://avatars.githubusercontent.com/u/123',
+            public_repos: 100,
+            followers: 500,
+          },
+        };
+      }
+      // Repo page — match both /{name} and /{owner}/{name}
+      if (url.match(/\/github\.com\/[^/]+\/?[^/]*$/)) {
+        if (opts.repoPageError) throw new Error('Repo page error');
+        return { data: opts.repoHtml ?? '<html><body></body></html>' };
+      }
+      throw new Error('Unexpected URL: ' + url);
+    });
+  };
 
   it('should scrape basic trending data', async () => {
     const mockHtml = `
@@ -37,7 +69,7 @@ describe('scraper.ts - scrapeTrending', () => {
       </body></html>
     `;
 
-    (client.get as jest.Mock).mockResolvedValue({ data: mockHtml });
+    withUserApi(mockHtml);
 
     const items = await scrapeTrending({ time_range: 'daily' });
 
@@ -52,6 +84,9 @@ describe('scraper.ts - scrapeTrending', () => {
       new_stars: '100',
     });
     expect(items[0].timestamp).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/);
+    expect(items[0].owner_avatar).toBe('https://avatars.githubusercontent.com/u/123');
+    expect(items[0].owner_repos).toBe('100');
+    expect(items[0].owner_followers).toBe('500');
   });
 
   it('should handle missing description via fallback', async () => {
@@ -73,9 +108,7 @@ describe('scraper.ts - scrapeTrending', () => {
       </body></html>
     `;
 
-    (client.get as jest.Mock)
-      .mockResolvedValueOnce({ data: mockHtml }) // trending page
-      .mockResolvedValueOnce({ data: mockRepoHtml }); // repo page
+    withUserApi(mockHtml, { repoHtml: mockRepoHtml });
 
     const items = await scrapeTrending({ time_range: 'weekly' });
 
@@ -95,7 +128,7 @@ describe('scraper.ts - scrapeTrending', () => {
       </body></html>
     `;
 
-    (client.get as jest.Mock).mockResolvedValueOnce({ data: mockHtml });
+    withUserApi(mockHtml);
 
     const items = await scrapeTrending({ time_range: 'daily' });
 
@@ -127,9 +160,7 @@ describe('scraper.ts - scrapeTrending', () => {
       </body></html>
     `;
 
-    (client.get as jest.Mock)
-      .mockResolvedValueOnce({ data: mockHtml }) // trending page
-      .mockRejectedValueOnce(new Error('Repo page error')); // repo page
+    withUserApi(mockHtml, { repoPageError: true });
 
     const items = await scrapeTrending({ time_range: 'daily' });
 
@@ -160,9 +191,7 @@ describe('scraper.ts - scrapeTrending', () => {
       </body></html>
     `;
 
-    (client.get as jest.Mock)
-      .mockResolvedValueOnce({ data: mockHtml })
-      .mockResolvedValueOnce({ data: mockRepoHtml });
+    withUserApi(mockHtml, { repoHtml: mockRepoHtml });
 
     const items = await scrapeTrending({ time_range: 'daily' });
 
@@ -193,9 +222,7 @@ describe('scraper.ts - scrapeTrending', () => {
       </body></html>
     `;
 
-    (client.get as jest.Mock)
-      .mockResolvedValueOnce({ data: mockHtml })
-      .mockResolvedValueOnce({ data: mockRepoHtml });
+    withUserApi(mockHtml, { repoHtml: mockRepoHtml });
 
     const items = await scrapeTrending({ time_range: 'daily' });
 
@@ -216,14 +243,36 @@ describe('scraper.ts - scrapeTrending', () => {
       </body></html>
     `;
 
-    (client.get as jest.Mock)
-      .mockResolvedValueOnce({ data: mockHtml })
-      .mockRejectedValueOnce(new Error('Repo page 404'));
+    withUserApi(mockHtml, { repoPageError: true });
 
     const items = await scrapeTrending({ time_range: 'daily' });
 
     expect(items[0].contributors).toBe('—');
     expect(items[0].license).toBe('No license');
+  });
+
+  it('should fall back gracefully when GitHub API fails for owner data', async () => {
+    const mockHtml = `
+      <html><body>
+        <article class="Box-row">
+          <h2 class="h3"><a href="/org/secret">org / secret</a></h2>
+          <p>Private org project</p>
+          <span itemprop="programmingLanguage">TypeScript</span>
+          <span class="repo-language-color" style="background-color:#3178c6"></span>
+          <a href="/org/secret/stargazers">99</a>
+          <span class="float-sm-right">1 star today</span>
+        </article>
+      </body></html>
+    `;
+
+    withUserApi(mockHtml, { ownerApiError: true });
+
+    const items = await scrapeTrending({ time_range: 'daily' });
+
+    expect(items.length).toBe(1);
+    expect(items[0].owner_avatar).toBe('');
+    expect(items[0].owner_repos).toBe('');
+    expect(items[0].owner_followers).toBe('');
   });
 
   it('should throw an error when request fails', async () => {

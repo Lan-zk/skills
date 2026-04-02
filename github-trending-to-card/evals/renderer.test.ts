@@ -63,6 +63,9 @@ describe('renderer.ts - renderCards', () => {
         contributors: '0',
         license: 'MIT',
         timestamp: '2026-04-01 00:00',
+        owner_avatar: 'https://avatars.githubusercontent.com/u/1',
+        owner_repos: '5',
+        owner_followers: '10',
       },
     ];
 

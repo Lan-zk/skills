@@ -59,6 +59,9 @@ describe('renderer.ts - renderCards', () => {
         hex: '#000',
         stars: '10',
         new_stars: '1',
+        forks: '0',
+        contributors: '0',
+        license: 'MIT',
         timestamp: '2026-04-01 00:00',
       },
     ];
@@ -82,6 +85,9 @@ describe('renderer.ts - renderCards', () => {
         hex: '#000',
         stars: '10',
         new_stars: '1',
+        forks: '0',
+        contributors: '0',
+        license: 'MIT',
         timestamp: '2026-04-01 00:00',
       },
     ];
@@ -109,6 +115,9 @@ describe('renderer.ts - renderCards', () => {
         hex: '#000',
         stars: '10',
         new_stars: '1',
+        forks: '0',
+        contributors: '0',
+        license: 'MIT',
         timestamp: '2026-04-01 00:00',
       },
     ];

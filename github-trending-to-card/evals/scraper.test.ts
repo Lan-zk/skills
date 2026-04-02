@@ -137,6 +137,95 @@ describe('scraper.ts - scrapeTrending', () => {
     expect(items[0].description).toBe('No description available.');
   });
 
+  it('should scrape contributors and license from repo page', async () => {
+    const mockHtml = `
+      <html><body>
+        <article class="Box-row">
+          <h2 class="h3"><a href="/foo/bar">foo / bar</a></h2>
+          <p>Desc</p>
+          <span itemprop="programmingLanguage">Go</span>
+          <span class="repo-language-color" style="background-color:#00ADD8"></span>
+          <a href="/foo/bar/stargazers">500</a>
+          <span class="float-sm-right">10 stars today</span>
+        </article>
+      </body></html>
+    `;
+
+    const mockRepoHtml = `
+      <html><body>
+        <a href="/foo/bar/graphs/contributors">
+          <span class="text-bold">1,234</span> contributors
+        </a>
+        <a href="/foo/bar/blob/main/LICENSE">Apache-2.0 License</a>
+      </body></html>
+    `;
+
+    (client.get as jest.Mock)
+      .mockResolvedValueOnce({ data: mockHtml })
+      .mockResolvedValueOnce({ data: mockRepoHtml });
+
+    const items = await scrapeTrending({ time_range: 'daily' });
+
+    expect(items[0].contributors).toBe('1234');
+    expect(items[0].license).toBe('Apache-2.0 License');
+  });
+
+  it('should use license fallback when no LICENSE link found', async () => {
+    const mockHtml = `
+      <html><body>
+        <article class="Box-row">
+          <h2 class="h3"><a href="/baz/qux">baz / qux</a></h2>
+          <p>Desc</p>
+          <span itemprop="programmingLanguage">Rust</span>
+          <span class="repo-language-color" style="background-color:#dea584"></span>
+          <a href="/baz/qux/stargazers">200</a>
+          <span class="float-sm-right">5 stars today</span>
+        </article>
+      </body></html>
+    `;
+
+    const mockRepoHtml = `
+      <html><body>
+        <a href="/baz/qux/graphs/contributors">
+          <span class="text-bold">500</span> contributors
+        </a>
+        <span itemprop="license">GPL-3.0</span>
+      </body></html>
+    `;
+
+    (client.get as jest.Mock)
+      .mockResolvedValueOnce({ data: mockHtml })
+      .mockResolvedValueOnce({ data: mockRepoHtml });
+
+    const items = await scrapeTrending({ time_range: 'daily' });
+
+    expect(items[0].license).toBe('GPL-3.0');
+  });
+
+  it('should default contributors and license when repo page fails', async () => {
+    const mockHtml = `
+      <html><body>
+        <article class="Box-row">
+          <h2 class="h3"><a href="/fail/repo">fail / repo</a></h2>
+          <p>Desc</p>
+          <span itemprop="programmingLanguage">Python</span>
+          <span class="repo-language-color" style="background-color:#3572A5"></span>
+          <a href="/fail/repo/stargazers">99</a>
+          <span class="float-sm-right">2 stars today</span>
+        </article>
+      </body></html>
+    `;
+
+    (client.get as jest.Mock)
+      .mockResolvedValueOnce({ data: mockHtml })
+      .mockRejectedValueOnce(new Error('Repo page 404'));
+
+    const items = await scrapeTrending({ time_range: 'daily' });
+
+    expect(items[0].contributors).toBe('—');
+    expect(items[0].license).toBe('No license');
+  });
+
   it('should throw an error when request fails', async () => {
     (client.get as jest.Mock).mockRejectedValue(new Error('Network error'));
 

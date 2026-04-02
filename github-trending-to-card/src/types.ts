@@ -19,5 +19,8 @@ export interface TrendingItem {
   hex: string;
   stars: string;
   new_stars: string;
+  forks: string;
+  contributors: string;
+  license: string;
   timestamp: string;
 }

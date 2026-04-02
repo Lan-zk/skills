@@ -24,7 +24,7 @@ export async function renderCards(items: TrendingItem[]): Promise<string[]> {
   const browser = await getBrowser();
   const context = await browser.newContext({
     deviceScaleFactor: 2,
-    viewport: { width: 1080, height: 1350 },
+    viewport: { width: 1080, height: 1080 },
   });
 
   const base64Images: string[] = [];

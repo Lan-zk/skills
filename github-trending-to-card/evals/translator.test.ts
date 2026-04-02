@@ -25,6 +25,9 @@ describe('translator.ts - translateDescriptions', () => {
         hex: '#3178c6',
         stars: '100',
         new_stars: '10',
+        forks: '0',
+        contributors: '0',
+        license: 'MIT License',
         timestamp: '2026-04-01 00:00',
       },
     ];
@@ -49,6 +52,9 @@ describe('translator.ts - translateDescriptions', () => {
         hex: '#3178c6',
         stars: '100',
         new_stars: '10',
+        forks: '0',
+        contributors: '0',
+        license: 'MIT License',
         timestamp: '2026-04-01 00:00',
       },
       {
@@ -59,6 +65,9 @@ describe('translator.ts - translateDescriptions', () => {
         hex: '#3572A5',
         stars: '200',
         new_stars: '20',
+        forks: '0',
+        contributors: '0',
+        license: 'Apache-2.0',
         timestamp: '2026-04-01 00:00',
       },
     ];
@@ -99,6 +108,9 @@ describe('translator.ts - translateDescriptions', () => {
         hex: '#3178c6',
         stars: '100',
         new_stars: '10',
+        forks: '0',
+        contributors: '0',
+        license: 'MIT License',
         timestamp: '2026-04-01 00:00',
       },
     ];

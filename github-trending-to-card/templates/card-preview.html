@@ -3,57 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=1080, height=1080">
-  <title>GitHub Trending Card</title>
+  <title>GitHub Trending Card - Preview</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=JetBrains+Mono:wght@600;700&display=swap');
 
-    /* ================================================================
-       DESIGN TOKENS — Bold editorial palette
-    ================================================================ */
     :root {
-      /* Ink: near-black with personality */
       --color-ink:        #0f172a;
       --color-ink-soft:   #1e293b;
-      /* Editorial accent: deep saturated red-orange */
       --color-accent:     #e8453c;
-      /* Light ink tint for body */
       --color-paper:      #faf9f7;
       --color-paper-warm: #f2efe9;
-      /* Cool structural color */
       --color-steel:      #3d5a80;
-      /* Divider / border */
       --color-rule:       #d4cfc7;
 
-      /* ================================================================
-         TYPE SCALE — 5 levels, fixed px (1080px canvas is always fixed)
-         Ratio ~1.5: masthead(64) > repo-name(44) > body(22) > label(11) > meta(10)
-      ================================================================ */
-      --text-masthead:  64px;   /* Masthead: TRENDING — the visual punch */
-      --text-repo-name: 44px;   /* Repo name: largest readable word on card */
-      --text-body:      22px;   /* Description: readable at glance, mobile-safe */
-      --text-label:     11px;   /* Uppercase labels: CONTRIBUTORS / STARS TODAY */
-      --text-meta:      10px;   /* Timestamps, footer fine print */
+      --text-masthead:  64px;
+      --text-repo-name: 44px;
+      --text-body:      22px;
+      --text-label:     11px;
+      --text-meta:      10px;
 
-      /* ================================================================
-         TYPE WEIGHTS — editorial contrast, 3 weights only
-      ================================================================ */
-      /* 900 Black — masthead title, repo name (hierarchy anchors) */
-      /* 700 Bold  — stat values, chip/badge text (data reads first) */
-      /* 400 Regular — body description only (readable, not heavy) */
-      /* 600 Semibold — labels, meta (structural, not decorative) */
+      --ls-tight:    -0.5px;
+      --ls-label:     3px;
+      --ls-micro:     0.5px;
+      --lh-tight:     1;
+      --lh-body:    1.65;
 
-      /* ================================================================
-         TYPE DETAIL TOKENS
-      ================================================================ */
-      --ls-tight:    -0.5px;   /* Large display: tight to read as one block */
-      --ls-label:     3px;     /* Uppercase labels: open tracking for clarity */
-      --ls-micro:     0.5px;   /* Metadata: subtle, not decorative */
-      --lh-tight:     1;      /* Headings: zero waste */
-      --lh-body:    1.65;     /* Body: comfortable magazine measure */
-
-      /* ================================================================
-         SPACING — 8px grid
-      ================================================================ */
       --sp-1:  8px;
       --sp-2:  16px;
       --sp-3:  24px;
@@ -61,9 +35,6 @@
       --sp-5:  40px;
       --sp-6:  48px;
 
-      /* ================================================================
-         SHAPE & SHADOW
-      ================================================================ */
       --radius-sm: 4px;
       --radius-md: 8px;
       --shadow-card: 0 20px 60px rgba(15, 23, 42, 0.18), 0 4px 16px rgba(15, 23, 42, 0.10);
@@ -79,9 +50,6 @@
       overflow: hidden;
     }
 
-    /* ================================================================
-       CARD CONTAINER — warm paper with subtle graph-paper grid
-    ================================================================ */
     .card-container {
       width: 1080px;
       height: 1080px;
@@ -90,16 +58,13 @@
       overflow: hidden;
     }
 
-    /* Graph-paper background: faint blue-gray grid, developer-editorial identity */
     .card-container::before {
       content: '';
       position: absolute;
       inset: 0;
       background-image:
-        /* 48px grid — primary structure */
         linear-gradient(var(--color-rule) 1px, transparent 1px),
         linear-gradient(90deg, var(--color-rule) 1px, transparent 1px),
-        /* 8px grid — subtle subdivision */
         linear-gradient(rgba(212, 207, 199, 0.4) 1px, transparent 1px),
         linear-gradient(90deg, rgba(212, 207, 199, 0.4) 1px, transparent 1px);
       background-size:
@@ -113,7 +78,6 @@
       z-index: 0;
     }
 
-    /* Corner crop marks — print-editorial hallmark */
     .crop-mark-tl,
     .crop-mark-tr,
     .crop-mark-bl,
@@ -149,9 +113,6 @@
       opacity: 0.4;
     }
 
-    /* ================================================================
-       TOP ACCENT BAR — editorial red stripe
-    ================================================================ */
     .top-bar {
       position: absolute;
       top: 0; left: 0; right: 0;
@@ -160,9 +121,6 @@
       z-index: 30;
     }
 
-    /* ================================================================
-       MASTHEAD — bold newspaper-style header
-    ================================================================ */
     .masthead {
       position: absolute;
       top: 0; left: 0; right: 0;
@@ -174,7 +132,6 @@
       z-index: 20;
     }
 
-    /* Large decorative issue number with dateline rule */
     .masthead-issue {
       position: absolute;
       top: 24px;
@@ -194,7 +151,6 @@
       flex: 1;
     }
 
-    /* Decorative rule above title */
     .masthead-rule {
       width: 48px;
       height: 4px;
@@ -202,7 +158,6 @@
       margin-bottom: var(--sp-2);
     }
 
-    /* Masthead: dominant display type — the visual punch */
     .masthead-title {
       font-family: 'Noto Sans SC', sans-serif;
       font-size: var(--text-masthead);
@@ -223,7 +178,6 @@
       margin-top: 6px;
     }
 
-    /* Right side: language chip (language-specific color as dynamic accent) */
     .masthead-right {
       display: flex;
       flex-direction: column;
@@ -237,12 +191,11 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background-color: {{hex}};
+      background-color: #3178c6;
       border-radius: var(--radius-sm);
       padding: 6px 14px;
     }
 
-    /* White dot on colored background — pops without competing with title */
     .lang-chip-dot {
       width: 8px;
       height: 8px;
@@ -278,7 +231,6 @@
       text-transform: uppercase;
     }
 
-    /* Decorative vertical rule on right edge */
     .masthead::after {
       content: '';
       position: absolute;
@@ -289,9 +241,6 @@
       background: linear-gradient(to bottom, var(--color-ink) 0%, var(--color-accent) 60%, transparent 100%);
     }
 
-    /* ================================================================
-       REPO CARD — dominant editorial card
-    ================================================================ */
     .repo-card {
       position: absolute;
       top: 200px;
@@ -308,7 +257,6 @@
       z-index: 20;
     }
 
-    /* Bold colored left edge */
     .repo-card::before {
       content: '';
       position: absolute;
@@ -318,7 +266,6 @@
       border-radius: var(--radius-md) 0 0 var(--radius-md);
     }
 
-    /* Accent mark top-right of card */
     .repo-card::after {
       content: '';
       position: absolute;
@@ -330,7 +277,6 @@
       border-radius: 2px;
     }
 
-    /* Repo header */
     .repo-header {
       display: flex;
       align-items: flex-start;
@@ -370,7 +316,6 @@
       text-transform: lowercase;
     }
 
-    /* Repo name: the largest readable word on the card */
     .repo-name {
       font-family: 'Noto Sans SC', sans-serif;
       font-size: var(--text-repo-name);
@@ -381,7 +326,6 @@
       word-break: break-word;
     }
 
-    /* Description: comfortable reading at a glance */
     .repo-desc {
       font-family: 'Noto Sans SC', sans-serif;
       font-size: var(--text-body);
@@ -392,14 +336,12 @@
       font-weight: 400;
     }
 
-    /* Divider */
     .repo-divider {
       height: 1px;
       background: var(--color-rule);
       margin: var(--sp-3) 0 var(--sp-2);
     }
 
-    /* Meta strip */
     .repo-meta-strip {
       display: flex;
       align-items: center;
@@ -424,9 +366,6 @@
       flex-shrink: 0;
     }
 
-    /* ================================================================
-       STATS ROW — bold number treatment
-    ================================================================ */
     .stats-row {
       position: absolute;
       top: 840px;
@@ -449,29 +388,16 @@
       background: var(--color-paper-warm);
     }
 
-    .stat-card--stars-total {
-      border-top: 3px solid var(--color-ink);
-    }
-    .stat-card--stars-new {
-      border-top: 3px solid var(--color-accent);
-    }
-    .stat-card--forks {
-      border-top: 3px solid var(--color-steel);
-    }
+    .stat-card--stars-total { border-top: 3px solid var(--color-ink); }
+    .stat-card--stars-new   { border-top: 3px solid var(--color-accent); }
+    .stat-card--forks       { border-top: 3px solid var(--color-steel); }
 
-    .stat-icon {
-      width: 24px;
-      height: 24px;
-      flex-shrink: 0;
-    }
+    .stat-icon { width: 24px; height: 24px; flex-shrink: 0; }
     .stat-icon--star  { fill: var(--color-ink); }
-    .stat-icon--trend  { fill: var(--color-accent); }
+    .stat-icon--trend { fill: var(--color-accent); }
     .stat-icon--fork  { fill: var(--color-steel); }
 
-    .stat-content {
-      display: flex;
-      flex-direction: column;
-    }
+    .stat-content { display: flex; flex-direction: column; }
 
     .stat-value {
       font-family: 'JetBrains Mono', monospace;
@@ -493,9 +419,6 @@
       margin-top: 4px;
     }
 
-    /* ================================================================
-       FOOTER — editorial mastfoot
-    ================================================================ */
     .footer {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -509,55 +432,14 @@
       background: var(--color-paper);
     }
 
-    .footer-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .footer-left { display: flex; align-items: center; gap: 8px; }
+    .footer-icon { width: 16px; height: 16px; fill: var(--color-ink); }
+    .footer-brand { font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); font-weight: 700; color: var(--color-ink); letter-spacing: var(--ls-label); text-transform: uppercase; }
+    .footer-divider { width: 1px; height: 14px; background: var(--color-rule); }
+    .footer-lang { font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); font-weight: 600; color: var(--color-steel); }
+    .footer-right { display: flex; align-items: center; gap: 8px; }
+    .footer-timestamp { font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); font-weight: 600; color: var(--color-steel); letter-spacing: var(--ls-micro); }
 
-    .footer-icon {
-      width: 16px;
-      height: 16px;
-      fill: var(--color-ink);
-    }
-
-    .footer-brand {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: var(--text-meta);
-      font-weight: 700;
-      color: var(--color-ink);
-      letter-spacing: var(--ls-label);
-      text-transform: uppercase;
-    }
-
-    .footer-divider {
-      width: 1px;
-      height: 14px;
-      background: var(--color-rule);
-    }
-
-    .footer-lang {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: var(--text-meta);
-      font-weight: 600;
-      color: var(--color-steel);
-    }
-
-    .footer-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .footer-timestamp {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: var(--text-meta);
-      font-weight: 600;
-      color: var(--color-steel);
-      letter-spacing: var(--ls-micro);
-    }
-
-    /* Language color bottom bar */
     .lang-bar {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -568,7 +450,7 @@
 </head>
 <body>
   <div class="card-container">
-    <div class="lang-bar" style="background-color: {{hex}};"></div>
+    <div class="lang-bar" style="background-color: #3178c6;"></div>
     <div class="top-bar"></div>
     <div class="crop-mark-tl"></div>
     <div class="crop-mark-tr"></div>
@@ -577,7 +459,7 @@
 
     <!-- MASTHEAD -->
     <div class="masthead">
-      <div class="masthead-issue">{{timestamp}}</div>
+      <div class="masthead-issue">2026-04-02 08:00</div>
 
       <div class="masthead-title-block">
         <div class="masthead-rule"></div>
@@ -588,7 +470,7 @@
       <div class="masthead-right">
         <div class="lang-chip">
           <span class="lang-chip-dot"></span>
-          <span class="lang-chip-text">{{language}}</span>
+          <span class="lang-chip-text">TypeScript</span>
         </div>
         <div class="trending-badge">
           <span class="trending-badge-text">Hot</span>
@@ -605,12 +487,12 @@
           </svg>
         </div>
         <div class="repo-meta">
-          <div class="repo-owner">{{owner}}</div>
-          <div class="repo-name">{{name}}</div>
+          <div class="repo-owner">microsoft</div>
+          <div class="repo-name">TypeScript</div>
         </div>
       </div>
 
-      <div class="repo-desc">{{description}}</div>
+      <div class="repo-desc">TypeScript is a superset of JavaScript that compiles to clean JavaScript output.</div>
 
       <div class="repo-divider"></div>
 
@@ -619,20 +501,20 @@
           <svg class="meta-tag-icon" viewBox="0 0 16 16" aria-hidden="true">
             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"></path>
           </svg>
-          {{contributors}} contributors
+          3,247 contributors
         </div>
         <div class="meta-tag">
           <svg class="meta-tag-icon" viewBox="0 0 16 16" aria-hidden="true">
             <path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-.878a2.25 2.25 0 111.5 0v.878a2.25 2.25 0 01-2.25 2.25h-1.5v2.128a2.251 2.251 0 11-1.5 0V8.5h-1.5A2.25 2.25 0 013.5 6.25v-.878a2.25 2.25 0 111.5 0zM5 3.25a.75.75 0 10-1.5 0 .75.75 0 001.5 0zm6.75.75a.75.75 0 100-1.5.75.75 0 000 1.5zm-3 8.75a.75.75 0 10-1.5 0 .75.75 0 001.5 0z"></path>
           </svg>
-          {{license}}
+          Apache-2.0
         </div>
         <div class="meta-tag">
           <svg class="meta-tag-icon" viewBox="0 0 16 16" aria-hidden="true">
             <path d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"></path>
             <path d="M6.5 11.5v-1H9V8h-2v2.5H5.5v1H9v2H6.5z"></path>
           </svg>
-          {{language}}
+          TypeScript
         </div>
       </div>
     </div>
@@ -644,27 +526,25 @@
           <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.312a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.311L7.327.668A.75.75 0 018 .25z"></path>
         </svg>
         <div class="stat-content">
-          <span class="stat-value">{{stars}}</span>
+          <span class="stat-value">98,420</span>
           <span class="stat-label">Total Stars</span>
         </div>
       </div>
-
       <div class="stat-card stat-card--stars-new">
         <svg class="stat-icon stat-icon--trend" viewBox="0 0 16 16" aria-hidden="true">
           <path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm11.646-2.646a.5.5 0 01.708.708l-5 5a.5.5 0 01-.708 0l-2.5-2.5a.5.5 0 11.708-.708L7 10.293l4.646-4.647z"></path>
         </svg>
         <div class="stat-content">
-          <span class="stat-value">+{{new_stars}}</span>
+          <span class="stat-value">+328</span>
           <span class="stat-label">Stars Today</span>
         </div>
       </div>
-
       <div class="stat-card stat-card--forks">
         <svg class="stat-icon stat-icon--fork" viewBox="0 0 16 16" aria-hidden="true">
           <path d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-5.5a.75.75 0 01-.75-.75v-.878zm5.5-1a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 0011.25 8.5h.5v1.628a2.251 2.251 0 101.5 0V8.5h.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-5.5a.75.75 0 01-.75-.75v-.878z"></path>
         </svg>
         <div class="stat-content">
-          <span class="stat-value">{{forks}}</span>
+          <span class="stat-value">23,540</span>
           <span class="stat-label">Forks</span>
         </div>
       </div>
@@ -678,10 +558,10 @@
         </svg>
         <span class="footer-brand">GitHub Trending</span>
         <div class="footer-divider"></div>
-        <span class="footer-lang">{{language}} · github.com/trending</span>
+        <span class="footer-lang">TypeScript · github.com/trending</span>
       </div>
       <div class="footer-right">
-        <span class="footer-timestamp">{{timestamp}}</span>
+        <span class="footer-timestamp">2026-04-02 08:00</span>
       </div>
     </div>
   </div>

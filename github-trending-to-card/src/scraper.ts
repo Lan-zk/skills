@@ -84,6 +84,41 @@ export async function scrapeTrending(input: SkillInput): Promise<TrendingItem[]>
       const newStarsMatch = newStarsText.match(/([\d,]+)\s*stars today/);
       const new_stars = newStarsMatch ? newStarsMatch[1].replace(/,/g, '') : '0';
 
+      // Extract Forks
+      const forkLink = $el.find('a[href$="/network/members"]');
+      const forks = forkLink.length ? forkLink.text().trim().replace(/,/g, '') : '0';
+
+      // Fetch repo page for contributors + license
+      let contributors = '—';
+      let license = 'No license';
+      try {
+        const repoUrl = `https://github.com/${owner}/${name}`;
+        const repoRes = await client.get(repoUrl);
+        const $repo = cheerio.load(repoRes.data);
+
+        // Contributors: e.g. <a href=".../graphs/contributors"><span class="text-bold">3,247</span> contributors</a>
+        const contribLink = $repo('a[href$="/graphs/contributors"]').first();
+        const contribMatch = contribLink.find('.text-bold').first().text().trim()
+          || contribLink.clone().children().remove().end().text().trim().match(/[\d,]+/)?.[0]
+          || contribLink.text().trim().match(/[\d,]+/)?.[0];
+        if (contribMatch) {
+          contributors = contribMatch.replace(/,/g, '');
+        }
+
+        // License: e.g. <a href=".../blob/main/LICENSE">MIT License</a>
+        const licenseLink = $repo('a[href*="/blob/"][href*="LICENSE"]').first();
+        if (licenseLink.length) {
+          const licenseText = licenseLink.text().trim();
+          license = licenseText || 'MIT License';
+        } else {
+          // Fallback: look for license in the about section
+          const licenseFallback = $repo('span[itemprop="license"]').first().text().trim();
+          if (licenseFallback) license = licenseFallback;
+        }
+      } catch {
+        // ignore — contributors/license are optional
+      }
+
       items.push({
         owner,
         name,
@@ -92,6 +127,9 @@ export async function scrapeTrending(input: SkillInput): Promise<TrendingItem[]>
         hex,
         stars,
         new_stars,
+        forks,
+        contributors,
+        license,
         timestamp,
       });
     }

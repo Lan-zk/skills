@@ -41,7 +41,10 @@ export async function executeSkill(input: SkillInput): Promise<SkillOutput> {
 /* istanbul ignore if */
 if (require.main === module) {
   (async () => {
-    const outputDir = path.resolve(__dirname, '../output');
+    const today = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const dateStr = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
+    const outputDir = path.resolve(__dirname, `../output/${dateStr}`);
     fs.mkdirSync(outputDir, { recursive: true });
 
     try {

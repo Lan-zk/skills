@@ -15,12 +15,12 @@ const SUMMARY_USER_PROMPT = `# 项目信息
 请分析 README 内容，回答以下两个核心问题，输出中文：
 
 <b>项目解析</b>
-📌 解决的问题：{一句话描述该项目旨在解决的核心问题/痛点}
-🔧 解决方案：{该项目的核心实现思路或方法}
+解决的问题：{一句话描述该项目旨在解决的核心问题/痛点}
+解决方案：{该项目的核心实现思路或方法}
 
 规则：
 - 总字数控制在 70-150 字
-- 使用 <b> 标签包裹小标题
+- 使用 <b> 标签包裹"项目解析"标题
 - 不得添加 README 中不存在的虚构信息`;
 
 function buildSummaryUserMessage(item: TrendingItem, readme: string): string {

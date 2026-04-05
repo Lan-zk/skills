@@ -30,12 +30,12 @@ describe('parseAiIntro', () => {
 
   it('should extract HTML from 项目解析 tag onward', () => {
     const section = `<b>项目解析</b>
-📌 解决的问题：自动化测试结果对比繁琐的问题。
-🔧 解决方案：通过标准化输出格式与自动化比对引擎实现自动化校验。`;
+解决的问题：自动化测试结果对比繁琐的问题。
+解决方案：通过标准化输出格式与自动化比对引擎实现自动化校验。`;
     const result = parseAiIntro(section);
     expect(result).toBeDefined();
-    expect(result).toContain('📌');
-    expect(result).toContain('🔧');
+    expect(result).toContain('解决的问题：');
+    expect(result).toContain('解决方案：');
   });
 
   it('should return empty string when tag not found', () => {
@@ -60,12 +60,12 @@ describe('buildSummaryUserMessage', () => {
 请分析 README 内容，回答以下两个核心问题，输出中文：
 
 <b>项目解析</b>
-📌 解决的问题：{一句话描述该项目旨在解决的核心问题/痛点}
-🔧 解决方案：{该项目的核心实现思路或方法}
+解决的问题：{一句话描述该项目旨在解决的核心问题/痛点}
+解决方案：{该项目的核心实现思路或方法}
 
 规则：
 - 总字数控制在 70-150 字
-- 使用 <b> 标签包裹小标题
+- 使用 <b> 标签包裹"项目解析"标题
 - 不得添加 README 中不存在的虚构信息`;
     return prompt
       .replace('{owner}', item.owner)
@@ -140,8 +140,8 @@ describe('summarizer.ts - summarizeReadmes', () => {
           message: {
             content: `## 项目 1
 <b>项目解析</b>
-📌 解决的问题：测试结果对比繁琐。
-🔧 解决方案：标准化输出与自动化比对引擎。`,
+解决的问题：测试结果对比繁琐。
+解决方案：标准化输出与自动化比对引擎。`,
           },
         },
       ],
@@ -154,8 +154,8 @@ describe('summarizer.ts - summarizeReadmes', () => {
     );
 
     expect(result[0].ai_intro).toBeDefined();
-    expect(result[0].ai_intro).toContain('📌');
-    expect(result[0].ai_intro).toContain('🔧');
+    expect(result[0].ai_intro).toContain('解决的问题：');
+    expect(result[0].ai_intro).toContain('解决方案：');
   });
 
   it('should degrade gracefully on LLM failure', async () => {
@@ -200,8 +200,8 @@ describe('summarizer.ts - summarizeReadmes', () => {
           message: {
             content: `## 项目 1
 <b>项目解析</b>
-📌 解决的问题：无。
-🔧 解决方案：无。`,
+解决的问题：无。
+解决方案：无。`,
           },
         },
       ],
@@ -229,13 +229,13 @@ describe('summarizer.ts - summarizeReadmes', () => {
           message: {
             content: `## 项目 1
 <b>项目解析</b>
-📌 解决的问题：问题1。
-🔧 解决方案：方法1。
+解决的问题：问题1。
+解决方案：方法1。
 
 ## 项目 2
 <b>项目解析</b>
-📌 解决的问题：问题2。
-🔧 解决方案：方法2。`,
+解决的问题：问题2。
+解决方案：方法2。`,
           },
         },
       ],

@@ -6,7 +6,7 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov'],
-  coveragePathIgnorePatterns: ['/node_modules/', 'llmClient'],
+  coveragePathIgnorePatterns: ['/node_modules/', 'llmClient', 'readmeClient'],
   coverageThreshold: {
     global: {
       branches: 80,

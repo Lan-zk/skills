@@ -446,6 +446,35 @@
     }
 
     /* ================================================================
+       AI INTRO SECTION
+    ================================================================ */
+    .ai-intro-section {
+      margin-top: 12px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid var(--color-rule);
+      border-radius: var(--radius-sm);
+    }
+
+    .ai-intro-content {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 20px;
+      color: var(--color-ink-soft);
+      line-height: 1.75;
+    }
+
+    .ai-intro-content b {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-steel);
+      letter-spacing: var(--ls-label);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    /* ================================================================
        DIVIDER + META STRIP
     ================================================================ */
     .repo-divider {
@@ -631,6 +660,12 @@
       <div class="repo-desc">{{description}}</div>
 
       <div class="repo-divider"></div>
+
+      {{#if ai_intro}}
+      <div class="ai-intro-section">
+        <div class="ai-intro-content">{{{ai_intro}}}</div>
+      </div>
+      {{/if}}
 
       <div class="repo-meta-strip">
         <div class="meta-tag">

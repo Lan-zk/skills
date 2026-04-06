@@ -10,8 +10,8 @@ async function getBrowser(): Promise<Browser> {
   if (!browserInstance) {
     browserInstance = await chromium.launch({
       headless: true,
-      // Use system Chrome if available (avoids Playwright browser download)
-      channel: process.env.PLAYWRIGHT_CHANNEL as 'chrome' | 'chromium' | undefined ?? undefined,
+      // Prefer system Chrome if available; set PLAYWRIGHT_CHANNEL=skip to force bundled
+      channel: process.env.PLAYWRIGHT_CHANNEL === 'skip' ? undefined : 'chrome',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
   }

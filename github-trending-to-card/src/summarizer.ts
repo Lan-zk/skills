@@ -60,8 +60,7 @@ export async function summarizeReadmes(
   );
 
   const availableCount = readmes.filter((r) => r.length > 0).length;
-  // Skip if too many READMEs are unavailable to avoid duplicating
-  // one generic section across all items.
+  console.log(`summarizeReadmes: ${availableCount}/${items.length} READMEs available`);
   if (availableCount < items.length / 2) {
     console.warn(
       `summarizeReadmes: only ${availableCount}/${items.length} READMEs available — skipping AI intro`,
@@ -69,50 +68,43 @@ export async function summarizeReadmes(
     return items.map((item) => ({ ...item, ai_intro: undefined }));
   }
 
-  const userMessages = items.map((item, i) =>
-    buildSummaryUserMessage(item, readmes[i]),
-  );
-
-  const combinedUserMessage = userMessages
-    .map((msg, i) => `## 项目 ${i + 1}\n${msg}`)
-    .join('\n\n---\n\n');
-
   const model = process.env.LLM_MODEL || 'Qwen/Qwen2.5-72B-Instruct';
   const client = clientFactory();
 
-  try {
-    const response = await client.chat.completions.create({
-      model,
-      messages: [
-        { role: 'system', content: SUMMARY_SYSTEM_PROMPT },
-        { role: 'user', content: combinedUserMessage },
-      ],
-      max_tokens: 2048,
-    });
+  // Process sequentially — batching all 10 items in one LLM call causes
+  // the model to ignore projects beyond the first (context overflow / lost-in-middle).
+  const results: (string | undefined)[] = new Array(items.length);
 
-    const text = response.choices[0]?.message?.content || '';
-
-    // LLM may or may not include "## 项目 N" prefix per item.
-    // Strategy: try numbered prefixes first; if absent, split by
-    // <b>项目解析</b> boundary (each section starts with this tag).
-    const numbered = [...text.matchAll(/## 项目 (\d+)\n([\s\S]*?)(?=## 项目 \d+|$)/g)];
-    const useNumbered = numbered.length > 0;
-
-    return items.map((item, i) => {
-      let section: string;
-      if (useNumbered) {
-        section = numbered.find((m) => Number(m[1]) === i + 1)?.[2] ?? '';
-      } else {
-        const parts = text.split(/(?=<b>项目解析<\/b>)/);
-        // parts[0] = text before first <b> tag (discard); parts[1..] = each section.
-        // Map i → parts[i+1]; if we don't have enough parts, that section stays empty.
-        section = parts[i + 1] ?? '';
-      }
-      const aiIntro = parseAiIntro(section);
-      return { ...item, ai_intro: aiIntro || undefined };
-    });
-  } catch (err) {
-    console.error('summarizeReadmes LLM call failed:', err);
-    return items.map((item) => ({ ...item, ai_intro: undefined }));
+  for (let i = 0; i < items.length; i++) {
+    const userMsg = buildSummaryUserMessage(items[i], readmes[i]);
+    try {
+      const response = await client.chat.completions.create({
+        model,
+        messages: [
+          { role: 'system', content: SUMMARY_SYSTEM_PROMPT },
+          { role: 'user', content: userMsg },
+        ],
+        max_tokens: 512,
+      });
+      const text = response.choices[0]?.message?.content || '';
+      const aiIntro = parseAiIntro(text);
+      results[i] = aiIntro || undefined;
+    } catch (err) {
+      console.warn(
+        `summarizeReadmes: LLM call failed for item ${i + 1} (${items[i].owner}/${items[i].name}): ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+      );
+      results[i] = undefined;
+    }
   }
+
+  console.log(
+    `summarizeReadmes: ${results.filter(Boolean).length}/${items.length} AI intros generated`,
+  );
+
+  return items.map((item, i) => ({
+    ...item,
+    ai_intro: results[i],
+  }));
 }

@@ -466,22 +466,30 @@
 
     /* ================================================================
        AI INTRO SECTION — flex column, fills remaining 2/3 of card-body
-       repo-tags anchor to bottom via margin-top: auto
+       Bold treatment: thick accent border + section band for editorial anchor
     ================================================================ */
     .ai-intro-section {
       flex: 1;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      padding: var(--sp-2) var(--sp-2) var(--sp-1) 12px;
-      border-left: 3px solid var(--color-steel);
-      background: rgba(var(--color-accent-rgb), 0.04);
+      padding: 0;
+      border-left: 4px solid var(--color-steel);
+      background: rgba(var(--color-accent-rgb), 0.03);
     }
 
-    /* Section label: accent red fill — the one bold moment in this card */
-    .ai-intro-label {
+    /* Section header band: ink background anchors the red label */
+    .ai-intro-header {
       flex-shrink: 0;
-      display: inline-block;
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: var(--sp-2) var(--sp-2) var(--sp-2) 12px;
+      background: var(--color-ink);
+    }
+
+    /* Section label: red pill on dark band — high contrast anchor */
+    .ai-intro-label {
       font-family: 'JetBrains Mono', monospace;
       font-size: var(--text-meta);
       font-weight: 700;
@@ -489,15 +497,23 @@
       background: var(--color-accent);
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      padding: 3px 10px;
+      padding: 4px 12px;
       border-radius: 2px;
-      margin-bottom: var(--sp-2);
     }
 
-    /* Inner wrapper: grows to fill space above repo-tags */
+    /* Decorative rule below header: editorial print signature */
+    .ai-intro-header-rule {
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(to right, var(--color-steel), transparent);
+      opacity: 0.6;
+    }
+
+    /* Inner wrapper: grows between header and repo-tags */
     .ai-intro-body {
       flex: 1;
       overflow-y: auto;
+      padding: var(--sp-2);
     }
 
     .ai-intro-content {
@@ -505,25 +521,31 @@
       font-size: var(--text-body);
       color: var(--color-ink-soft);
       line-height: var(--lh-body);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
     }
 
-    /* Problem / Solution: card-style blocks for clear visual separation */
+    /* Problem card: steel-blue left border — analytical anchor (insight) */
     .ai-intro-content b {
       font-family: 'Noto Sans SC', sans-serif;
       font-size: var(--text-body);
       font-weight: 700;
       color: var(--color-ink);
-      line-height: 1.4;
+      line-height: 1.5;
       display: block;
-      margin-top: var(--sp-2);
-      padding: 10px 12px;
+      padding: 10px 12px 10px 14px;
       background: var(--color-paper);
       border-radius: var(--radius-sm);
       border: 1px solid var(--color-rule);
+      border-left: 4px solid var(--color-steel);
     }
 
-    .ai-intro-content b:first-child {
-      margin-top: 0;
+    /* Solution card: accent-red left border — action/completion signal */
+    .ai-intro-content b + b,
+    .ai-intro-solution {
+      border-left-color: var(--color-accent);
+    }
     }
 
     /* ================================================================
@@ -715,7 +737,10 @@
 
         {{#if ai_intro}}
         <div class="ai-intro-section">
-          <div class="ai-intro-label">AI 项目解析</div>
+          <div class="ai-intro-header">
+            <span class="ai-intro-label">AI 项目解析</span>
+            <span class="ai-intro-header-rule"></span>
+          </div>
           <div class="ai-intro-body">
             <div class="ai-intro-content">{{{ai_intro}}}</div>
           </div>

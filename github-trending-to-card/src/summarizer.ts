@@ -59,6 +59,16 @@ export async function summarizeReadmes(
     r.status === 'fulfilled' ? r.value : '',
   );
 
+  const availableCount = readmes.filter((r) => r.length > 0).length;
+  // Skip if too many READMEs are unavailable to avoid duplicating
+  // one generic section across all items.
+  if (availableCount < items.length / 2) {
+    console.warn(
+      `summarizeReadmes: only ${availableCount}/${items.length} READMEs available — skipping AI intro`,
+    );
+    return items.map((item) => ({ ...item, ai_intro: undefined }));
+  }
+
   const userMessages = items.map((item, i) =>
     buildSummaryUserMessage(item, readmes[i]),
   );
@@ -83,15 +93,19 @@ export async function summarizeReadmes(
     const text = response.choices[0]?.message?.content || '';
 
     // LLM may or may not include "## 项目 N" prefix per item.
-    // Try matchAll first (multi-item with prefix), fall back to
-    // parseAiIntro on the full text (single-item, no prefix).
-    const matches = [...text.matchAll(/## 项目 (\d+)\n([\s\S]*?)(?=## 项目 \d+|$)/g)];
-    const hasPrefixes = matches.length > 0;
+    // Strategy: try numbered prefixes first; if absent, split by
+    // <b>项目解析</b> boundary (each section starts with this tag).
+    const numbered = [...text.matchAll(/## 项目 (\d+)\n([\s\S]*?)(?=## 项目 \d+|$)/g)];
+    const useNumbered = numbered.length > 0;
 
     return items.map((item, i) => {
-      const section = hasPrefixes
-        ? (matches.find((m) => Number(m[1]) === i + 1)?.[2] ?? '')
-        : text;
+      let section: string;
+      if (useNumbered) {
+        section = numbered.find((m) => Number(m[1]) === i + 1)?.[2] ?? '';
+      } else {
+        const parts = text.split(/(?=<b>项目解析<\/b>)/);
+        section = parts[i + 1] ?? parts[parts.length - 1] ?? '';
+      }
       const aiIntro = parseAiIntro(section);
       return { ...item, ai_intro: aiIntro || undefined };
     });

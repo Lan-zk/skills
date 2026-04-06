@@ -190,22 +190,12 @@ describe('summarizer.ts - summarizeReadmes', () => {
     expect(result[0].ai_intro).toBeUndefined();
   });
 
-  it('should handle empty readme gracefully', async () => {
+  it('should skip when all READMEs are unavailable', async () => {
+    // With 0/1 available READMEs, availableCount (0) < items.length/2 (0.5) → skip
     const readmeClient: ReadmeClient = {
       fetchReadme: jest.fn().mockResolvedValue(''),
     };
-    const createMock = jest.fn().mockResolvedValue({
-      choices: [
-        {
-          message: {
-            content: `## 项目 1
-<b>项目解析</b>
-解决的问题：无。
-解决方案：无。`,
-          },
-        },
-      ],
-    });
+    const createMock = jest.fn();
 
     const result = await summarizeReadmes(
       [{ ...baseItem }],
@@ -213,7 +203,48 @@ describe('summarizer.ts - summarizeReadmes', () => {
       readmeClient,
     );
 
+    expect(result[0].ai_intro).toBeUndefined();
+    expect(createMock).not.toHaveBeenCalled();
+  });
+
+  it('should generate intro when at least half the READMEs are available', async () => {
+    // 1/2 available → availableCount (1) >= items.length/2 (1) → proceeds
+    const readmeClient: ReadmeClient = {
+      fetchReadme: jest
+        .fn()
+        .mockResolvedValueOnce('# README') // item 1 has content
+        .mockResolvedValueOnce(''), // item 2 no content
+    };
+    const createMock = jest.fn().mockResolvedValue({
+      choices: [
+        {
+          message: {
+            content: `## 项目 1
+<b>项目解析</b>
+解决的问题：项目1的痛点。
+解决方案：项目1的方法。
+
+## 项目 2
+<b>项目解析</b>
+解决的问题：项目2的痛点。
+解决方案：项目2的方法。`,
+          },
+        },
+      ],
+    });
+
+    const items = [
+      { ...baseItem, owner: 'o1', name: 'r1' },
+      { ...baseItem, owner: 'o2', name: 'r2' },
+    ];
+    const result = await summarizeReadmes(
+      items,
+      () => ({ chat: { completions: { create: createMock } } }) as unknown as ReturnType<typeof createLlmClient>,
+      readmeClient,
+    );
+
     expect(result[0].ai_intro).toBeDefined();
+    expect(result[1].ai_intro).toBeDefined();
   });
 
   it('should batch multiple items into one LLM call', async () => {

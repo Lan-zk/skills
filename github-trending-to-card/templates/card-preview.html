@@ -130,7 +130,7 @@
       top: 280px;
       left: var(--sp-6);
       right: var(--sp-6);
-      height: 820px;
+      min-height: 900px;
       background: var(--color-paper-warm);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-card);
@@ -171,10 +171,10 @@
     .author-stat-value { font-family: 'JetBrains Mono', monospace; font-size: var(--text-label); font-weight: 700; color: var(--color-ink); font-variant-numeric: tabular-nums; }
     .author-stat-label { font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); font-weight: 600; color: var(--color-steel); text-transform: uppercase; letter-spacing: var(--ls-label); margin-top: 2px; }
 
-    .repo-desc { height: calc(560px / 3); overflow-y: auto; flex-shrink: 0; font-family: 'Noto Sans SC', sans-serif; font-size: var(--text-body); color: var(--color-ink); font-weight: 500; line-height: var(--lh-body); padding-bottom: 2px; }
+    .repo-desc { height: auto; overflow: hidden; flex-shrink: 0; font-family: 'Noto Sans SC', sans-serif; font-size: var(--text-body); color: var(--color-ink); font-weight: 500; line-height: var(--lh-body); padding-bottom: 2px; }
 
-    /* CARD BODY — fixed height: 1/3 desc / 2/3 AI intro */
-    .card-body { flex-shrink: 0; display: flex; flex-direction: column; height: 560px; }
+    /* CARD BODY — flexible height: repo-desc auto + AI intro fills rest */
+    .card-body { flex-shrink: 0; display: flex; flex-direction: column; }
 
     /* AI INTRO SECTION */
     .ai-intro-section {
@@ -211,7 +211,7 @@
       background: linear-gradient(to right, var(--color-steel), transparent);
       opacity: 0.6;
     }
-    .ai-intro-body { flex: 1; overflow-y: auto; padding: var(--sp-2); }
+    .ai-intro-body { flex: 1; max-height: 500px; overflow-y: auto; padding: var(--sp-2); }
     .ai-intro-content {
       font-family: 'Noto Sans SC', sans-serif;
       font-size: var(--text-body);
@@ -243,7 +243,7 @@
     .meta-tag-icon { width: 13px; height: 13px; fill: var(--color-steel); flex-shrink: 0; }
 
     /* STATS ROW */
-    .stats-row { position: absolute; top: 1160px; left: var(--sp-6); right: var(--sp-6); height: 140px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--sp-2); z-index: 20; }
+    .stats-row { position: absolute; top: 1220px; left: var(--sp-6); right: var(--sp-6); height: 100px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--sp-2); z-index: 20; }
     .stat-card { display: flex; align-items: center; gap: var(--sp-2); border-radius: var(--radius-sm); padding: var(--sp-2) var(--sp-3); border: 1px solid var(--color-rule); background: var(--color-paper-warm); }
     .stat-card--stars-total { border-top: 3px solid var(--color-ink); }
     .stat-card--stars-new   { border-top: 3px solid var(--color-accent); }

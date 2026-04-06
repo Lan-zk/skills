@@ -290,7 +290,7 @@
       top: 280px;
       left: var(--sp-6);
       right: var(--sp-6);
-      height: 820px;
+      min-height: 900px;
       background: var(--color-paper-warm);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-card);
@@ -409,28 +409,27 @@
     }
 
     /* ================================================================
-       CARD BODY — fixed height, splits 1/3 desc / 2/3 AI intro
+       CARD BODY — flexible height: repo-desc auto + AI intro fills rest
     ================================================================ */
     .card-body {
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
-      height: 560px;
     }
 
     /* ================================================================
-       DESCRIPTION — fixed height slot (1/3 of card-body)
+       DESCRIPTION — auto height based on actual content
     ================================================================ */
     .repo-desc {
-      height: calc(560px / 3);
-      overflow-y: auto;
+      height: auto;
+      overflow: hidden;   /* clip if extremely long (card-container caps) */
+      flex-shrink: 0;
       font-family: 'Noto Sans SC', sans-serif;
       font-size: var(--text-body);
       color: var(--color-ink);        /* full contrast, not soft */
       font-weight: 500;               /* 500 medium — authority without heaviness */
       line-height: var(--lh-body);
       padding-bottom: 2px;
-      flex-shrink: 0;
     }
 
     /* ================================================================
@@ -478,9 +477,12 @@
       opacity: 0.6;
     }
 
-    /* Inner wrapper: fills space between header and bottom */
+    /* Inner wrapper: fills space between header and bottom.
+       Explicit max-height ensures overflow-y: auto triggers in all renderers.
+       ~500px accommodates most AI intros; scroll kicks in for outliers. */
     .ai-intro-body {
       flex: 1;
+      max-height: 500px;
       overflow-y: auto;
       padding: var(--sp-2);
     }
@@ -554,10 +556,10 @@
     ================================================================ */
     .stats-row {
       position: absolute;
-      top: 1160px;
+      top: 1220px;
       left: var(--sp-6);
       right: var(--sp-6);
-      height: 140px;
+      height: 100px;
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: var(--sp-2);

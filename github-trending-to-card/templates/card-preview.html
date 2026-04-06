@@ -171,19 +171,23 @@
     .author-stat-value { font-family: 'JetBrains Mono', monospace; font-size: var(--text-label); font-weight: 700; color: var(--color-ink); font-variant-numeric: tabular-nums; }
     .author-stat-label { font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); font-weight: 600; color: var(--color-steel); text-transform: uppercase; letter-spacing: var(--ls-label); margin-top: 2px; }
 
-    .repo-desc { font-family: 'Noto Sans SC', sans-serif; font-size: var(--text-body); color: var(--color-ink); font-weight: 500; line-height: var(--lh-body); padding-bottom: 2px; }
+    .repo-desc { height: calc(560px / 3); overflow-y: auto; flex-shrink: 0; font-family: 'Noto Sans SC', sans-serif; font-size: var(--text-body); color: var(--color-ink); font-weight: 500; line-height: var(--lh-body); padding-bottom: 2px; }
 
-    /* CARD BODY */
-    .card-body { flex-shrink: 0; display: flex; flex-direction: column; padding-bottom: var(--sp-2); }
+    /* CARD BODY — fixed height: 1/3 desc / 2/3 AI intro */
+    .card-body { flex-shrink: 0; display: flex; flex-direction: column; height: 560px; }
 
-    /* AI INTRO SECTION */
+    /* AI INTRO SECTION — flex column, fills remaining 2/3 */
     .ai-intro-section {
-      margin-top: 6px;
-      padding: 8px var(--sp-2) 8px 12px;
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      padding: var(--sp-2) var(--sp-2) var(--sp-1) 12px;
       border-left: 3px solid var(--color-steel);
       background: rgba(var(--color-accent-rgb), 0.04);
     }
     .ai-intro-label {
+      flex-shrink: 0;
       display: inline-block;
       font-family: 'JetBrains Mono', monospace;
       font-size: var(--text-meta);
@@ -194,28 +198,32 @@
       text-transform: uppercase;
       padding: 3px 10px;
       border-radius: 2px;
-      margin-bottom: 10px;
+      margin-bottom: var(--sp-2);
     }
+    .ai-intro-body { flex: 1; overflow-y: auto; }
     .ai-intro-content {
       font-family: 'Noto Sans SC', sans-serif;
       font-size: var(--text-body);
       color: var(--color-ink-soft);
       line-height: var(--lh-body);
     }
+    /* Problem / Solution: card-style blocks */
     .ai-intro-content b {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: var(--text-meta);
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: var(--text-body);
       font-weight: 700;
       color: var(--color-ink);
-      letter-spacing: 0.3px;
+      line-height: 1.4;
       display: block;
-      margin-top: 8px;
-      padding-left: 8px;
-      border-left: 3px solid var(--color-steel);
+      margin-top: var(--sp-2);
+      padding: 10px 12px;
+      background: var(--color-paper);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-rule);
     }
     .ai-intro-content b:first-child { margin-top: 0; }
 
-    .repo-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: var(--sp-3); }
+    .repo-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; padding-top: var(--sp-2); border-top: 1px dashed var(--color-rule); }
     .repo-tag { display: inline-flex; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); font-weight: 600; color: var(--color-ink); background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 100px; padding: 4px 12px; }
     .repo-tag--accent { background: var(--color-ink); color: var(--color-paper); border-color: var(--color-ink); }
 
@@ -301,12 +309,16 @@
       <div class="card-body">
         <div class="repo-desc">A CLI tool that brings Anthropic's Claude AI capabilities directly to your terminal. Supports multi-turn conversations, file operations, git integration, and code review workflows.</div>
 
-        <!-- AI INTRO SECTION -->
         <div class="ai-intro-section">
           <div class="ai-intro-label">AI 项目解析</div>
-          <div class="ai-intro-content">
-            <b>解决的问题：</b>开发者在终端与 AI 交互时缺乏深度代码理解和项目感知能力。<br>
-            <b>解决方案：</b>通过文件系统索引、语义搜索和结构化上下文注入，让 Claude 在终端中真正"看懂"整个代码库，实现精准的代码生成、重构与审查。
+          <div class="ai-intro-body">
+            <div class="ai-intro-content">
+              <b>解决问题：</b>开发者在终端与 AI 交互时缺乏深度代码理解和项目感知能力。<br>
+              <b>解决方案：</b>通过文件系统索引、语义搜索和结构化上下文注入，让 Claude 在终端中真正"看懂"整个代码库，实现精准的代码生成、重构与审查。
+            </div>
+          </div>
+          <div class="repo-tags">
+            <span class="repo-tag repo-tag--accent">深度解析</span>
           </div>
         </div>
       </div>

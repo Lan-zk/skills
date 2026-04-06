@@ -409,36 +409,40 @@
     }
 
     /* ================================================================
-       DESCRIPTION — body copy
+       CARD BODY — fixed height, splits 1/3 desc / 2/3 AI intro
+    ================================================================ */
+    .card-body {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      height: 560px;
+    }
+
+    /* ================================================================
+       DESCRIPTION — fixed height slot (1/3 of card-body)
     ================================================================ */
     .repo-desc {
+      height: calc(560px / 3);
+      overflow-y: auto;
       font-family: 'Noto Sans SC', sans-serif;
       font-size: var(--text-body);
       color: var(--color-ink);        /* full contrast, not soft */
       font-weight: 500;               /* 500 medium — authority without heaviness */
       line-height: var(--lh-body);
       padding-bottom: 2px;
-    }
-
-    /* ================================================================
-       CARD BODY — wraps desc + AI intro; shrinks to content, never stretches
-       Bottom padding gives divider clear separation from content
-    ================================================================ */
-    .card-body {
       flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      padding-bottom: var(--sp-2);
     }
 
     /* ================================================================
-       KEYWORD TAGS — auto-generated or LLM-extracted
+       KEYWORD TAGS — pushed to bottom of ai-intro-section via flex margin
     ================================================================ */
     .repo-tags {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      margin-top: var(--sp-3);
+      margin-top: auto;
+      padding-top: var(--sp-2);
+      border-top: 1px dashed var(--color-rule);
     }
 
     .repo-tag {
@@ -461,20 +465,22 @@
     }
 
     /* ================================================================
-       AI INTRO SECTION — visual anchor point in the card body
-       Label uses accent red fill: one deliberate high-impact moment
-       Left border reinforces the editorial print feel
+       AI INTRO SECTION — flex column, fills remaining 2/3 of card-body
+       repo-tags anchor to bottom via margin-top: auto
     ================================================================ */
     .ai-intro-section {
-      margin-top: 6px;
-      padding: 8px var(--sp-2) 8px 12px;
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      padding: var(--sp-2) var(--sp-2) var(--sp-1) 12px;
       border-left: 3px solid var(--color-steel);
-      /* Subtle warm tint — distinct surface, not decoration */
       background: rgba(var(--color-accent-rgb), 0.04);
     }
 
     /* Section label: accent red fill — the one bold moment in this card */
     .ai-intro-label {
+      flex-shrink: 0;
       display: inline-block;
       font-family: 'JetBrains Mono', monospace;
       font-size: var(--text-meta);
@@ -485,7 +491,13 @@
       text-transform: uppercase;
       padding: 3px 10px;
       border-radius: 2px;
-      margin-bottom: 10px;
+      margin-bottom: var(--sp-2);
+    }
+
+    /* Inner wrapper: grows to fill space above repo-tags */
+    .ai-intro-body {
+      flex: 1;
+      overflow-y: auto;
     }
 
     .ai-intro-content {
@@ -495,17 +507,19 @@
       line-height: var(--lh-body);
     }
 
-    /* Bold sub-labels: steel-blue left border accent */
+    /* Problem / Solution: card-style blocks for clear visual separation */
     .ai-intro-content b {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: var(--text-meta);
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: var(--text-body);
       font-weight: 700;
       color: var(--color-ink);
-      letter-spacing: 0.3px;
+      line-height: 1.4;
       display: block;
-      margin-top: 8px;
-      padding-left: 8px;
-      border-left: 3px solid var(--color-steel);
+      margin-top: var(--sp-2);
+      padding: 10px 12px;
+      background: var(--color-paper);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-rule);
     }
 
     .ai-intro-content b:first-child {
@@ -702,7 +716,12 @@
         {{#if ai_intro}}
         <div class="ai-intro-section">
           <div class="ai-intro-label">AI 项目解析</div>
-          <div class="ai-intro-content">{{{ai_intro}}}</div>
+          <div class="ai-intro-body">
+            <div class="ai-intro-content">{{{ai_intro}}}</div>
+          </div>
+          <div class="repo-tags">
+            <span class="repo-tag repo-tag--accent">深度解析</span>
+          </div>
         </div>
         {{/if}}
       </div>

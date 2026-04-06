@@ -82,11 +82,16 @@ export async function summarizeReadmes(
 
     const text = response.choices[0]?.message?.content || '';
 
-    // Use matchAll to reliably extract per-project sections
+    // LLM may or may not include "## 项目 N" prefix per item.
+    // Try matchAll first (multi-item with prefix), fall back to
+    // parseAiIntro on the full text (single-item, no prefix).
     const matches = [...text.matchAll(/## 项目 (\d+)\n([\s\S]*?)(?=## 项目 \d+|$)/g)];
+    const hasPrefixes = matches.length > 0;
+
     return items.map((item, i) => {
-      const m = matches.find((m2) => Number(m2[1]) === i + 1);
-      const section = m ? m[2] : '';
+      const section = hasPrefixes
+        ? (matches.find((m) => Number(m[1]) === i + 1)?.[2] ?? '')
+        : text;
       const aiIntro = parseAiIntro(section);
       return { ...item, ai_intro: aiIntro || undefined };
     });

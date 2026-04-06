@@ -4,6 +4,8 @@ export interface ReadmeClient {
   fetchReadme(owner: string, name: string): Promise<string>;
 }
 
+const README_MAX_BYTES = 4096;
+
 export function createReadmeClient(): ReadmeClient {
   return {
     async fetchReadme(owner: string, name: string): Promise<string> {
@@ -15,9 +17,9 @@ export function createReadmeClient(): ReadmeClient {
             timeout: 8000,
             headers: { 'User-Agent': 'github-trending-to-card/1.0' },
             responseType: 'text',
-            maxContentLength: 4096,
+            // No maxContentLength — truncate after receiving to avoid error on large READMEs
           });
-          return res.data.slice(0, 4096);
+          return res.data.slice(0, README_MAX_BYTES);
         } catch {
           // try next branch
         }

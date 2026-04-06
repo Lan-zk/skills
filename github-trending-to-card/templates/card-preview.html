@@ -192,7 +192,7 @@
       align-items: center;
       gap: var(--sp-2);
       padding: var(--sp-2) var(--sp-2) var(--sp-2) 12px;
-      background: var(--color-ink);
+      background: var(--color-steel);
     }
     .ai-intro-label {
       font-family: 'JetBrains Mono', monospace;
@@ -236,10 +236,6 @@
     }
     /* Solution: red accent — action / completion signal */
     .ai-intro-content b + b { border-left-color: var(--color-accent); }
-
-    .repo-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; padding-top: var(--sp-2); border-top: 1px dashed var(--color-rule); }
-    .repo-tag { display: inline-flex; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); font-weight: 600; color: var(--color-ink); background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: 100px; padding: 4px 12px; }
-    .repo-tag--accent { background: var(--color-ink); color: var(--color-paper); border-color: var(--color-ink); }
 
     .repo-divider { height: 1px; background: var(--color-rule); margin-top: auto; margin-bottom: var(--sp-2); }
     .repo-meta-strip { display: flex; align-items: center; gap: var(--sp-4); flex-wrap: wrap; }
@@ -333,9 +329,6 @@
               <b>解决问题：</b>开发者在终端与 AI 交互时缺乏深度代码理解和项目感知能力。<br>
               <b>解决方案：</b>通过文件系统索引、语义搜索和结构化上下文注入，让 Claude 在终端中真正"看懂"整个代码库，实现精准的代码生成、重构与审查。
             </div>
-          </div>
-          <div class="repo-tags">
-            <span class="repo-tag repo-tag--accent">深度解析</span>
           </div>
         </div>
       </div>

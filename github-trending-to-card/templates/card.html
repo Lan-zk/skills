@@ -434,37 +434,6 @@
     }
 
     /* ================================================================
-       KEYWORD TAGS — pushed to bottom of ai-intro-section via flex margin
-    ================================================================ */
-    .repo-tags {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: auto;
-      padding-top: var(--sp-2);
-      border-top: 1px dashed var(--color-rule);
-    }
-
-    .repo-tag {
-      display: inline-flex;
-      align-items: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: var(--text-meta);
-      font-weight: 600;
-      color: var(--color-ink);
-      background: var(--color-paper);
-      border: 1px solid var(--color-rule);
-      border-radius: 100px;
-      padding: 4px 12px;
-    }
-
-    .repo-tag--accent {
-      background: var(--color-ink);
-      color: var(--color-paper);
-      border-color: var(--color-ink);
-    }
-
-    /* ================================================================
        AI INTRO SECTION — flex column, fills remaining 2/3 of card-body
        Bold treatment: thick accent border + section band for editorial anchor
     ================================================================ */
@@ -485,7 +454,7 @@
       align-items: center;
       gap: var(--sp-2);
       padding: var(--sp-2) var(--sp-2) var(--sp-2) 12px;
-      background: var(--color-ink);
+      background: var(--color-steel);
     }
 
     /* Section label: red pill on dark band — high contrast anchor */
@@ -509,7 +478,7 @@
       opacity: 0.6;
     }
 
-    /* Inner wrapper: grows between header and repo-tags */
+    /* Inner wrapper: fills space between header and bottom */
     .ai-intro-body {
       flex: 1;
       overflow-y: auto;
@@ -743,9 +712,6 @@
           </div>
           <div class="ai-intro-body">
             <div class="ai-intro-content">{{{ai_intro}}}</div>
-          </div>
-          <div class="repo-tags">
-            <span class="repo-tag repo-tag--accent">深度解析</span>
           </div>
         </div>
         {{/if}}

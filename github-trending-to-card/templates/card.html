@@ -14,6 +14,7 @@
       --color-ink:        #0f172a;
       --color-ink-soft:   #1e293b;
       --color-accent:     #e8453c;
+      --color-accent-rgb: 232, 69, 60;  /* for rgba() with transparency */
       --color-paper:      #faf9f7;
       --color-paper-warm: #f2efe9;
       --color-steel:      #3d5a80;
@@ -21,27 +22,27 @@
 
       /* ================================================================
          TYPE SCALE — 5 levels, fixed px (1440px canvas, 3:4 Xiaohongshu)
-         Minimum font size: 20px
+         Minimum font size: 18px
       ================================================================ */
-      --text-masthead:  56px;
-      --text-repo-name: 44px;
-      --text-body:      22px;
-      --text-label:     20px;  /* uppercase labels — readable on mobile */
-      --text-meta:      20px;  /* timestamps, footer fine print */
+      --text-masthead:  56px;   /* hero title — tight weight, editorial anchor */
+      --text-repo-name: 44px;   /* section heading — same family as masthead */
+      --text-body:      22px;   /* description + AI intro body */
+      --text-label:     20px;   /* stat values, author name, chip text */
+      --text-meta:      18px;   /* captions, timestamps, footer, AI label */
 
       /* ================================================================
          TYPE WEIGHTS — editorial contrast
       ================================================================ */
-      /* 900 Black — masthead title, repo name (hierarchy anchors) */
+      /* 900 Black — masthead title (hierarchy anchor) */
       /* 700 Bold  — stat values, chip/badge text (data reads first) */
+      /* 600 Semibold — labels, meta, org info (structural, not decorative) */
       /* 400 Regular — body description only (readable, not heavy) */
-      /* 600 Semibold — labels, meta (structural, not decorative) */
 
-      --ls-tight:    -0.5px;
-      --ls-label:     3px;
-      --ls-micro:     0.5px;
-      --lh-tight:     1;
-      --lh-body:    1.65;
+      --ls-tight:  -0.5px;  /* large headings: tighten optically */
+      --ls-label:   1px;    /* uppercase labels: open tracking */
+      --ls-micro:   0.5px;  /* meta timestamps: barely tracked */
+      --lh-tight:   1.1;    /* masthead title */
+      --lh-body:    1.65;   /* body + AI intro copy */
 
       /* ================================================================
          SPACING — 8px grid
@@ -69,6 +70,8 @@
       width: 1080px;
       height: 1440px;
       overflow: hidden;
+      font-kerning: normal;
+      font-variant-numeric: tabular-nums;
     }
 
     /* ================================================================
@@ -210,7 +213,7 @@
       font-size: var(--text-label);
       font-weight: 700;
       color: #ffffff;
-      letter-spacing: 1px;
+      letter-spacing: var(--ls-label);
       text-transform: uppercase;
     }
 
@@ -389,7 +392,7 @@
 
     .author-stat-value {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 20px;
+      font-size: var(--text-label);
       font-weight: 700;
       color: var(--color-ink);
       font-variant-numeric: tabular-nums;
@@ -406,14 +409,26 @@
     }
 
     /* ================================================================
-       DESCRIPTION
+       DESCRIPTION — body copy
     ================================================================ */
     .repo-desc {
       font-family: 'Noto Sans SC', sans-serif;
       font-size: var(--text-body);
-      color: var(--color-ink-soft);
+      color: var(--color-ink);        /* full contrast, not soft */
+      font-weight: 500;               /* 500 medium — authority without heaviness */
       line-height: var(--lh-body);
-      flex: 1;
+      padding-bottom: 2px;
+    }
+
+    /* ================================================================
+       CARD BODY — wraps desc + AI intro; shrinks to content, never stretches
+       Bottom padding gives divider clear separation from content
+    ================================================================ */
+    .card-body {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: var(--sp-2);
     }
 
     /* ================================================================
@@ -446,53 +461,47 @@
     }
 
     /* ================================================================
-       AI INTRO SECTION — ruled separator, editorial style
+       AI INTRO SECTION — visual anchor point in the card body
+       Label uses accent red fill: one deliberate high-impact moment
+       Left border reinforces the editorial print feel
     ================================================================ */
     .ai-intro-section {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px dashed var(--color-rule);
+      margin-top: 6px;
+      padding: 8px var(--sp-2) 8px 12px;
+      border-left: 3px solid var(--color-steel);
+      /* Subtle warm tint — distinct surface, not decoration */
+      background: rgba(var(--color-accent-rgb), 0.04);
     }
 
-    /* Section label: monospace uppercase, steel blue, tight tracking */
+    /* Section label: accent red fill — the one bold moment in this card */
     .ai-intro-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--color-steel);
-      letter-spacing: var(--ls-label);
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      /* Small inline accent bar before the label */
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .ai-intro-label::before {
-      content: '';
       display: inline-block;
-      width: 16px;
-      height: 2px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--text-meta);
+      font-weight: 700;
+      color: #ffffff;
       background: var(--color-accent);
-      flex-shrink: 0;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 2px;
+      margin-bottom: 10px;
     }
 
     .ai-intro-content {
       font-family: 'Noto Sans SC', sans-serif;
-      font-size: 20px;
+      font-size: var(--text-body);
       color: var(--color-ink-soft);
-      line-height: 1.75;
+      line-height: var(--lh-body);
     }
 
-    /* Bold sub-labels from LLM output (📌 解决的问题 / 🔧 解决方案) */
+    /* Bold sub-labels: steel-blue left border accent */
     .ai-intro-content b {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 18px;
+      font-size: var(--text-meta);
       font-weight: 700;
       color: var(--color-ink);
       letter-spacing: 0.3px;
-      /* Use a small left border as editorial accent instead of emoji */
       display: block;
       margin-top: 8px;
       padding-left: 8px;
@@ -504,12 +513,13 @@
     }
 
     /* ================================================================
-       DIVIDER + META STRIP
+       DIVIDER + META STRIP — always anchored to card bottom
     ================================================================ */
     .repo-divider {
       height: 1px;
       background: var(--color-rule);
-      margin: var(--sp-3) 0 var(--sp-2);
+      margin-top: auto;
+      margin-bottom: var(--sp-2);
     }
 
     .repo-meta-strip {
@@ -686,35 +696,30 @@
         {{/if}}
       </div>
 
-      <div class="repo-desc">{{description}}</div>
+      <div class="card-body">
+        <div class="repo-desc">{{description}}</div>
+
+        {{#if ai_intro}}
+        <div class="ai-intro-section">
+          <div class="ai-intro-label">AI 项目解析</div>
+          <div class="ai-intro-content">{{{ai_intro}}}</div>
+        </div>
+        {{/if}}
+      </div>
 
       <div class="repo-divider"></div>
 
-      {{#if ai_intro}}
-      <div class="ai-intro-section">
-        <div class="ai-intro-label">AI 项目解析</div>
-        <div class="ai-intro-content">{{{ai_intro}}}</div>
-      </div>
-      {{/if}}
-
       <div class="repo-meta-strip">
         <div class="meta-tag">
-          <svg class="meta-tag-icon" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-          </svg>
+          <svg class="meta-tag-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
           {{contributors}} contributors
         </div>
         <div class="meta-tag">
-          <svg class="meta-tag-icon" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-.878a2.25 2.25 0 111.5 0v.878a2.25 2.25 0 01-2.25 2.25h-1.5v2.128a2.251 2.251 0 11-1.5 0V8.5h-1.5A2.25 2.25 0 013.5 6.25v-.878a2.25 2.25 0 111.5 0zM5 3.25a.75.75 0 10-1.5 0 .75.75 0 001.5 0zm6.75.75a.75.75 0 100-1.5.75.75 0 000 1.5zm-3 8.75a.75.75 0 10-1.5 0 .75.75 0 001.5 0z"></path>
-          </svg>
+          <svg class="meta-tag-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-.878a2.25 2.25 0 111.5 0v.878a2.25 2.25 0 01-2.25 2.25h-1.5v2.128a2.251 2.251 0 11-1.5 0V8.5h-1.5A2.25 2.25 0 013.5 6.25v-.878a2.25 2.25 0 111.5 0zM5 3.25a.75.75 0 10-1.5 0 .75.75 0 001.5 0zm6.75.75a.75.75 0 100-1.5.75.75 0 000 1.5zm-3 8.75a.75.75 0 10-1.5 0 .75.75 0 001.5 0z"></path></svg>
           {{license}}
         </div>
         <div class="meta-tag">
-          <svg class="meta-tag-icon" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"></path>
-            <path d="M6.5 11.5v-1H9V8h-2v2.5H5.5v1H9v2H6.5z"></path>
-          </svg>
+          <svg class="meta-tag-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"></path><path d="M6.5 11.5v-1H9V8h-2v2.5H5.5v1H9v2H6.5z"></path></svg>
           {{language}}
         </div>
       </div>

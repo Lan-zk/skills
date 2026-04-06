@@ -104,7 +104,9 @@ export async function summarizeReadmes(
         section = numbered.find((m) => Number(m[1]) === i + 1)?.[2] ?? '';
       } else {
         const parts = text.split(/(?=<b>项目解析<\/b>)/);
-        section = parts[i + 1] ?? parts[parts.length - 1] ?? '';
+        // parts[0] = text before first <b> tag (discard); parts[1..] = each section.
+        // Map i → parts[i+1]; if we don't have enough parts, that section stays empty.
+        section = parts[i + 1] ?? '';
       }
       const aiIntro = parseAiIntro(section);
       return { ...item, ai_intro: aiIntro || undefined };

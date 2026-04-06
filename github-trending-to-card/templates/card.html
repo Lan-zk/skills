@@ -495,7 +495,7 @@
       gap: var(--sp-2);
     }
 
-    /* Problem card: steel-blue left border — analytical anchor (insight) */
+    /* Problem / Solution: full-line cards using nth-child (br separates flex items) */
     .ai-intro-content b {
       font-family: 'Noto Sans SC', sans-serif;
       font-size: var(--text-body);
@@ -507,14 +507,12 @@
       background: var(--color-paper);
       border-radius: var(--radius-sm);
       border: 1px solid var(--color-rule);
-      border-left: 4px solid var(--color-steel);
+      border-left: 4px solid var(--color-steel);  /* 解决问题: steel-blue */
     }
 
-    /* Solution card: accent-red left border — action/completion signal */
-    .ai-intro-content b + b,
-    .ai-intro-solution {
+    /* 解决方案: red accent — action / completion signal */
+    .ai-intro-content b:nth-child(3) {
       border-left-color: var(--color-accent);
-    }
     }
 
     /* ================================================================

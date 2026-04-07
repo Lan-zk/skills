@@ -22,13 +22,13 @@
 
       /* ================================================================
          TYPE SCALE — 5 levels, fixed px (1440px canvas, 3:4 Xiaohongshu)
-         Minimum font size: 18px
+         Minimum font size: 22px (mobile-optimized for Xiaohongshu)
       ================================================================ */
-      --text-masthead:  56px;   /* hero title — tight weight, editorial anchor */
-      --text-repo-name: 44px;   /* section heading — same family as masthead */
-      --text-body:      22px;   /* description + AI intro body */
-      --text-label:     20px;   /* stat values, author name, chip text */
-      --text-meta:      18px;   /* captions, timestamps, footer, AI label */
+      --text-masthead:  58px;   /* hero title — tight weight, editorial anchor */
+      --text-repo-name: 46px;   /* section heading — same family as masthead */
+      --text-body:      26px;   /* description + AI intro body — primary readable text */
+      --text-label:     24px;   /* stat values, author name, chip text */
+      --text-meta:      22px;   /* captions, timestamps, footer, meta info */
 
       /* ================================================================
          TYPE WEIGHTS — editorial contrast
@@ -41,18 +41,18 @@
       --ls-tight:  -0.5px;  /* large headings: tighten optically */
       --ls-label:   1px;    /* uppercase labels: open tracking */
       --ls-micro:   0.5px;  /* meta timestamps: barely tracked */
-      --lh-tight:   1.1;    /* masthead title */
-      --lh-body:    1.65;   /* body + AI intro copy */
+      --lh-tight:   1.05;   /* masthead title (tighter with larger size) */
+      --lh-body:     1.5;    /* body + AI intro copy (readable at 26px) */
 
       /* ================================================================
-         SPACING — 8px grid
+         SPACING — 8px grid, bumped for larger type scale
       ================================================================ */
-      --sp-1:  8px;
-      --sp-2:  16px;
-      --sp-3:  24px;
-      --sp-4:  32px;
-      --sp-5:  40px;
-      --sp-6:  48px;
+      --sp-1:  10px;
+      --sp-2:  20px;
+      --sp-3:  28px;
+      --sp-4:  36px;
+      --sp-5:  44px;
+      --sp-6:  52px;
 
       /* ================================================================
          SHAPE & SHADOW
@@ -158,7 +158,7 @@
     .masthead {
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 280px;
+      height: 290px;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
@@ -287,10 +287,10 @@
     ================================================================ */
     .repo-card {
       position: absolute;
-      top: 280px;
+      top: 290px;
       left: var(--sp-6);
       right: var(--sp-6);
-      min-height: 900px;
+      min-height: 1100px;
       background: var(--color-paper-warm);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-card);
@@ -479,10 +479,10 @@
 
     /* Inner wrapper: fills space between header and bottom.
        Explicit max-height ensures overflow-y: auto triggers in all renderers.
-       ~500px accommodates most AI intros; scroll kicks in for outliers. */
+       ~600px accommodates most AI intros at 26px; scroll kicks in for outliers. */
     .ai-intro-body {
       flex: 1;
-      max-height: 500px;
+      max-height: 600px;
       overflow-y: auto;
       padding: var(--sp-2);
     }
@@ -556,7 +556,7 @@
     ================================================================ */
     .stats-row {
       position: absolute;
-      top: 1220px;
+      top: 1280px;
       left: var(--sp-6);
       right: var(--sp-6);
       height: 100px;

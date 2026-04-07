@@ -17,24 +17,24 @@
       --color-steel:      #3d5a80;
       --color-rule:       #d4cfc7;
 
-      --text-masthead:  56px;
-      --text-repo-name: 44px;
-      --text-body:      22px;
-      --text-label:     20px;
-      --text-meta:      18px;
+      --text-masthead:  58px;
+      --text-repo-name: 46px;
+      --text-body:      26px;
+      --text-label:     24px;
+      --text-meta:      22px;
 
       --ls-tight:  -0.5px;
       --ls-label:   1px;
       --ls-micro:   0.5px;
-      --lh-tight:   1.1;
-      --lh-body:    1.65;
+      --lh-tight:   1.05;
+      --lh-body:     1.5;
 
-      --sp-1:  8px;
-      --sp-2:  16px;
-      --sp-3:  24px;
-      --sp-4:  32px;
-      --sp-5:  40px;
-      --sp-6:  48px;
+      --sp-1:  10px;
+      --sp-2:  20px;
+      --sp-3:  28px;
+      --sp-4:  36px;
+      --sp-5:  44px;
+      --sp-6:  52px;
 
       --radius-sm: 4px;
       --radius-md: 8px;
@@ -102,7 +102,7 @@
     .masthead {
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 280px;
+      height: 290px;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
@@ -127,10 +127,10 @@
     /* REPO CARD */
     .repo-card {
       position: absolute;
-      top: 280px;
+      top: 290px;
       left: var(--sp-6);
       right: var(--sp-6);
-      min-height: 900px;
+      min-height: 1100px;
       background: var(--color-paper-warm);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-card);
@@ -243,7 +243,7 @@
     .meta-tag-icon { width: 13px; height: 13px; fill: var(--color-steel); flex-shrink: 0; }
 
     /* STATS ROW */
-    .stats-row { position: absolute; top: 1220px; left: var(--sp-6); right: var(--sp-6); height: 100px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--sp-2); z-index: 20; }
+    .stats-row { position: absolute; top: 1280px; left: var(--sp-6); right: var(--sp-6); height: 100px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--sp-2); z-index: 20; }
     .stat-card { display: flex; align-items: center; gap: var(--sp-2); border-radius: var(--radius-sm); padding: var(--sp-2) var(--sp-3); border: 1px solid var(--color-rule); background: var(--color-paper-warm); }
     .stat-card--stars-total { border-top: 3px solid var(--color-ink); }
     .stat-card--stars-new   { border-top: 3px solid var(--color-accent); }

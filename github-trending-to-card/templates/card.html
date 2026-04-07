@@ -75,7 +75,13 @@
     }
 
     /* ================================================================
-       CARD CONTAINER — warm paper with graph-paper grid
+       CARD CONTAINER — CSS Grid layout, absolutely eliminates overlap
+       Row layout (top→bottom):
+         masthead  290px  (pinned top, absolute)
+         repo-card 1fr     (flexes, grows with content, scrolls internally)
+         stats-row 60px   (pinned bottom via absolute)
+         footer    48px   (pinned bottom via absolute)
+       repo-card has max-height = 1440 - 290 - 60 - 48 = 1042px
     ================================================================ */
     .card-container {
       width: 1080px;
@@ -83,6 +89,14 @@
       background-color: var(--color-paper);
       position: relative;
       overflow: hidden;
+      display: grid;
+      grid-template-rows: 230px 1fr auto 48px;
+      row-gap: var(--sp-2);
+      grid-template-areas:
+        "masthead"
+        "repo-card"
+        "stats-row"
+        "footer";
     }
 
     .card-container::before {
@@ -156,17 +170,19 @@
        MASTHEAD — project name as hero (A1)
     ================================================================ */
     .masthead {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 290px;
+      position: relative;
+      grid-area: masthead;
+      padding: 0 var(--sp-6) var(--sp-3);
+      padding-top: 24px;
+      max-height: 230px;
+      overflow: hidden;
+      z-index: 20;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      padding: 0 var(--sp-6) var(--sp-3);
-      z-index: 20;
     }
 
-    /* Top row: issue date + language chip + trending badge */
+    /* Top row: absolute, anchored to top — no dead gap */
     .masthead-top-row {
       position: absolute;
       top: 24px;
@@ -201,8 +217,8 @@
     }
 
     .lang-chip-dot {
-      width: var(--sp-1);
-      height: var(--sp-1);
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.7);
       flex-shrink: 0;
@@ -283,14 +299,14 @@
     }
 
     /* ================================================================
-       REPO CARD — description + author section (B1)
+       REPO CARD — grid-area, auto-height, scrolls internally if overflow
     ================================================================ */
     .repo-card {
-      position: absolute;
-      top: 290px;
-      left: var(--sp-6);
-      right: var(--sp-6);
-      min-height: 950px;
+      position: relative;
+      grid-area: repo-card;
+      margin: 0 var(--sp-6);
+      max-height: 982px;
+      overflow-y: auto;
       background: var(--color-paper-warm);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-card);
@@ -429,7 +445,7 @@
       color: var(--color-ink);        /* full contrast, not soft */
       font-weight: 500;               /* 500 medium — authority without heaviness */
       line-height: var(--lh-body);
-      padding-bottom: 2px;
+      padding-bottom: var(--sp-2);
     }
 
     /* ================================================================
@@ -460,9 +476,9 @@
     .ai-intro-label {
       font-family: 'JetBrains Mono', monospace;
       font-size: var(--text-meta);
-      font-weight: 700;
+      font-weight: 900;
       color: #ffffff;
-      background: var(--color-accent);
+      background: #c73a33;
       letter-spacing: var(--ls-micro);
       text-transform: uppercase;
       padding: var(--sp-1) var(--sp-2);
@@ -497,14 +513,14 @@
       gap: var(--sp-2);
     }
 
-    /* Problem / Solution: full-line cards using nth-child (br separates flex items) */
-    .ai-intro-content b {
+    /* Problem / Solution: semantic class, no fragile nth-child */
+    .ai-intro-content .ai-block {
       font-family: 'Noto Sans SC', sans-serif;
       font-size: var(--text-body);
       font-weight: 700;
       color: var(--color-ink);
-      line-height: 1.5;
-      display: block;
+      line-height: var(--lh-body);
+      flex: none;             /* flex parent (gap: var(--sp-2)) handles spacing */
       padding: 10px 12px 10px 14px;
       background: var(--color-paper);
       border-radius: var(--radius-sm);
@@ -513,7 +529,7 @@
     }
 
     /* 解决方案: red accent — action / completion signal */
-    .ai-intro-content b:nth-child(3) {
+    .ai-intro-content .ai-block--solution {
       border-left-color: var(--color-accent);
     }
 
@@ -555,15 +571,14 @@
        STATS ROW
     ================================================================ */
     .stats-row {
-      position: absolute;
-      top: 1265px;
-      left: var(--sp-6);
-      right: var(--sp-6);
-      height: 80px;
+      grid-area: stats-row;
+      margin: 0 var(--sp-6);
+      padding: var(--sp-2) 0;
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: var(--sp-2);
       z-index: 20;
+      align-items: center;
     }
 
     .stat-card {
@@ -574,6 +589,7 @@
       padding: var(--sp-2) var(--sp-3);
       border: 1px solid var(--color-rule);
       background: var(--color-paper-warm);
+      overflow: hidden;
     }
 
     .stat-card--stars-total { border-top: 3px solid var(--color-ink); }
@@ -589,12 +605,13 @@
 
     .stat-value {
       font-family: 'JetBrains Mono', monospace;
-      font-size: var(--text-body);
+      font-size: 30px;
       font-weight: 700;
       color: var(--color-ink);
       line-height: 1;
       letter-spacing: var(--ls-tight);
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
 
     .stat-label {
@@ -611,9 +628,7 @@
        FOOTER
     ================================================================ */
     .footer {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 48px;
+      grid-area: footer;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -669,7 +684,6 @@
       <div class="masthead-rule"></div>
       <div class="masthead-owner">{{owner}}</div>
       <div class="masthead-title">{{name}}</div>
-      <div class="masthead-subtitle">github.com · Open Source</div>
     </div>
 
     <!-- ================================================================

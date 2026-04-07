@@ -14,14 +14,15 @@ const SUMMARY_USER_PROMPT = `# 项目信息
 # 输出要求
 请分析 README 内容，回答以下两个核心问题，输出中文：
 
-<b>解决问题：</b>该项目的核心问题或痛点，一句话概括。
+<b class="ai-block ai-block--problem">解决问题：</b>该项目的核心问题或痛点，一句话概括。
 
-<b>解决方案：</b>该项目的核心实现思路或方法，一句话概括。
+<b class="ai-block ai-block--solution">解决方案：</b>该项目的核心实现思路或方法，一句话概括。
 
 规则：
-- 使用 <b> 标签包裹每一行（包含标题和内容），不要在 <b> 标签外放置任何内容
-- 正确格式：<b>解决问题：</b>内容<br><b>解决方案：</b>内容
-- 禁止格式：<b>解决问题：</b>内容文字（后面无闭合标签，内容直接跟在外面）
+- 使用 <b class="ai-block ai-block--problem/problem"> 标签包裹第一行（包含标题和内容）
+- 使用 <b class="ai-block ai-block--solution"> 标签包裹第二行（包含标题和内容）
+- 不要在 <b> 标签外放置任何内容
+- 正确格式：<b class="ai-block ai-block--problem">解决问题：</b>内容<br><b class="ai-block ai-block--solution">解决方案：</b>内容
 - 总字数控制在 70-150 字
 - 不得添加 README 中不存在的虚构信息`;
 
@@ -34,9 +35,9 @@ function buildSummaryUserMessage(item: TrendingItem, readme: string): string {
 }
 
 function parseAiIntro(text: string): string {
-  // Match: <b>解决问题：</b>...(optional <br> or whitespace)...<b>解决方案：</b>...
+  // Match: <b class="ai-block ai-block--problem">...</b>...(optional <br>)...<b class="ai-block ai-block--solution">...</b>
   const match = text.match(
-    /<b>解决问题：<\/b>(?:<br\s*\/?\/?\s*>|\s)*[\s\S]*?<b>解决方案：<\/b>(?:<br\s*\/?\/?\s*>|\s)*[\s\S]*/,
+    /<b class="ai-block ai-block--problem">解决问题：<\/b>(?:<br\s*\/?\/?\s*>|\s)*[\s\S]*?<b class="ai-block ai-block--solution">解决方案：<\/b>(?:<br\s*\/?\/?\s*>|\s)*[\s\S]*/,
   );
   return match ? match[0].trim() : '';
 }

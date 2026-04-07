@@ -41,7 +41,7 @@ describe('index.ts - executeSkill', () => {
 
     expect(scraper.scrapeTrending).toHaveBeenCalledWith({ time_range: 'daily' });
     expect(translator.translateDescriptions).toHaveBeenCalledWith(mockItems);
-    expect(renderer.renderCards).toHaveBeenCalledWith(translatedItems);
+    expect(renderer.renderCards).toHaveBeenCalledWith(translatedItems, 'card');
     expect(result.trending_cards).toEqual(['base64string1']);
   });
 
@@ -65,7 +65,7 @@ describe('index.ts - executeSkill', () => {
     const result = await executeSkill({ time_range: 'daily', translate_to_chinese: false });
 
     expect(translator.translateDescriptions).not.toHaveBeenCalled();
-    expect(renderer.renderCards).toHaveBeenCalledWith(mockItems);
+    expect(renderer.renderCards).toHaveBeenCalledWith(mockItems.map(i => ({ ...i, ai_intro: undefined })), 'card');
     expect(result.trending_cards).toEqual(['base64string1']);
   });
 

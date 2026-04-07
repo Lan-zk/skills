@@ -59,9 +59,9 @@ Card follows an **editorial print aesthetic** — warm paper background (`#faf9f
 
 The CSS token system lives in `:root` in the HTML template. Key tokens:
 
-- `--text-masthead` (64px), `--text-repo-name` (44px), `--text-body` (22px), `--text-label` (14px), `--text-meta` (12px)
+- `--text-masthead` (58px), `--text-repo-name` (46px), `--text-body` (26px), `--text-label` (24px), `--text-meta` (22px)
 - `--color-ink`, `--color-accent`, `--color-paper`, `--color-steel`
-- `--sp-N` (8px grid), `--shadow-card`, `--radius-sm/md`
+- `--sp-N` (10px grid), `--shadow-card`, `--radius-sm/md`
 
 ## Testing
 

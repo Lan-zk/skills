@@ -1,10 +1,12 @@
 export type TimeRange = 'daily' | 'weekly' | 'monthly';
+export type TemplateName = 'card' | 'jojo-card';
 
 export interface SkillInput {
   time_range?: TimeRange;
   language?: string;
   spoken_language_code?: string;
   translate_to_chinese?: boolean; // default: true
+  template?: 'card' | 'jojo-card';
 }
 
 export interface SkillOutput {

@@ -1,4 +1,4 @@
-import { SkillInput, SkillOutput } from './types';
+import { SkillInput, SkillOutput, TemplateName } from './types';
 import { scrapeTrending } from './scraper';
 import { translateDescriptions } from './translator';
 import { renderCards, closeBrowser } from './renderer';
@@ -27,7 +27,8 @@ export async function executeSkill(input: SkillInput): Promise<SkillOutput> {
         : trendingItems;
 
     // 3. Render cards
-    const trending_cards = await renderCards(translatedItems);
+    const templateName: TemplateName = input.template || 'card';
+    const trending_cards = await renderCards(translatedItems, templateName);
 
     return {
       trending_cards,

@@ -1,5 +1,6 @@
 import { SkillInput, SkillOutput, TemplateName } from './types';
 import { scrapeTrending } from './scraper';
+import { summarizeReadmes } from './summarizer';
 import { translateDescriptions } from './translator';
 import { renderCards, closeBrowser } from './renderer';
 import * as fs from 'fs';
@@ -20,11 +21,14 @@ export async function executeSkill(input: SkillInput): Promise<SkillOutput> {
       throw new Error('No trending items found.');
     }
 
-    // 2. Translate descriptions (if enabled)
+    // 2. Generate AI project intro from README
+    const summarizedItems = await summarizeReadmes(trendingItems);
+
+    // 3. Translate descriptions
     const translatedItems =
       input.translate_to_chinese !== false
-        ? await translateDescriptions(trendingItems)
-        : trendingItems;
+        ? await translateDescriptions(summarizedItems)
+        : summarizedItems;
 
     // 3. Render cards
     const templateName: TemplateName = input.template || 'card';

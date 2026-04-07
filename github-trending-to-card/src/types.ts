@@ -29,4 +29,6 @@ export interface TrendingItem {
   owner_avatar?: string;
   owner_repos?: string;
   owner_followers?: string;
+  /** LLM 生成的中文项目解析，HTML 片段格式 */
+  ai_intro?: string;
 }

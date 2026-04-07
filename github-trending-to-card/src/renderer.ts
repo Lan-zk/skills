@@ -10,6 +10,8 @@ async function getBrowser(): Promise<Browser> {
   if (!browserInstance) {
     browserInstance = await chromium.launch({
       headless: true,
+      // Prefer system Chrome if available; set PLAYWRIGHT_CHANNEL=skip to force bundled
+      channel: process.env.PLAYWRIGHT_CHANNEL === 'skip' ? undefined : 'chrome',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
   }

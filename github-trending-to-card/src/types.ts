@@ -11,6 +11,7 @@ export interface SkillInput {
 
 export interface SkillOutput {
   trending_cards: string[]; // Base64 encoded PNG images
+  markdown_files?: string[]; // Absolute paths to generated markdown files
 }
 
 export interface TrendingItem {

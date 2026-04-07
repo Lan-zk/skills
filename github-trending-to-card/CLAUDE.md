@@ -31,6 +31,8 @@ scrapeTrending()  →  translateDescriptions()  →  renderCards()
 |------|------|
 | `src/scraper.ts` | Fetches GitHub trending page + individual repo pages for metadata (contributors, license). Fetches owner profile from GitHub REST API (`/users/{owner}`) for avatar, repos count, followers. Returns `TrendingItem[]` |
 | `src/translator.ts` | Batches descriptions → single LLM call → parses numbered translations back into items |
+| `src/summarizer.ts` | Fetches README per project → LLM generates concise Chinese AI intro (problem + solution) |
+| `src/markdownWriter.ts` | Generates one `.md` file per trending item in `outputDir` with name, URL, description, AI intro, and metadata table |
 | `src/renderer.ts` | Compiles Handlebars template → Playwright renders HTML → screenshots `.card-container` div → returns base64 PNG |
 | `src/types.ts` | `TrendingItem` (11 fields) and `SkillInput` interfaces |
 | `src/llmClient.ts` | Creates OpenAI-compatible client. Reads `LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL` from env |
@@ -68,3 +70,5 @@ Tests are in `evals/`. The scraper and renderer are tested with mocked HTTP and 
 ## Output
 
 `output/YYYY-MM-DD/card-NN.png` — one PNG per trending repo, max 10 cards per run. Output is 1080×1440px (3:4 Xiaohongshu format).
+
+`output/YYYY-MM-DD/{repo-name}.md` — one Markdown file per trending repo, containing project name, URL, translated description, AI intro, and metadata table.

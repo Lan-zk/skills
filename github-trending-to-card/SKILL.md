@@ -11,9 +11,10 @@ This skill automates the process of converting GitHub's trending open-source rep
 
 1. **Data Scraping**: Fetches the top 10 trending repositories based on optional time range and language filters.
 2. **Description Fallback**: When a repository has no description on the trending page, fetches the repo page for meta description.
-3. **Rendering & Export**: Injects the data into an HTML/CSS template and uses headless Chromium to export it as high-resolution PNGs (Base64 encoded).
-
-**Note:** The skill returns raw description text. Translation/enrichment is handled by the invoking Agent.
+3. **AI Intro**: Fetches each project's README, uses LLM to generate a concise Chinese project analysis (problem solved + solution approach).
+4. **Translation**: Translates project descriptions to Chinese via LLM.
+5. **Rendering & Export**: Injects the data into an HTML/CSS template and uses headless Chromium to export it as high-resolution PNGs (Base64 encoded).
+6. **Markdown Export**: Generates one `.md` file per project in the same output folder, containing project name, URL, translated description, and AI analysis.
 
 ## When to Use
 
@@ -30,8 +31,10 @@ Pass a `SkillInput` object to the entry function.
 - `time_range` (String): The time dimension for the trending list (`daily`, `weekly`, `monthly`). Default: `daily`.
 - `language` (String): Optional. Programming language filter (e.g., `python`, `javascript`).
 - `spoken_language_code` (String): Optional. Natural language filter (e.g., `zh`, `en`).
+- `template` (String): Optional. Card template to use. `card` (default) uses the editorial magazine style; `jojo-card` uses a JOJO Stand Panel aesthetic with radar chart and A-E grading.
 
 ### Outputs
 
 Returns an object containing:
 - `trending_cards` (Array of Strings): 10 Base64-encoded PNG image strings.
+- `markdown_files` (Array of Strings, optional): Absolute paths to generated markdown files. Present only when `outputDir` is passed to `executeSkill`.

@@ -67,6 +67,10 @@ hs_err_pid*
 dependency-reduced-pom.xml
 target/
 
+# Worktrees
+.worktrees/
+worktrees/
+
 # Visual Cast runtime artifacts and source docs
 visual-cast/node_modules/
 visual-cast/tmp/

@@ -270,7 +270,7 @@ export function splitTokensToPages(
           openInlineStack.length = 0;
           // Prepend block opens to the new page so HTML structure is restored.
           // Keep openBlockStack intact — its tags will be closed on the next flush.
-          prependOpenTags(currentPageTokens, savedInlineStack, openBlockStack);
+          prependOpenTags(currentPageTokens, openBlockStack, savedInlineStack);
           // Restore inline stack so subsequent children know which tags are still open
           for (const t of savedInlineStack) openInlineStack.push(t);
           continue;
@@ -287,7 +287,7 @@ export function splitTokensToPages(
             currentPageTokens = [];
             currentChars = 0;
             openInlineStack.length = 0;
-            prependOpenTags(currentPageTokens, savedInlineStack, openBlockStack);
+            prependOpenTags(currentPageTokens, openBlockStack, savedInlineStack);
             for (const t of savedInlineStack) openInlineStack.push(t);
           }
           if (childLen > charsPerPage - currentChars && currentChars === 0) {
@@ -307,7 +307,7 @@ export function splitTokensToPages(
                 currentPageTokens = [];
                 currentChars = 0;
                 openInlineStack.length = 0;
-                prependOpenTags(currentPageTokens, savedInlineStack, openBlockStack);
+                prependOpenTags(currentPageTokens, openBlockStack, savedInlineStack);
                 for (const t of savedInlineStack) openInlineStack.push(t);
               }
             }
@@ -319,11 +319,10 @@ export function splitTokensToPages(
           continue;
         }
 
-        // ── Inline formatting open (strong_open, em_open, code_inline) ───────
-        if (
-          (child.type.endsWith('_open') && COMPOUND_TAGS.has(child.tag)) ||
-          child.type === 'code_inline'
-        ) {
+        // ── Inline formatting open (strong_open, em_open) ───────────────────────
+        // NOTE: code_inline is self-contained and renders as <code>...</code> in one token,
+        // so it does NOT need tracking in the openInlineStack.
+        if (child.type.endsWith('_open') && COMPOUND_TAGS.has(child.tag)) {
           openInlineStack.push(child);
           currentPageTokens.push(child);
           currentChars += childLen;
@@ -342,6 +341,14 @@ export function splitTokensToPages(
               break;
             }
           }
+          childIdx++;
+          continue;
+        }
+
+        // ── Inline code (self-contained: renders as <code>...</code>) ───────────
+        if (child.type === 'code_inline') {
+          currentPageTokens.push(child);
+          currentChars += childLen;
           childIdx++;
           continue;
         }

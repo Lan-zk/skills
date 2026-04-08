@@ -414,7 +414,7 @@ export function splitTokensToPages(
         currentChars = 0;
         openInlineStack.length = 0;
         openBlockStack.length = 0;
-        prependOpenTags(currentPageTokens, savedInlineStack, openBlockStack);
+        prependOpenTags(currentPageTokens, openBlockStack, savedInlineStack);
       }
       currentPageTokens.push({ ...token, content: imgHtml, type: 'img_rendered' });
       currentChars += tokenChars;
@@ -432,7 +432,7 @@ export function splitTokensToPages(
         currentChars = 0;
         openInlineStack.length = 0;
         openBlockStack.length = 0;
-        prependOpenTags(currentPageTokens, savedInlineStack, openBlockStack);
+        prependOpenTags(currentPageTokens, openBlockStack, savedInlineStack);
       }
       currentPageTokens.push({ ...token, content: '<hr>', type: 'hr_rendered' });
       currentChars += 4;

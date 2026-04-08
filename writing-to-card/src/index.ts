@@ -58,49 +58,54 @@ export async function executeSkill(input: SkillInput): Promise<SkillOutput> {
   const date = formatDate();
   const author = DEFAULT_AUTHOR;
 
-  // 确保输出目录存在
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
+  let files: string[] = [];
 
-  // ── 解析正文内容 ──────────────────────────────────────────────────────────
-  let markdownContent: string;
-  let baseDir: string;
+  try {
+    // 确保输出目录存在
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
 
-  if (fs.existsSync(contentInput)) {
-    // content 是文件路径，读取文件
-    const absolutePath = path.resolve(contentInput);
-    baseDir = contentBaseDir ?? path.dirname(absolutePath);
-    markdownContent = fs.readFileSync(absolutePath, 'utf-8');
-  } else {
-    // content 是直接的 Markdown 字符串
-    baseDir = contentBaseDir ?? process.cwd();
-    markdownContent = contentInput;
-  }
+    // ── 解析正文内容 ──────────────────────────────────────────────────────────
+    let markdownContent: string;
+    let baseDir: string;
 
-  // 修正图片相对路径
-  markdownContent = resolveImagePaths(markdownContent, baseDir);
+    if (fs.existsSync(contentInput)) {
+      // content 是文件路径，读取文件
+      const absolutePath = path.resolve(contentInput);
+      baseDir = contentBaseDir ?? path.dirname(absolutePath);
+      markdownContent = fs.readFileSync(absolutePath, 'utf-8');
+    } else {
+      // content 是直接的 Markdown 字符串
+      baseDir = contentBaseDir ?? process.cwd();
+      markdownContent = contentInput;
+    }
 
-  const files: string[] = [];
-  let pageIndex = 1;
+    // 修正图片相对路径
+    markdownContent = resolveImagePaths(markdownContent, baseDir);
 
-  // ── 渲染封面 ──────────────────────────────────────────────────────────────
-  const coverBase64 = await renderCover({ title, subtitle, date, author });
-  const coverFileName = makeFileName(pageIndex, 'cover');
-  const coverPath = writePngFile(outputDir, coverFileName, coverBase64);
-  files.push(coverPath);
-  pageIndex++;
+    let pageIndex = 1;
 
-  // ── 解析并分页正文 ────────────────────────────────────────────────────────
-  const tokens = parseToTokens(markdownContent);
-  const pageHtmls = splitTokensToPages(tokens);
-
-  for (const pageHtml of pageHtmls) {
-    const contentBase64 = await renderContent({ content: pageHtml, date, author });
-    const contentFileName = makeFileName(pageIndex, 'content');
-    const contentPath = writePngFile(outputDir, contentFileName, contentBase64);
-    files.push(contentPath);
+    // ── 渲染封面 ──────────────────────────────────────────────────────────────
+    const coverBase64 = await renderCover({ title, subtitle, date, author });
+    const coverFileName = makeFileName(pageIndex, 'cover');
+    const coverPath = writePngFile(outputDir, coverFileName, coverBase64);
+    files.push(coverPath);
     pageIndex++;
+
+    // ── 解析并分页正文 ────────────────────────────────────────────────────────
+    const tokens = parseToTokens(markdownContent);
+    const pageHtmls = splitTokensToPages(tokens);
+
+    for (const pageHtml of pageHtmls) {
+      const contentBase64 = await renderContent({ content: pageHtml, date, author });
+      const contentFileName = makeFileName(pageIndex, 'content');
+      const contentPath = writePngFile(outputDir, contentFileName, contentBase64);
+      files.push(contentPath);
+      pageIndex++;
+    }
+  } finally {
+    await closeBrowser();
   }
 
   return { files };

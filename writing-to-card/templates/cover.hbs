@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080, height=1440">
+  <title>Cover</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #faf9f7;
+      --color-ink: #1a1a1a;
+      --color-accent: #e8453c;
+      --color-subtitle: #666666;
+      --font-serif: "Noto Serif SC", "Songti SC", "SimSun", "Times New Roman", serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px;
+      height: 1440px;
+      background: var(--color-bg);
+      font-family: var(--font-serif);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cover-container {
+      width: 1080px;
+      height: 1440px;
+      padding: 0 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .title {
+      font-size: 120px;
+      font-weight: 700;
+      color: var(--color-ink);
+      text-align: center;
+      line-height: 1.3;
+      margin-bottom: 48px;
+      word-break: break-word;
+    }
+
+    .divider {
+      width: 200px;
+      height: 3px;
+      background: var(--color-accent);
+      margin-bottom: 40px;
+    }
+
+    .subtitle {
+      font-size: 36px;
+      color: var(--color-subtitle);
+      text-align: center;
+      line-height: 1.6;
+      word-break: break-word;
+      max-width: 840px;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 60px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 120px;
+      font-size: 22px;
+      color: var(--color-subtitle);
+      font-family: var(--font-serif);
+    }
+
+    .footer-author { letter-spacing: 2px; }
+  </style>
+</head>
+<body>
+  <div class="cover-container">
+    <div class="title">{{title}}</div>
+    <div class="divider"></div>
+    {{#if subtitle}}
+    <div class="subtitle">{{subtitle}}</div>
+    {{/if}}
+  </div>
+  <div class="footer">
+    <span class="footer-date">{{date}}</span>
+    <span class="footer-author">{{author}}</span>
+  </div>
+</body>
+</html>

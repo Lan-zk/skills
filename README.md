@@ -126,6 +126,25 @@ node scripts/render_visual_cast.mjs --mock github --output-dir ./tmp/github
 
 ---
 
+### why-writing
+
+A **Cognitive Reframing Long-Form Writing** skill that guides the creation of insight-driven articles, newsletters, and blog posts designed to lead readers through a real thinking process — reframing their understanding of a familiar object rather than delivering information or personal stories.
+
+**Features:**
+- **Drilling-Down Approach** — starts from a concrete scene/contradiction and excavates layers until reaching the hidden premise
+- **Four Core Tasks** — identify the unstated premise, explain why it's unstable, reframe the object, leave the reader at a deeper position
+- **Genre Classification** — distinguishes "A-class: local reframing" vs "S-class: premise-level reconstruction"
+- **Strict Quality Gates** — anti-redundancy, anti-fake-thinking, paragraph-level cognitive movement checks
+- **Hard Taboos** — bans filler phrases like "说白了", "本质上", "换句话说"
+- **Inheritable Skills** — designed to work with `article-writing`, `writing-clearly-and-concisely`
+
+**Usage:**
+This skill guides writing where the first goal is **cognitive refresh** — readers should finish feeling they've been led to a deeper understanding, not just convinced.
+
+**Documentation:** See [`why-writing/SKILL.md`](why-writing/SKILL.md) for detailed specifications.
+
+---
+
 ## Contributing
 
 This repository contains specialized skills for AI-assisted development. Each skill is contained in its own directory with a `SKILL.md` file describing its purpose and constraints.

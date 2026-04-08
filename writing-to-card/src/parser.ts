@@ -59,15 +59,35 @@ export function renderToHtml(markdown: string): string {
 
 /**
  * 修正 Markdown 中的图片相对路径为绝对路径
- * 将 ![img](./images/photo.jpg) 转为 ![img](file:///abs/path/to/images/photo.jpg)
+ * 支持 ./、../ 和无前缀的相对路径，转换为 file:// URL
+ * 绝对 URL（http://, https://, file://）保持不变
  */
 export function resolveImagePaths(markdown: string, baseDir: string): string {
-  // 将 baseDir 转为 file:/// URL
   const normalizedBase = baseDir.replace(/\\/g, '/');
-  const filePrefix = `file:///${normalizedBase.replace(/^\//, '')}`;
   return markdown.replace(
-    /!\[([^\]]*)\]\(\.\//g,
-    `![$1](${filePrefix}/`
+    // 匹配 ![alt](url "title") 或 ![alt](url) 或 ![alt](url#anchor)
+    /!\[([^\]]*)\]\(([^)"]+(?:"[^"]*")?)\)/g,
+    (match: string, alt: string, src: string): string => {
+      // 跳过已经是绝对 URL 的路径
+      if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('file://')) {
+        return match;
+      }
+      // 分离路径与 title/fragment 部分
+      const titleMatch = src.match(/^(.+?)\s+"([^"]*)"$/);
+      const fragmentMatch = src.match(/^(.+?)(#.*)$/);
+      let rawPath = src;
+      let extra = '';
+      if (titleMatch) {
+        rawPath = titleMatch[1];
+        extra = ` "${titleMatch[2]}"`;
+      } else if (fragmentMatch) {
+        rawPath = fragmentMatch[1];
+        extra = fragmentMatch[2];
+      }
+      // 将相对路径相对于 baseDir 解析为绝对路径
+      const resolvedPath = path.posix.resolve(normalizedBase, rawPath.replace(/\\/g, '/'));
+      return `![${alt}](file://${resolvedPath}${extra})`;
+    }
   );
 }
 

@@ -7,15 +7,22 @@ import { VIEWPORT } from './constants';
 // ─── Browser management ───────────────────────────────────────────────────────
 
 let browserInstance: Browser | null = null;
+let launchPromise: Promise<Browser> | null = null;
 
 async function getBrowser(): Promise<Browser> {
-  if (!browserInstance) {
-    browserInstance = await chromium.launch({
+  if (browserInstance) return browserInstance;
+
+  // Store the launch promise so concurrent calls reuse the same promise
+  if (!launchPromise) {
+    launchPromise = chromium.launch({
       headless: true,
       channel: process.env.PLAYWRIGHT_CHANNEL === 'skip' ? undefined : 'chrome',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
   }
+
+  browserInstance = await launchPromise;
+  launchPromise = null;
   return browserInstance;
 }
 

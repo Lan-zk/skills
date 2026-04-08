@@ -2,12 +2,7 @@
 name: writing-to-card
 description: 将长篇 Markdown 文章转换为多张 1080×1440 PNG 图片，适合小红书发布。当用户需要将文章、博客、教程转成分享图片时使用。
 ---
-
 # Writing to Card
-
-## Description
-
-将 Markdown 长文自动转换为符合小红书排版规范的 PNG 图片序列（封面 + 多页正文）。支持加粗、斜体、标题、列表、引用块、本地图片等常用语法，自动分页并渲染高质量截图。
 
 ## When to Use
 

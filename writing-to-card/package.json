@@ -1,0 +1,31 @@
+{
+  "name": "writing-to-card",
+  "version": "1.0.0",
+  "description": "Convert Markdown articles to 1080x1440 PNG cards for Xiaohongshu",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src --ext .ts",
+    "type-check": "tsc --noEmit",
+    "precommit": "npm run lint && npm run type-check && npm run test && npm run build"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.0",
+    "playwright": "^1.49.0",
+    "handlebars": "^4.7.8"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^22.0.0",
+    "@types/jest": "^29.5.14",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.7.2"
+  }
+}

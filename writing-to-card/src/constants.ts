@@ -19,8 +19,8 @@ export const LAYOUT = {
   fontSize: 44,
   /** 行高倍数 */
   lineHeight: 1.8,
-  /** 单行高度 px（字号 × 行高，向下取整） */
-  linePx: Math.round(44 * 1.8),
+  /** 单行高度 px（字号 × 行高，向上取整到整px） */
+  linePx: Math.ceil(44 * 1.8),
   /** 段落间距 px */
   paragraphGap: 40,
   /** 顶部内容区起始位置 px */

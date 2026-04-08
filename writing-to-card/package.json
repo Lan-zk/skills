@@ -8,7 +8,7 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "precommit": "npm run lint && npm run type-check && npm run test && npm run build"
   },

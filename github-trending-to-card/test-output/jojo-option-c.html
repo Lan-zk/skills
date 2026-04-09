@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, height=1440">
+    <title>JOJO Stand Panel - Option C (Portrait 3:4)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700;900&family=Noto+Sans+SC:wght@400;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a0a; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Noto Serif JP', serif; }
+        .card { width: 1080px; height: 1440px; position: relative; overflow: hidden; }
+
+        /* 深紫/蓝背景 */
+        .card-bg {
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 50% 30%, #1e0a3c 0%, #0d0d1a 40%, #000 100%);
+        }
+        .card-bg::before {
+            content: ""; position: absolute; inset: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.08"/></svg>');
+            mix-blend-mode: overlay; pointer-events: none;
+        }
+
+        /* 顶部红色条纹 */
+        .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 8px; background: linear-gradient(90deg, #7c3aed, #e8453c); z-index: 30; }
+
+        /* 左侧：雷达图区域 */
+        .radar-zone { position: absolute; left: 0; top: 0; bottom: 0; width: 580px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 3px solid rgba(139,92,246,0.4); }
+        .stand-title-block { position: absolute; top: 80px; left: 0; right: 20px; text-align: center; z-index: 20; }
+        .bracket { font-size: 0.85rem; color: #c4b5fd; letter-spacing: 0.3em; text-shadow: 2px 2px 0 #000; margin-bottom: 6px; }
+        .stand-name { font-size: 2.8rem; font-weight: 900; color: white; text-shadow: 4px 4px 0 #000, 2px 2px 0 #000; letter-spacing: 0.05em; line-height: 1.1; }
+        .stand-sub { font-size: 1rem; color: #a5b4fc; letter-spacing: 0.15em; margin-top: 6px; }
+
+        #radarCanvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+        .master-block { position: absolute; bottom: 80px; left: 0; right: 20px; text-align: center; z-index: 20; }
+        .master-name { font-size: 1.4rem; font-weight: 900; color: white; text-shadow: 3px 3px 0 #000; letter-spacing: 0.05em; }
+        .master-sub { font-size: 0.8rem; color: #818cf8; letter-spacing: 0.1em; margin-top: 4px; }
+
+        /* 右侧：信息面板 */
+        .info-zone { position: absolute; right: 0; top: 0; bottom: 0; width: 500px; display: flex; flex-direction: column; padding: 80px 40px 40px; z-index: 20; }
+
+        .info-header { margin-bottom: 24px; }
+        .info-owner { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 600; color: #818cf8; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+        .info-repo { font-family: 'Noto Sans SC', sans-serif; font-size: 2.8rem; font-weight: 900; color: white; line-height: 1.1; text-shadow: 3px 3px 0 #000; }
+        .lang-chip { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; background: rgba(139,92,246,0.3); border: 1px solid rgba(139,92,246,0.5); border-radius: 4px; padding: 4px 14px; }
+        .lang-dot { width: 8px; height: 8px; border-radius: 50%; background: #e8453c; }
+        .lang-name { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 1px; }
+
+        .info-desc-box { background: rgba(0,0,0,0.4); border-radius: 8px; padding: 20px 22px; border-left: 4px solid #7c3aed; margin-bottom: 20px; }
+        .desc-text { font-family: 'Noto Sans SC', sans-serif; font-size: 0.95rem; color: #e2e8f0; line-height: 1.7; }
+
+        .stats-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .stat-box { background: rgba(0,0,0,0.5); border-radius: 6px; padding: 14px 16px; border-top: 3px solid; }
+        .stat-box.gold { border-top-color: #fbbf24; }
+        .stat-box.red { border-top-color: #e8453c; }
+        .stat-box.blue { border-top-color: #3b82f6; }
+        .stat-box.green { border-top-color: #10b981; }
+        .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px; }
+        .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; font-weight: 700; color: white; }
+        .stat-grade { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #a5b4fc; margin-top: 2px; }
+
+        .divider { height: 1px; background: rgba(255,255,255,0.15); margin: 12px 0; }
+
+        .meta-row { display: flex; gap: 16px; flex-wrap: wrap; }
+        .meta-item { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #94a3b8; display: flex; align-items: center; gap: 4px; }
+
+        .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; border-top: 2px solid rgba(139,92,246,0.4); z-index: 30; background: rgba(0,0,0,0.6); }
+        .footer-brand { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700; color: #a5b4fc; letter-spacing: 2px; text-transform: uppercase; }
+        .footer-time { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #64748b; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="card-bg"></div>
+    <div class="top-bar"></div>
+
+    <!-- 左侧：雷达图 -->
+    <div class="radar-zone">
+        <div class="stand-title-block">
+            <div class="bracket">[ STAND NAME ]</div>
+            <div class="stand-name">Chain of Thought</div>
+            <div class="stand-sub">思考的链接 · LangChain</div>
+        </div>
+        <canvas id="radarCanvas" width="540" height="680"></canvas>
+        <div class="master-block">
+            <div class="bracket">[ STAND MASTER ]</div>
+            <div class="master-name">langchain-ai</div>
+            <div class="master-sub">github.com/langchain-ai</div>
+        </div>
+    </div>
+
+    <!-- 右侧：信息面板 -->
+    <div class="info-zone">
+        <div class="info-header">
+            <div class="info-owner">langchain-ai /</div>
+            <div class="info-repo">LangChain</div>
+            <div class="lang-chip"><span class="lang-dot"></span><span class="lang-name">Python</span></div>
+        </div>
+
+        <div class="info-desc-box">
+            <div class="desc-text">Building context-aware reasoning applications with LLMs. Provides a standard interface for chains, tool integration, and memory management.</div>
+        </div>
+
+        <div class="stats-2col">
+            <div class="stat-box gold">
+                <div class="stat-label">Total Stars</div>
+                <div class="stat-value">68.2k</div>
+                <div class="stat-grade">A · 破壊力</div>
+            </div>
+            <div class="stat-box red">
+                <div class="stat-label">Stars Today</div>
+                <div class="stat-value">+328</div>
+                <div class="stat-grade">A · スピード</div>
+            </div>
+            <div class="stat-box blue">
+                <div class="stat-label">Forks</div>
+                <div class="stat-value">9.1k+</div>
+                <div class="stat-grade">A · 射程距離</div>
+            </div>
+            <div class="stat-box green">
+                <div class="stat-label">Contributors</div>
+                <div class="stat-value">2,100+</div>
+                <div class="stat-grade">A · 成長性</div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="meta-row">
+            <div class="meta-item">★ 68.2k Stars</div>
+            <div class="meta-item">MIT License</div>
+            <div class="meta-item">2,100+ Contributors</div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-brand">★ GitHub Trending · Stand Panel</div>
+        <div class="footer-time">2026-04-03 · github.com/trending</div>
+    </div>
+</div>
+
+<script>
+function drawStandRadar(canvasId, stats) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width, height = canvas.height;
+    const cx = width * 0.5, cy = height * 0.5;
+    const radius = 165;
+    const labels = [
+        { name: "破壊力", grade: stats.power, value: stats.powerV },
+        { name: "スピード", grade: stats.speed, value: stats.speedV },
+        { name: "射程距離", grade: stats.range, value: stats.rangeV },
+        { name: "持続力", grade: stats.stamina, value: stats.staminaV },
+        { name: "精密動作", grade: stats.precision, value: stats.precisionV },
+        { name: "成長性", grade: stats.potential, value: stats.potentialV }
+    ];
+    const gradeToNum = { 'A': 5, 'B': 4, 'C': 3, 'D': 2, 'E': 1 };
+
+    // 同心圆
+    ctx.lineWidth = 1.5; ctx.strokeStyle = "rgba(255,255,255,0.2)";
+    for (let i = 1; i <= 5; i++) { ctx.beginPath(); ctx.arc(cx, cy, (radius/5)*i, 0, Math.PI*2); ctx.stroke(); }
+    // 外框
+    ctx.beginPath(); ctx.lineWidth = 3; ctx.strokeStyle = "rgba(255,255,255,0.85)"; ctx.arc(cx, cy, radius, 0, Math.PI*2); ctx.stroke();
+
+    // 刻度
+    for (let i = 0; i < 60; i++) {
+        const angle = (Math.PI*2/60)*i; const isMajor = i%10===0; const rStart = isMajor ? radius-9 : radius-4;
+        ctx.beginPath(); ctx.lineWidth = isMajor ? 2 : 1;
+        ctx.strokeStyle = isMajor ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.2)";
+        ctx.moveTo(cx+Math.cos(angle)*rStart, cy+Math.sin(angle)*rStart); ctx.lineTo(cx+Math.cos(angle)*radius, cy+Math.sin(angle)*radius); ctx.stroke();
+    }
+
+    // 轴线
+    ctx.lineWidth = 1.5; ctx.strokeStyle = "rgba(255,255,255,0.35)";
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(angle)*radius, cy+Math.sin(angle)*radius); ctx.stroke();
+    }
+
+    // 等级标尺
+    ctx.fillStyle = "rgba(255,255,255,0.55)"; ctx.font = "bold 11px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ['E','D','C','B','A'].forEach((g,i) => { ctx.fillText(g, cx+9, cy-(radius/5)*(i+1)+6); });
+
+    // 数据多边形
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        const r = (radius/5) * (gradeToNum[labels[i].grade]||0);
+        if (i===0) ctx.moveTo(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r);
+        else ctx.lineTo(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r);
+    }
+    ctx.closePath();
+    ctx.fillStyle = "rgba(139,92,246,0.4)"; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = "rgba(167,139,250,1)"; ctx.stroke();
+
+    // 数据点
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        const r = (radius/5) * (gradeToNum[labels[i].grade]||0);
+        ctx.beginPath(); ctx.arc(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r, 5, 0, Math.PI*2);
+        ctx.fillStyle = "rgba(167,139,250,1)"; ctx.fill(); ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
+    }
+
+    // 外围文字
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        const textR = radius + 65;
+        const tx = cx + Math.cos(angle)*textR, ty = cy + Math.sin(angle)*textR;
+        if (Math.cos(angle)>0.15) ctx.textAlign="left"; else if (Math.cos(angle)<-0.15) ctx.textAlign="right"; else ctx.textAlign="center";
+        ctx.shadowColor="black"; ctx.shadowBlur=5; ctx.shadowOffsetX=2; ctx.shadowOffsetY=2;
+        ctx.font="bold 12px sans-serif"; ctx.fillStyle="#c4b5fd"; ctx.fillText(labels[i].name, tx, ty-18);
+        ctx.font="bold 24px serif"; ctx.fillStyle="#fff"; ctx.fillText(labels[i].grade, tx, ty+2);
+        ctx.font="bold 11px monospace"; ctx.fillStyle="#a5b4fc"; ctx.fillText(labels[i].value, tx, ty+22);
+        ctx.shadowColor="transparent";
+    }
+}
+
+const stats = {
+    power: 'A', powerV: '68.2k',
+    speed: 'A', speedV: '12.5k+',
+    range: 'A', rangeV: '9.1k+',
+    stamina: 'A', staminaV: '3 yrs',
+    precision: 'B', precisionV: '85%',
+    potential: 'A', potentialV: '2.1k+'
+};
+window.onload = () => { drawStandRadar('radarCanvas', stats); };
+</script>
+</body>
+</html>

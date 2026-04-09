@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080, height=1440">
+  <title>A2: 项目名跨区</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=JetBrains+Mono:wght@600;700&display=swap');
+
+    :root {
+      --color-ink:        #0f172a;
+      --color-ink-soft:   #1e293b;
+      --color-accent:     #e8453c;
+      --color-paper:      #faf9f7;
+      --color-paper-warm: #f2efe9;
+      --color-steel:      #3d5a80;
+      --color-rule:       #d4cfc7;
+      --text-masthead:  56px;
+      --text-repo-name: 44px;
+      --text-body:      22px;
+      --text-label:     20px;
+      --text-meta:      20px;
+      --ls-tight:    -0.5px;
+      --ls-label:     3px;
+      --ls-micro:     0.5px;
+      --lh-tight:     1;
+      --lh-body:    1.65;
+      --sp-1:  8px; --sp-2:  16px; --sp-3:  24px; --sp-4:  32px; --sp-5:  40px; --sp-6:  48px;
+      --radius-sm: 4px; --radius-md: 8px;
+      --shadow-card: 0 20px 60px rgba(15, 23, 42, 0.18), 0 4px 16px rgba(15, 23, 42, 0.10);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Noto Sans SC', 'JetBrains Mono', -apple-system, BlinkMacSystemFont, sans-serif; background: transparent; width: 1080px; height: 1440px; overflow: hidden; }
+
+    .card-container { width: 1080px; height: 1440px; background-color: var(--color-paper); position: relative; overflow: hidden; }
+
+    .card-container::before {
+      content: ''; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(var(--color-rule) 1px, transparent 1px),
+        linear-gradient(90deg, var(--color-rule) 1px, transparent 1px),
+        linear-gradient(rgba(212, 207, 199, 0.4) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212, 207, 199, 0.4) 1px, transparent 1px);
+      background-size: 48px 48px, 48px 48px, 8px 8px, 8px 8px;
+      background-position: -1px -1px; opacity: 0.35; pointer-events: none; z-index: 0;
+    }
+
+    .crop-mark-tl, .crop-mark-tr, .crop-mark-bl, .crop-mark-br { position: absolute; width: 20px; height: 20px; pointer-events: none; z-index: 35; }
+    .crop-mark-tl { top: 12px; left: 12px; border-top: 1.5px solid var(--color-steel); border-left: 1.5px solid var(--color-steel); opacity: 0.4; }
+    .crop-mark-tr { top: 12px; right: 12px; border-top: 1.5px solid var(--color-steel); border-right: 1.5px solid var(--color-steel); opacity: 0.4; }
+    .crop-mark-bl { bottom: 12px; left: 12px; border-bottom: 1.5px solid var(--color-steel); border-left: 1.5px solid var(--color-steel); opacity: 0.4; }
+    .crop-mark-br { bottom: 12px; right: 12px; border-bottom: 1.5px solid var(--color-steel); border-right: 1.5px solid var(--color-steel); opacity: 0.4; }
+
+    .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 8px; background: var(--color-accent); z-index: 30; }
+
+    /* ================================================================
+       MASTHEAD — 极简顶条
+    ================================================================ */
+    .masthead {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 120px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 var(--sp-6) 16px;
+      z-index: 25;
+    }
+
+    .masthead-left { display: flex; align-items: center; gap: 12px; }
+    .masthead-issue { font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); font-weight: 600; color: var(--color-steel); letter-spacing: var(--ls-micro); }
+
+    .masthead-right { display: flex; align-items: center; gap: var(--sp-2); }
+
+    .lang-chip { display: inline-flex; align-items: center; gap: 8px; background-color: #3572A5; border-radius: var(--radius-sm); padding: 6px 14px; }
+    .lang-chip-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.7); }
+    .lang-chip-text { font-family: 'JetBrains Mono', monospace; font-size: var(--text-label); font-weight: 700; color: #ffffff; letter-spacing: 1px; text-transform: uppercase; }
+
+    .trending-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--color-accent); border-radius: var(--radius-sm); padding: 6px 14px; }
+    .trending-badge-text { font-family: 'JetBrains Mono', monospace; font-size: var(--text-label); font-weight: 700; color: #ffffff; letter-spacing: var(--ls-label); text-transform: uppercase; }
+
+    /* ================================================================
+       跨区项目名 — 同时压在 masthead + repo-card 上
+    ================================================================ */
+    .hero-project-name {
+      position: absolute;
+      top: 100px;
+      left: var(--sp-6);
+      right: var(--sp-6);
+      z-index: 30;
+      /* 向下延伸，穿入 repo-card */
+      padding-bottom: 0;
+    }
+
+    .hero-rule {
+      width: 48px;
+      height: 4px;
+      background: var(--color-accent);
+      margin-bottom: 12px;
+    }
+
+    .hero-owner {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: var(--text-label);
+      font-weight: 600;
+      color: var(--color-steel);
+      letter-spacing: 0.5px;
+      text-transform: lowercase;
+      margin-bottom: 6px;
+    }
+
+    .hero-name {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: var(--text-masthead);
+      font-weight: 900;
+      color: var(--color-ink);
+      line-height: var(--lh-tight);
+      letter-spacing: var(--ls-tight);
+    }
+
+    /* 右边缘装饰线 */
+    .hero-project-name::after {
+      content: '';
+      position: absolute;
+      top: 0; right: -48px;
+      width: 3px;
+      height: 80px;
+      background: linear-gradient(to bottom, var(--color-ink) 0%, var(--color-accent) 60%, transparent 100%);
+    }
+
+    /* ================================================================
+       REPO CARD — 描述区（顶部为 hero-name 留出空间）
+    ================================================================ */
+    .repo-card {
+      position: absolute;
+      top: 240px;
+      left: var(--sp-6);
+      right: var(--sp-6);
+      height: 860px;
+      background: var(--color-paper-warm);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--color-rule);
+      padding: 120px var(--sp-6) var(--sp-4); /* 顶部留白 = hero 区域 */
+      display: flex;
+      flex-direction: column;
+      z-index: 20;
+    }
+
+    .repo-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 6px;
+      background: var(--color-steel);
+      border-radius: var(--radius-md) 0 0 var(--radius-md);
+    }
+
+    .repo-card::after {
+      content: '';
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      width: 40px;
+      height: 4px;
+      background: var(--color-accent);
+      border-radius: 2px;
+    }
+
+    .repo-desc {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: var(--text-body);
+      color: var(--color-ink-soft);
+      line-height: var(--lh-body);
+      flex: 1;
+    }
+
+    .repo-divider { height: 1px; background: var(--color-rule); margin: var(--sp-3) 0 var(--sp-2); }
+
+    .repo-meta-strip { display: flex; align-items: center; gap: var(--sp-4); }
+
+    .meta-tag { display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); color: var(--color-steel); font-weight: 600; }
+    .meta-tag-icon { width: 13px; height: 13px; fill: var(--color-steel); flex-shrink: 0; }
+
+    /* ================================================================
+       STATS ROW
+    ================================================================ */
+    .stats-row {
+      position: absolute;
+      top: 1160px; left: var(--sp-6); right: var(--sp-6);
+      height: 140px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--sp-2);
+      z-index: 20;
+    }
+
+    .stat-card { display: flex; align-items: center; gap: var(--sp-2); border-radius: var(--radius-sm); padding: var(--sp-2) var(--sp-3); border: 1px solid var(--color-rule); background: var(--color-paper-warm); }
+    .stat-card--stars-total { border-top: 3px solid var(--color-ink); }
+    .stat-card--stars-new   { border-top: 3px solid var(--color-accent); }
+    .stat-card--forks       { border-top: 3px solid var(--color-steel); }
+    .stat-icon { width: 24px; height: 24px; flex-shrink: 0; }
+    .stat-icon--star  { fill: var(--color-ink); }
+    .stat-icon--trend { fill: var(--color-accent); }
+    .stat-icon--fork  { fill: var(--color-steel); }
+    .stat-content { display: flex; flex-direction: column; }
+    .stat-value { font-family: 'JetBrains Mono', monospace; font-size: var(--text-body); font-weight: 700; color: var(--color-ink); line-height: 1; letter-spacing: var(--ls-tight); font-variant-numeric: tabular-nums; }
+    .stat-label { font-family: 'JetBrains Mono', monospace; font-size: var(--text-label); font-weight: 600; color: var(--color-steel); letter-spacing: var(--ls-label); text-transform: uppercase; margin-top: 4px; }
+
+    /* ================================================================
+       FOOTER
+    ================================================================ */
+    .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--sp-6); border-top: 2px solid var(--color-ink); z-index: 20; background: var(--color-paper); }
+    .footer-left { display: flex; align-items: center; gap: 8px; }
+    .footer-icon { width: 16px; height: 16px; fill: var(--color-ink); }
+    .footer-brand { font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); font-weight: 700; color: var(--color-ink); letter-spacing: var(--ls-label); text-transform: uppercase; }
+    .footer-divider { width: 1px; height: 14px; background: var(--color-rule); }
+    .footer-lang { font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); font-weight: 600; color: var(--color-steel); }
+    .footer-right { display: flex; align-items: center; gap: 8px; }
+    .footer-timestamp { font-family: 'JetBrains Mono', monospace; font-size: var(--text-meta); font-weight: 600; color: var(--color-steel); letter-spacing: var(--ls-micro); }
+
+    .lang-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 4px; z-index: 30; background-color: #3572A5; }
+  </style>
+</head>
+<body>
+  <div class="card-container">
+    <div class="lang-bar"></div>
+    <div class="top-bar"></div>
+    <div class="crop-mark-tl"></div>
+    <div class="crop-mark-tr"></div>
+    <div class="crop-mark-bl"></div>
+    <div class="crop-mark-br"></div>
+
+    <!-- MASTHEAD — 极简 -->
+    <div class="masthead">
+      <div class="masthead-left">
+        <div class="masthead-issue">2026-04-02</div>
+      </div>
+      <div class="masthead-right">
+        <div class="lang-chip">
+          <span class="lang-chip-dot"></span>
+          <span class="lang-chip-text">Python</span>
+        </div>
+        <div class="trending-badge">
+          <span class="trending-badge-text">Hot</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERO PROJECT NAME — 跨区 -->
+    <div class="hero-project-name">
+      <div class="hero-rule"></div>
+      <div class="hero-owner">microsoft</div>
+      <div class="hero-name">VibeVoice</div>
+    </div>
+
+    <!-- REPO CARD -->
+    <div class="repo-card">
+      <div class="repo-desc">
+        Open-Source Frontier Voice AI — a cutting-edge voice recognition and synthesis platform built for production scale. Supports real-time streaming, multi-language, and low-latency inference.
+      </div>
+
+      <div class="repo-divider"></div>
+
+      <div class="repo-meta-strip">
+        <div class="meta-tag">
+          <svg class="meta-tag-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+          12 contributors
+        </div>
+        <div class="meta-tag">
+          <svg class="meta-tag-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-.878a2.25 2.25 0 111.5 0v.878a2.25 2.25 0 01-2.25 2.25h-1.5v2.128a2.251 2.251 0 11-1.5 0V8.5h-1.5A2.25 2.25 0 013.5 6.25v-.878a2.25 2.25 0 111.5 0zM5 3.25a.75.75 0 10-1.5 0 .75.75 0 001.5 0zm6.75.75a.75.75 0 100-1.5.75.75 0 000 1.5zm-3 8.75a.75.75 0 10-1.5 0 .75.75 0 001.5 0z"></path></svg>
+          MIT License
+        </div>
+        <div class="meta-tag">
+          <svg class="meta-tag-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0zM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"></path><path d="M6.5 11.5v-1H9V8h-2v2.5H5.5v1H9v2H6.5z"></path></svg>
+          Python
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+      <div class="stat-card stat-card--stars-total">
+        <svg class="stat-icon stat-icon--star" viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.312a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.311L7.327.668A.75.75 0 018 .25z"></path></svg>
+        <div class="stat-content">
+          <span class="stat-value">34,632</span>
+          <span class="stat-label">Total Stars</span>
+        </div>
+      </div>
+      <div class="stat-card stat-card--stars-new">
+        <svg class="stat-icon stat-icon--trend" viewBox="0 0 16 16"><path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm11.646-2.646a.5.5 0 01.708.708l-5 5a.5.5 0 01-.708 0l-2.5-2.5a.5.5 0 11.708-.708L7 10.293l4.646-4.647z"></path></svg>
+        <div class="stat-content">
+          <span class="stat-value">+8,241</span>
+          <span class="stat-label">Stars Today</span>
+        </div>
+      </div>
+      <div class="stat-card stat-card--forks">
+        <svg class="stat-icon stat-icon--fork" viewBox="0 0 16 16"><path d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-5.5a.75.75 0 01-.75-.75v-.878zm5.5-1a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 0011.25 8.5h.5v1.628a2.251 2.251 0 101.5 0V8.5h.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-5.5a.75.75 0 01-.75-.75v-.878z"></path></svg>
+        <div class="stat-content">
+          <span class="stat-value">1,847</span>
+          <span class="stat-label">Forks</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="footer-left">
+        <svg class="footer-icon" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"></path></svg>
+        <span class="footer-brand">GitHub Trending</span>
+        <div class="footer-divider"></div>
+        <span class="footer-lang">Python · github.com/trending</span>
+      </div>
+      <div class="footer-right">
+        <span class="footer-timestamp">2026-04-02 08:00</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

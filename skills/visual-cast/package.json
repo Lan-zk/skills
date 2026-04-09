@@ -1,0 +1,21 @@
+{
+  "name": "visual-cast-skill",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Runnable Visual Cast skill for OpenClaw PNG generation.",
+  "scripts": {
+    "render": "node scripts/render_visual_cast.mjs",
+    "render:mock:news": "node scripts/render_visual_cast.mjs --mock news --output-dir ./tmp/news",
+    "render:mock:github": "node scripts/render_visual_cast.mjs --mock github --output-dir ./tmp/github",
+    "lint:json": "python3 scripts/validate_visual_cast_json.py --help"
+  },
+  "dependencies": {
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/noto-sans-sc": "^5.2.9",
+    "@resvg/resvg-js": "^2.6.2",
+    "openai": "^5.12.2",
+    "react": "^18.3.1",
+    "satori": "^0.12.1"
+  }
+}

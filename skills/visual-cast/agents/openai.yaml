@@ -1,0 +1,4 @@
+interface:
+  display_name: "Visual Cast"
+  short_description: "Render OpenClaw text into visual cards and long images"
+  default_prompt: "Use $visual-cast to normalize upstream text and render shareable PNG cards for OpenClaw."

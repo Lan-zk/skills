@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOJO Stand Panel - Option A</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; overflow: hidden; background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Noto Serif JP', serif; }
+        .stand-bg { background: radial-gradient(circle at center, #4c1d95 0%, #1e1b4b 50%, #000000 100%); position: relative; width: 1280px; height: 720px; overflow: hidden; box-shadow: inset 0 0 100px rgba(0,0,0,0.9); }
+        .jojo-text { color: white; text-shadow: 3px 3px 0 #000, -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 6px 6px 8px rgba(0,0,0,0.8); letter-spacing: 0.1em; }
+        .bracket-text { font-size: 1.2rem; color: #e2e8f0; letter-spacing: 0.2em; text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000; }
+        .main-title { font-size: 3.5rem; font-weight: 900; background: linear-gradient(to bottom, #ffffff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(3px 3px 0px #000) drop-shadow(-3px -3px 0px #000) drop-shadow(4px 6px 4px rgba(0,0,0,0.6)); }
+        #radarCanvas { filter: drop-shadow(0px 0px 15px rgba(0,0,0,0.7)); }
+    </style>
+</head>
+<body>
+
+<!-- OPTION A: 经典JOJO面板布局 (16:9) -->
+<div class="stand-bg">
+
+    <!-- 左上角：项目名称 -->
+    <div class="absolute top-8 left-10 z-20">
+        <div class="bracket-text mb-2">[STAND NAME]</div>
+        <div class="jojo-text main-title">langchain</div>
+        <div class="jojo-text text-2xl mt-1 tracking-widest text-indigo-200">Chain of Thought</div>
+    </div>
+
+    <!-- 中央：雷达图 -->
+    <div class="absolute bottom-6 left-10 z-20">
+        <canvas id="radarCanvas" width="500" height="500"></canvas>
+    </div>
+
+    <!-- 右下角：开发者 -->
+    <div class="absolute bottom-8 right-10 z-20 text-right">
+        <div class="bracket-text mb-2">[STAND MASTER]</div>
+        <div class="jojo-text main-title text-2xl">langchain-ai</div>
+        <div class="jojo-text text-xl mt-1 tracking-widest text-indigo-200">@langchain-ai</div>
+    </div>
+
+    <!-- 右上角装饰 -->
+    <div class="absolute top-8 right-10 z-20 text-right">
+        <div class="text-white font-bold text-sm opacity-60" style="font-family: monospace;">★ 68.2k</div>
+        <div class="text-indigo-300 text-xs mt-1" style="font-family: monospace;">GitHub Trending</div>
+    </div>
+
+</div>
+
+<script>
+function drawStandRadar(canvasId, stats) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width, height = canvas.height;
+    const cx = width / 2, cy = height / 2;
+    const radius = 140;
+    const labels = [
+        { name: "破壊力", sub: "Stars", grade: stats.power, value: stats.powerV },
+        { name: "スピード", sub: "Commits", grade: stats.speed, value: stats.speedV },
+        { name: "射程距離", sub: "Forks", grade: stats.range, value: stats.rangeV },
+        { name: "持続力", sub: "Age", grade: stats.stamina, value: stats.staminaV },
+        { name: "精密動作", sub: "Issues", grade: stats.precision, value: stats.precisionV },
+        { name: "成長性", sub: "PRs", grade: stats.potential, value: stats.potentialV }
+    ];
+    const gradeToNum = { 'A': 5, 'B': 4, 'C': 3, 'D': 2, 'E': 1 };
+
+    // 同心圆
+    ctx.lineWidth = 1.5; ctx.strokeStyle = "rgba(255,255,255,0.3)";
+    for (let i = 1; i <= 5; i++) {
+        ctx.beginPath(); ctx.arc(cx, cy, (radius/5)*i, 0, Math.PI*2); ctx.stroke();
+    }
+    // 外框
+    ctx.beginPath(); ctx.lineWidth = 3; ctx.strokeStyle = "rgba(255,255,255,0.9)"; ctx.arc(cx, cy, radius, 0, Math.PI*2); ctx.stroke();
+
+    // 刻度
+    for (let i = 0; i < 60; i++) {
+        const angle = (Math.PI*2/60)*i; const isMajor = i%10===0; const rStart = isMajor ? radius-8 : radius-4;
+        ctx.beginPath(); ctx.lineWidth = isMajor ? 2 : 1;
+        ctx.strokeStyle = isMajor ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.3)";
+        ctx.moveTo(cx+Math.cos(angle)*rStart, cy+Math.sin(angle)*rStart); ctx.lineTo(cx+Math.cos(angle)*radius, cy+Math.sin(angle)*radius); ctx.stroke();
+    }
+
+    // 轴线
+    ctx.lineWidth = 1.5; ctx.strokeStyle = "rgba(255,255,255,0.4)";
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(angle)*radius, cy+Math.sin(angle)*radius); ctx.stroke();
+    }
+
+    // 等级标尺
+    ctx.fillStyle = "rgba(255,255,255,0.7)"; ctx.font = "bold 11px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ['E','D','C','B','A'].forEach((g,i) => { ctx.fillText(g, cx+8, cy-(radius/5)*(i+1)+6); });
+
+    // 数据多边形
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        const r = (radius/5) * (gradeToNum[labels[i].grade]||0);
+        if (i===0) ctx.moveTo(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r);
+        else ctx.lineTo(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r);
+    }
+    ctx.closePath();
+    ctx.fillStyle = "rgba(139,92,246,0.5)"; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = "rgba(167,139,250,1)"; ctx.stroke();
+
+    // 外围文字
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        const textR = radius + 55;
+        const tx = cx + Math.cos(angle)*textR, ty = cy + Math.sin(angle)*textR;
+        if (Math.cos(angle)>0.1) ctx.textAlign="left"; else if (Math.cos(angle)<-0.1) ctx.textAlign="right"; else ctx.textAlign="center";
+        ctx.shadowColor="black"; ctx.shadowBlur=4; ctx.shadowOffsetX=2; ctx.shadowOffsetY=2;
+        ctx.font="bold 12px sans-serif"; ctx.fillStyle="white"; ctx.fillText(labels[i].name, tx, ty-18);
+        ctx.font="bold 20px sans-serif"; ctx.fillStyle="#a5b4fc"; ctx.fillText(labels[i].grade, tx, ty+2);
+        ctx.font="bold 11px monospace"; ctx.fillStyle="#c7d2fe"; ctx.fillText(labels[i].value, tx, ty+20);
+        ctx.shadowColor="transparent";
+    }
+}
+
+const stats = {
+    power: 'A', powerV: '68.2k',
+    speed: 'A', speedV: '12.5k+',
+    range: 'A', rangeV: '9.1k+',
+    stamina: 'A', staminaV: '3 yrs',
+    precision: 'B', precisionV: '85%',
+    potential: 'A', potentialV: '2.1k+'
+};
+window.onload = () => { drawStandRadar('radarCanvas', stats); };
+</script>
+</body>
+</html>

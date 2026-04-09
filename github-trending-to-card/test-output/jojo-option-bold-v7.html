@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, height=1440">
+    <title>JOJO Stand Panel - Bold v7</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700;900&family=Noto+Sans+SC:wght@400;700;900&family=JetBrains+Mono:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ================================================================
+           SPACING — 8px base
+        ================================================================ */
+        :root {
+            --sp-xs:  4px;
+            --sp-sm:  8px;
+            --sp-md:  16px;
+            --sp-lg:  24px;
+            --sp-xl:  40px;
+        }
+
+        /* ================================================================
+           TYPE SCALE — minimum 20px
+        ================================================================ */
+        :root {
+            --text-xs:    20px;
+            --text-sm:    22px;
+            --text-base:  26px;
+            --text-md:    36px;
+            --text-lg:    60px;
+            --text-xl:   100px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #080808;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; overflow: hidden;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ================================================================
+           CARD
+        ================================================================ */
+        .card {
+            width: 1080px; height: 1440px;
+            position: relative; overflow: hidden;
+            background: #080808;
+        }
+
+        .bg {
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 100% 80% at 30% 45%, rgba(88,28,135,0.26) 0%, transparent 55%),
+                radial-gradient(ellipse 45% 35% at 78% 14%, rgba(220,38,38,0.14) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 50% at 78% 88%, rgba(59,130,246,0.07) 0%, transparent 50%),
+                #080808;
+        }
+        .bg::before {
+            content: ""; position: absolute; inset: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.04"/></svg>');
+            mix-blend-mode: overlay;
+        }
+
+        /* ================================================================
+           对角线遮罩 — clip-path 将右下角裁掉，形成斜边
+           对角线从 (1080, 0) 到 (0, 960)
+           方程: y = 960 - (8/9)x
+           clip-path polygon 区域：保留左上三角形
+        ================================================================ */
+        .diagonal {
+            position: absolute;
+            top: 0; right: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(
+                150deg,
+                rgba(8,8,8,0.78) 0%,
+                rgba(8,8,8,0.65) 40%,
+                rgba(8,8,8,0.92) 100%
+            );
+            clip-path: polygon(0 0, 100% 0, 0 960px);
+            z-index: 10;
+        }
+
+        /* 斜切装饰条 */
+        .skew-top {
+            position: absolute; top: -20px; right: -80px;
+            width: 560px; height: 72px;
+            background: linear-gradient(130deg, #7c3aed 0%, #e8453c 100%);
+            transform: rotate(-10deg); opacity: 0.5; z-index: 6;
+        }
+        .skew-bottom {
+            position: absolute; bottom: 96px; left: -100px;
+            width: 480px; height: 44px;
+            background: linear-gradient(130deg, transparent, rgba(139,92,246,0.28));
+            transform: rotate(-10deg); z-index: 6;
+        }
+
+        /* ================================================================
+           项目标题 — 左上，落在对角线左侧亮区
+        ================================================================ */
+        .project-title {
+            position: absolute; top: var(--sp-xl); left: var(--sp-xl); z-index: 25;
+        }
+        .project-title__owner {
+            font-size: var(--text-sm); font-weight: 600; color: #6366f1;
+            letter-spacing: 2px; text-transform: uppercase; margin-bottom: var(--sp-xs);
+        }
+        .project-title__name {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: var(--text-md); font-weight: 900; color: white;
+            text-shadow: 3px 3px 0 #000, 6px 6px 0 rgba(0,0,0,0.25);
+            line-height: 1; letter-spacing: -0.5px;
+        }
+        .project-title__lang { margin-top: var(--sp-sm); display: flex; align-items: center; gap: var(--sp-sm); }
+        .lang-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(139,92,246,0.25); border: 1px solid rgba(139,92,246,0.5);
+            border-radius: 4px; padding: var(--sp-xs) var(--sp-sm);
+            font-size: var(--text-xs); font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* ================================================================
+           雷达图 — 居中偏左，落在对角线左侧亮区
+        ================================================================ */
+        .radar {
+            position: absolute;
+            top: 50%; left: 28%;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+        }
+
+        /* ================================================================
+           描述框 — 落在对角线右侧暗区，右上角
+        ================================================================ */
+        .desc {
+            position: absolute; top: var(--sp-xl); right: var(--sp-xl);
+            width: 340px;
+            background: rgba(0,0,0,0.65); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px; padding: var(--sp-md);
+            z-index: 25;
+        }
+        .desc__text {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: var(--text-base); color: #c7d2fe; line-height: 1.75;
+        }
+        .desc__footer {
+            display: flex; gap: var(--sp-md); margin-top: var(--sp-md); padding-top: var(--sp-sm);
+            border-top: 1px solid rgba(255,255,255,0.07);
+        }
+        .desc__meta { font-size: var(--text-xs); color: #475569; display: flex; align-items: center; gap: 4px; }
+
+        /* ================================================================
+           数据卡 — 水平分布，全宽，落在对角线下方亮区
+        ================================================================ */
+        .stats {
+            position: absolute; bottom: 112px;
+            left: var(--sp-xl); right: var(--sp-xl);
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 2fr;
+            gap: var(--sp-sm); z-index: 25;
+        }
+        .stat {
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+            border-top: 5px solid; border-radius: 0 0 6px 6px;
+            padding: var(--sp-sm) var(--sp-md) var(--sp-md);
+        }
+        .stat--gold  { border-color: #fbbf24; }
+        .stat--red   { border-color: #e8453c; }
+        .stat--blue  { border-color: #3b82f6; }
+        .stat--green { border-color: #10b981; }
+        .stat--wide   { padding-left: var(--sp-lg); }
+        .stat--narrow { padding-left: var(--sp-sm); }
+        .stat__label {
+            font-size: var(--text-xs); font-weight: 600; color: #475569;
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: var(--sp-xs);
+        }
+        .stat__value { font-size: 34px; font-weight: 700; color: white; line-height: 1; }
+        .stat__grade { font-size: var(--text-xs); color: #818cf8; margin-top: var(--sp-xs); }
+
+        /* ================================================================
+           替身名称 — 左下（参考 v5）
+        ================================================================ */
+        .stand-name {
+            position: absolute; bottom: var(--sp-xl); left: var(--sp-xl); z-index: 25;
+        }
+        .stand-name__bg {
+            font-family: 'Noto Serif JP', serif;
+            font-size: var(--text-xl); font-weight: 900;
+            color: transparent; -webkit-text-stroke: 2.5px rgba(255,255,255,0.05);
+            line-height: 0.8; letter-spacing: -0.02em; user-select: none;
+        }
+        .stand-name__fg {
+            position: absolute; top: 6px; left: 6px;
+            font-family: 'Noto Serif JP', serif;
+            font-size: var(--text-lg); font-weight: 900; color: white;
+            text-shadow: 4px 4px 0 #000, 7px 7px 0 rgba(139,92,246,0.3);
+            line-height: 0.88; letter-spacing: -0.01em;
+        }
+        .stand-name__label {
+            font-size: var(--text-xs); font-weight: 700; color: #a78bfa;
+            letter-spacing: 4px; text-transform: uppercase;
+            margin-bottom: var(--sp-xs); padding-left: 6px;
+        }
+        .stand-name__sub {
+            font-size: var(--text-xs); color: #6366f1; margin-top: 4px; padding-left: 6px; letter-spacing: 1px;
+        }
+
+        /* ================================================================
+           替身使者 — 右下（参考 v5）
+        ================================================================ */
+        .master {
+            position: absolute; bottom: var(--sp-xl); right: var(--sp-xl);
+            text-align: right; z-index: 25;
+        }
+        .master__label {
+            font-size: var(--text-xs); font-weight: 700; color: #a78bfa;
+            letter-spacing: 4px; text-transform: uppercase; margin-bottom: var(--sp-xs);
+        }
+        .master__name {
+            font-size: var(--text-md); font-weight: 900; color: white;
+            text-shadow: 3px 3px 0 #000, 5px 5px 0 rgba(139,92,246,0.25);
+        }
+        .master__sub { font-size: var(--text-xs); color: #6366f1; margin-top: 4px; }
+
+        /* ================================================================
+           Footer
+        ================================================================ */
+        .footer {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 52px; display: flex; align-items: center;
+            justify-content: space-between; padding: 0 var(--sp-xl);
+            background: rgba(0,0,0,0.9); z-index: 30;
+            border-top: 1px solid rgba(139,92,246,0.2);
+        }
+        .footer__brand { font-size: var(--text-xs); font-weight: 700; color: #818cf8; letter-spacing: 2px; text-transform: uppercase; }
+        .footer__time  { font-size: var(--text-xs); color: #475569; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="bg"></div>
+    <div class="skew-top"></div>
+    <div class="skew-bottom"></div>
+
+    <!-- 对角线遮罩 -->
+    <div class="diagonal"></div>
+
+    <!-- 项目标题：左上 -->
+    <div class="project-title">
+        <div class="project-title__owner">langchain-ai /</div>
+        <div class="project-title__name">LangChain</div>
+        <div class="project-title__lang">
+            <span class="lang-chip">★ Python</span>
+        </div>
+    </div>
+
+    <!-- 雷达图：居中偏左 -->
+    <div class="radar">
+        <canvas id="radarCanvas" width="560" height="560"></canvas>
+    </div>
+
+    <!-- 描述：右上，对角线右侧暗区 -->
+    <div class="desc">
+        <div class="desc__text">Building context-aware reasoning applications with LLMs. Provides a standard interface for chains, tool integration, and memory management.</div>
+        <div class="desc__footer">
+            <span class="desc__meta">★ 68.2k</span>
+            <span class="desc__meta">MIT</span>
+            <span class="desc__meta">Est. 2022</span>
+        </div>
+    </div>
+
+    <!-- 数据卡：底部水平 -->
+    <div class="stats">
+        <div class="stat stat--gold stat--wide">
+            <div class="stat__label">Total Stars</div>
+            <div class="stat__value">68.2k</div>
+            <div class="stat__grade">A · Power · Stars</div>
+        </div>
+        <div class="stat stat--red stat--narrow">
+            <div class="stat__label">Today</div>
+            <div class="stat__value">+328</div>
+            <div class="stat__grade">A · Speed · Commits</div>
+        </div>
+        <div class="stat stat--blue stat--narrow">
+            <div class="stat__label">Forks</div>
+            <div class="stat__value">9.1k+</div>
+            <div class="stat__grade">A · Range · Forks</div>
+        </div>
+        <div class="stat stat--green stat--wide">
+            <div class="stat__label">Contributors</div>
+            <div class="stat__value">2,100+</div>
+            <div class="stat__grade">A · Growth · PRs</div>
+        </div>
+    </div>
+
+    <!-- 替身名称：左下 -->
+    <div class="stand-name">
+        <div class="stand-name__bg">LANGCHAIN</div>
+        <div class="stand-name__fg">LANGCHAIN</div>
+        <div class="stand-name__label">[ Stand Name ]</div>
+        <div class="stand-name__sub">Chain of Thought · Stand</div>
+    </div>
+
+    <!-- 替身使者：右下 -->
+    <div class="master">
+        <div class="master__label">[ Stand Master ]</div>
+        <div class="master__name">langchain-ai</div>
+        <div class="master__sub">github.com/langchain-ai</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer__brand">★ GitHub Trending · Stand Profile</div>
+        <div class="footer__time">2026-04-03 · github.com/trending</div>
+    </div>
+</div>
+
+<script>
+function drawStandRadar(canvasId, stats) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width, height = canvas.height;
+    const cx = width * 0.5, cy = height * 0.5;
+    const radius = 178;
+
+    const labels = [
+        { name: "Power",     metric: "Stars",    grade: stats.power,     value: stats.powerV },
+        { name: "Speed",     metric: "Commits",  grade: stats.speed,     value: stats.speedV },
+        { name: "Range",     metric: "Forks",    grade: stats.range,     value: stats.rangeV },
+        { name: "Stamina",   metric: "Activity", grade: stats.stamina,   value: stats.staminaV },
+        { name: "Precision", metric: "Issues",  grade: stats.precision, value: stats.precisionV },
+        { name: "Growth",    metric: "PRs",      grade: stats.potential, value: stats.potentialV }
+    ];
+    const gradeToNum = { 'A': 5, 'B': 4, 'C': 3, 'D': 2, 'E': 1 };
+    const gc = { 'A':'#fbbf24','B':'#3b82f6','C':'#10b981','D':'#f97316','E':'#6b7280' };
+
+    for (let i = 1; i <= 5; i++) {
+        ctx.beginPath(); ctx.lineWidth = i === 5 ? 2.5 : 0.8;
+        ctx.strokeStyle = i === 5 ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.1)";
+        ctx.arc(cx, cy, (radius/5)*i, 0, Math.PI*2); ctx.stroke();
+    }
+    ctx.beginPath(); ctx.lineWidth = 4;
+    ctx.strokeStyle = "rgba(255,255,255,0.9)"; ctx.arc(cx, cy, radius, 0, Math.PI*2); ctx.stroke();
+
+    for (let i = 0; i < 60; i++) {
+        const angle = (Math.PI*2/60)*i;
+        const isMajor = i%10===0;
+        ctx.beginPath(); ctx.lineWidth = isMajor ? 2.5 : 0.8;
+        ctx.strokeStyle = isMajor ? "rgba(255,255,255,0.65)" : "rgba(255,255,255,0.16)";
+        const rStart = isMajor ? radius-12 : radius-5;
+        ctx.moveTo(cx+Math.cos(angle)*rStart, cy+Math.sin(angle)*rStart);
+        ctx.lineTo(cx+Math.cos(angle)*radius, cy+Math.sin(angle)*radius); ctx.stroke();
+    }
+
+    ctx.lineWidth = 1.5; ctx.strokeStyle = "rgba(255,255,255,0.3)";
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(angle)*radius, cy+Math.sin(angle)*radius); ctx.stroke();
+    }
+
+    ctx.fillStyle = "rgba(255,255,255,0.58)"; ctx.font = "bold 13px 'JetBrains Mono', monospace";
+    ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    ['E','D','C','B','A'].forEach((g,i) => { ctx.fillText(g, cx+14, cy-(radius/5)*(i+1)+7); });
+
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        const r = (radius/5) * (gradeToNum[labels[i].grade]||0);
+        if (i===0) ctx.moveTo(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r);
+        else ctx.lineTo(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r);
+    }
+    ctx.closePath();
+    ctx.fillStyle = "rgba(139,92,246,0.38)"; ctx.fill();
+    ctx.lineWidth = 3.5; ctx.strokeStyle = "rgba(167,139,250,1)"; ctx.stroke();
+
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        const r = (radius/5) * (gradeToNum[labels[i].grade]||0);
+        const color = gc[labels[i].grade]||'#fff';
+        ctx.beginPath(); ctx.arc(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r, 8, 0, Math.PI*2);
+        ctx.fillStyle = color; ctx.fill(); ctx.strokeStyle = "rgba(255,255,255,0.85)"; ctx.lineWidth = 2; ctx.stroke();
+    }
+
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        const textR = radius + 82;
+        const tx = cx + Math.cos(angle)*textR, ty = cy + Math.sin(angle)*textR;
+        const color = gc[labels[i].grade]||'#fff';
+        if (Math.cos(angle) > 0.15) ctx.textAlign="left";
+        else if (Math.cos(angle) < -0.15) ctx.textAlign="right";
+        else ctx.textAlign="center";
+        ctx.textBaseline="middle";
+        ctx.shadowColor="black"; ctx.shadowBlur=6; ctx.shadowOffsetX=2; ctx.shadowOffsetY=2;
+        ctx.font="bold 20px 'JetBrains Mono', monospace"; ctx.fillStyle="#e2e8f0";
+        ctx.fillText(labels[i].name, tx, ty-26);
+        ctx.font="bold 42px 'Noto Serif JP', serif"; ctx.fillStyle=color;
+        ctx.fillText(labels[i].grade, tx, ty+4);
+        ctx.font="bold 20px 'JetBrains Mono', monospace"; ctx.fillStyle="#818cf8";
+        ctx.fillText(labels[i].metric, tx, ty+32);
+        ctx.font="20px 'JetBrains Mono', monospace"; ctx.fillStyle="#64748b";
+        ctx.fillText(labels[i].value, tx, ty+54);
+        ctx.shadowColor="transparent";
+    }
+}
+
+const stats = {
+    power:'A',powerV:'68.2k',
+    speed:'A',speedV:'12.5k+',
+    range:'A',rangeV:'9.1k+',
+    stamina:'B',staminaV:'Active',
+    precision:'B',precisionV:'85%',
+    potential:'A',potentialV:'2.1k+'
+};
+window.onload = () => { drawStandRadar('radarCanvas', stats); };
+</script>
+</body>
+</html>

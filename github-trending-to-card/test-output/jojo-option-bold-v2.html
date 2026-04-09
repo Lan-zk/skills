@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, height=1440">
+    <title>JOJO Stand Panel - Bold v2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700;900&family=Noto+Sans+SC:wght@400;700;900&family=JetBrains+Mono:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a0a; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: 'JetBrains Mono', monospace; }
+
+        .card {
+            width: 1080px; height: 1440px; position: relative; overflow: hidden;
+            background: #080808;
+        }
+
+        /* ===== 背景 ===== */
+        .bg-layer {
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 90% 70% at 32% 45%, rgba(88,28,135,0.3) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 80% 15%, rgba(220,38,38,0.15) 0%, transparent 55%),
+                radial-gradient(ellipse 40% 50% at 75% 85%, rgba(59,130,246,0.08) 0%, transparent 50%),
+                #080808;
+        }
+        .bg-layer::before {
+            content: ""; position: absolute; inset: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.06"/></svg>');
+            mix-blend-mode: overlay;
+        }
+
+        /* ===== 斜切装饰条 ===== */
+        .skew-bar-top {
+            position: absolute; top: -15px; right: -60px;
+            width: 550px; height: 70px;
+            background: linear-gradient(135deg, #7c3aed, #e8453c);
+            transform: rotate(-12deg);
+            opacity: 0.65; z-index: 5;
+        }
+        .skew-bar-bottom {
+            position: absolute; bottom: 110px; left: -90px;
+            width: 480px; height: 50px;
+            background: linear-gradient(135deg, transparent, rgba(139,92,246,0.35));
+            transform: rotate(-12deg); z-index: 5;
+        }
+
+        /* ===== 替身名称：左下大字叠压 ===== */
+        .stand-name-container {
+            position: absolute; bottom: 60px; left: 20px;
+            z-index: 20;
+        }
+        .stand-name-bg {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 8rem; font-weight: 900;
+            color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.07);
+            line-height: 0.85; letter-spacing: -0.02em; user-select: none;
+        }
+        .stand-name-fg {
+            position: absolute; top: 6px; left: 6px;
+            font-family: 'Noto Serif JP', serif;
+            font-size: 5rem; font-weight: 900;
+            color: white;
+            text-shadow: 4px 4px 0 #000, 7px 7px 0 rgba(139,92,246,0.4);
+            line-height: 0.9; letter-spacing: -0.01em;
+        }
+        .stand-name-label {
+            font-size: 0.6rem; font-weight: 700; color: #a78bfa;
+            letter-spacing: 4px; text-transform: uppercase; margin-bottom: 6px; padding-left: 6px;
+        }
+        .stand-name-sub {
+            font-size: 0.75rem; color: #6366f1; margin-top: 4px; padding-left: 6px; letter-spacing: 1px;
+        }
+
+        /* ===== 项目标题：左上 ===== */
+        .project-title {
+            position: absolute; top: 60px; left: 60px;
+            z-index: 25;
+        }
+        .project-owner {
+            font-size: 0.7rem; font-weight: 600; color: #6366f1;
+            letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px;
+        }
+        .project-name {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 3.5rem; font-weight: 900; color: white;
+            text-shadow: 4px 4px 0 #000, 8px 8px 0 rgba(0,0,0,0.3); line-height: 1;
+        }
+        .project-lang { margin-top: 10px; }
+        .lang-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(139,92,246,0.3); border: 1px solid rgba(139,92,246,0.5);
+            border-radius: 3px; padding: 4px 12px;
+            font-size: 0.65rem; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* ===== 雷达图：居中偏左，上方留白给标题 ===== */
+        .radar-container {
+            position: absolute;
+            top: 380px; left: 50%;
+            transform: translateX(-50%);
+            z-index: 15;
+        }
+        #radarCanvas { display: block; }
+
+        /* ===== 爆发星：右上 ===== */
+        .burst {
+            position: absolute; top: 55px; right: 80px; z-index: 25;
+        }
+
+        /* ===== 描述气泡：右中上 ===== */
+        .desc-box {
+            position: absolute; top: 60px; right: 80px;
+            width: 300px;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px; padding: 14px 16px; z-index: 25;
+        }
+        .desc-text {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 0.82rem; color: #c7d2fe; line-height: 1.65;
+        }
+        .desc-footer {
+            display: flex; gap: 10px; margin-top: 8px; padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .desc-meta { font-size: 0.58rem; color: #475569; display: flex; align-items: center; gap: 3px; }
+
+        /* ===== 数据信息卡：底部横排 ===== */
+        .info-cards {
+            position: absolute; bottom: 160px; left: 60px; right: 60px;
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+            z-index: 25;
+        }
+        .info-card {
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+            border-top: 4px solid; border-radius: 0 0 4px 4px;
+            padding: 12px 14px 14px;
+        }
+        .info-card.gold   { border-color: #fbbf24; }
+        .info-card.red    { border-color: #e8453c; }
+        .info-card.blue   { border-color: #3b82f6; }
+        .info-card.green  { border-color: #10b981; }
+        .info-card.purple { border-color: #8b5cf6; }
+        .info-card-label { font-size: 0.56rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 3px; }
+        .info-card-value { font-size: 1.1rem; font-weight: 700; color: white; }
+        .info-card-grade { font-size: 0.58rem; color: #a5b4fc; margin-top: 2px; }
+
+        /* ===== 替身使者：右下方 ===== */
+        .master-container {
+            position: absolute; bottom: 60px; right: 80px;
+            text-align: right; z-index: 25;
+        }
+        .master-label {
+            font-size: 0.6rem; font-weight: 700; color: #a78bfa;
+            letter-spacing: 4px; text-transform: uppercase; margin-bottom: 4px;
+        }
+        .master-name {
+            font-size: 1.8rem; font-weight: 900; color: white;
+            text-shadow: 3px 3px 0 #000, 5px 5px 0 rgba(139,92,246,0.3);
+        }
+        .master-sub { font-size: 0.65rem; color: #6366f1; margin-top: 2px; }
+
+        /* ===== Footer ===== */
+        .footer {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 48px; display: flex; align-items: center;
+            justify-content: space-between; padding: 0 60px;
+            background: rgba(0,0,0,0.85); z-index: 30;
+            border-top: 1px solid rgba(139,92,246,0.25);
+        }
+        .footer-brand { font-size: 0.62rem; font-weight: 700; color: #818cf8; letter-spacing: 2px; text-transform: uppercase; }
+        .footer-time { font-size: 0.62rem; color: #475569; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="bg-layer"></div>
+    <div class="skew-bar-top"></div>
+    <div class="skew-bar-bottom"></div>
+
+    <!-- 项目标题：左上 -->
+    <div class="project-title">
+        <div class="project-owner">langchain-ai /</div>
+        <div class="project-name">LangChain</div>
+        <div class="project-lang">
+            <span class="lang-chip">★ Python</span>
+        </div>
+    </div>
+
+    <!-- 爆发星：右上 -->
+    <svg class="burst" width="72" height="72" viewBox="0 0 80 80">
+        <polygon points="40,2 46,28 72,20 54,40 72,60 46,52 40,78 34,52 8,60 26,40 8,20 34,28" fill="rgba(232,69,60,0.75)" />
+        <circle cx="40" cy="40" r="11" fill="rgba(251,191,36,0.9)" />
+        <text x="40" y="44" text-anchor="middle" font-size="9" font-weight="900" font-family="'JetBrains Mono', monospace" fill="#080808">A</text>
+    </svg>
+
+    <!-- 描述：右上 -->
+    <div class="desc-box">
+        <div class="desc-text">Building context-aware reasoning applications with LLMs. Provides a standard interface for chains, tool integration, and memory management.</div>
+        <div class="desc-footer">
+            <span class="desc-meta">★ 68.2k</span>
+            <span class="desc-meta">MIT</span>
+            <span class="desc-meta">2022</span>
+        </div>
+    </div>
+
+    <!-- 雷达图：居中 -->
+    <div class="radar-container">
+        <canvas id="radarCanvas" width="580" height="580"></canvas>
+    </div>
+
+    <!-- 数据卡：底部横排 -->
+    <div class="info-cards">
+        <div class="info-card gold">
+            <div class="info-card-label">Total Stars</div>
+            <div class="info-card-value">68.2k</div>
+            <div class="info-card-grade">A · Power (Stars)</div>
+        </div>
+        <div class="info-card red">
+            <div class="info-card-label">Stars Today</div>
+            <div class="info-card-value">+328</div>
+            <div class="info-card-grade">A · Speed (Commits)</div>
+        </div>
+        <div class="info-card blue">
+            <div class="info-card-label">Forks</div>
+            <div class="info-card-value">9.1k+</div>
+            <div class="info-card-grade">A · Range (Forks)</div>
+        </div>
+        <div class="info-card green">
+            <div class="info-card-label">Contributors</div>
+            <div class="info-card-value">2,100+</div>
+            <div class="info-card-grade">A · Growth (PRs)</div>
+        </div>
+        <div class="info-card purple">
+            <div class="info-card-label">License</div>
+            <div class="info-card-value" style="font-size:1rem;">MIT</div>
+            <div class="info-card-grade">Open Source</div>
+        </div>
+    </div>
+
+    <!-- 替身名称：左下大字 -->
+    <div class="stand-name-container">
+        <div class="stand-name-bg">LANGCHAIN</div>
+        <div class="stand-name-fg">LANGCHAIN</div>
+        <div class="stand-name-label">[ Stand Name ]</div>
+        <div class="stand-name-sub">Chain of Thought · Stand</div>
+    </div>
+
+    <!-- 替身使者：右下 -->
+    <div class="master-container">
+        <div class="master-label">[ Stand Master ]</div>
+        <div class="master-name">langchain-ai</div>
+        <div class="master-sub">github.com/langchain-ai</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-brand">★ GitHub Trending · Stand Profile</div>
+        <div class="footer-time">2026-04-03 · github.com/trending</div>
+    </div>
+</div>
+
+<script>
+function drawStandRadar(canvasId, stats) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width, height = canvas.height;
+    const cx = width * 0.5, cy = height * 0.5;
+    const radius = 185;
+
+    const labels = [
+        { name: "Power", metric: "Stars", grade: stats.power, value: stats.powerV },
+        { name: "Speed", metric: "Commits", grade: stats.speed, value: stats.speedV },
+        { name: "Range", metric: "Forks", grade: stats.range, value: stats.rangeV },
+        { name: "Stamina", metric: "Activity", grade: stats.stamina, value: stats.staminaV },
+        { name: "Precision", metric: "Issues", grade: stats.precision, value: stats.precisionV },
+        { name: "Growth", metric: "PRs", grade: stats.potential, value: stats.potentialV }
+    ];
+    const gradeToNum = { 'A': 5, 'B': 4, 'C': 3, 'D': 2, 'E': 1 };
+    const gc = { 'A':'#fbbf24','B':'#3b82f6','C':'#10b981','D':'#f97316','E':'#6b7280' };
+
+    // 同心圆
+    for (let i = 1; i <= 5; i++) {
+        ctx.beginPath();
+        ctx.lineWidth = i===5 ? 2 : 0.8;
+        ctx.strokeStyle = i===5 ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.12)";
+        ctx.arc(cx, cy, (radius/5)*i, 0, Math.PI*2); ctx.stroke();
+    }
+    // 外框
+    ctx.beginPath(); ctx.lineWidth = 4;
+    ctx.strokeStyle = "rgba(255,255,255,0.9)"; ctx.arc(cx, cy, radius, 0, Math.PI*2); ctx.stroke();
+
+    // 刻度
+    for (let i = 0; i < 60; i++) {
+        const angle = (Math.PI*2/60)*i;
+        const isMajor = i%10===0;
+        ctx.beginPath(); ctx.lineWidth = isMajor ? 2.5 : 0.8;
+        ctx.strokeStyle = isMajor ? "rgba(255,255,255,0.65)" : "rgba(255,255,255,0.2)";
+        const rStart = isMajor ? radius-11 : radius-5;
+        ctx.moveTo(cx+Math.cos(angle)*rStart, cy+Math.sin(angle)*rStart);
+        ctx.lineTo(cx+Math.cos(angle)*radius, cy+Math.sin(angle)*radius); ctx.stroke();
+    }
+
+    // 轴线
+    ctx.lineWidth = 1.5; ctx.strokeStyle = "rgba(255,255,255,0.35)";
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(angle)*radius, cy+Math.sin(angle)*radius); ctx.stroke();
+    }
+
+    // 等级标尺
+    ctx.fillStyle = "rgba(255,255,255,0.6)"; ctx.font = "bold 13px 'JetBrains Mono', monospace";
+    ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    ['E','D','C','B','A'].forEach((g,i) => { ctx.fillText(g, cx+13, cy-(radius/5)*(i+1)+7); });
+
+    // 数据多边形
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        const r = (radius/5) * (gradeToNum[labels[i].grade]||0);
+        if (i===0) ctx.moveTo(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r);
+        else ctx.lineTo(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r);
+    }
+    ctx.closePath();
+    ctx.fillStyle = "rgba(139,92,246,0.38)"; ctx.fill();
+    ctx.lineWidth = 3.5; ctx.strokeStyle = "rgba(167,139,250,1)"; ctx.stroke();
+
+    // 数据顶点
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        const r = (radius/5) * (gradeToNum[labels[i].grade]||0);
+        const color = gc[labels[i].grade]||'#fff';
+        ctx.beginPath(); ctx.arc(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r, 7, 0, Math.PI*2);
+        ctx.fillStyle = color; ctx.fill(); ctx.strokeStyle = "white"; ctx.lineWidth = 2; ctx.stroke();
+    }
+
+    // 外围标注
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        const textR = radius + 70;
+        const tx = cx + Math.cos(angle)*textR, ty = cy + Math.sin(angle)*textR;
+        const color = gc[labels[i].grade]||'#fff';
+        if (Math.cos(angle)>0.15) ctx.textAlign="left";
+        else if (Math.cos(angle)<-0.15) ctx.textAlign="right";
+        else ctx.textAlign="center";
+        ctx.textBaseline="middle";
+        ctx.shadowColor="black"; ctx.shadowBlur=6; ctx.shadowOffsetX=2; ctx.shadowOffsetY=2;
+        ctx.font="bold 13px 'JetBrains Mono', monospace"; ctx.fillStyle="#e2e8f0";
+        ctx.fillText(labels[i].name, tx, ty-22);
+        ctx.font="bold 30px 'Noto Serif JP', serif"; ctx.fillStyle=color;
+        ctx.fillText(labels[i].grade, tx, ty+2);
+        ctx.font="bold 10px 'JetBrains Mono', monospace"; ctx.fillStyle="#818cf8";
+        ctx.fillText(labels[i].metric, tx, ty+22);
+        ctx.font="11px 'JetBrains Mono', monospace"; ctx.fillStyle="#64748b";
+        ctx.fillText(labels[i].value, tx, ty+36);
+        ctx.shadowColor="transparent";
+    }
+}
+
+const stats = {
+    power:'A',powerV:'68.2k',
+    speed:'A',speedV:'12.5k+',
+    range:'A',rangeV:'9.1k+',
+    stamina:'B',staminaV:'Active',
+    precision:'B',precisionV:'85%',
+    potential:'A',potentialV:'2.1k+'
+};
+window.onload = () => { drawStandRadar('radarCanvas', stats); };
+</script>
+</body>
+</html>

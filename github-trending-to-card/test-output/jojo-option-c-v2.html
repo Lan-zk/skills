@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, height=1440">
+    <title>JOJO Stand Panel - Option C Refined</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700;900&family=Noto+Sans+SC:wght@400;700;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a0a; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Noto Serif JP', serif; overflow: hidden; }
+        .card { width: 1080px; height: 1440px; position: relative; overflow: hidden; }
+
+        /* ===== 背景 ===== */
+        .card-bg {
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 38% 50%, #1e0a3c 0%, #0d0d1a 40%, #000 100%);
+        }
+        .card-bg::before {
+            content: ""; position: absolute; inset: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.06"/></svg>');
+            mix-blend-mode: overlay; pointer-events: none;
+        }
+
+        /* ===== 顶部红紫渐变条纹 ===== */
+        .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 8px; background: linear-gradient(90deg, #7c3aed, #e8453c); z-index: 30; }
+
+        /* ===== 左侧：雷达图区域 (占58%) ===== */
+        .radar-zone {
+            position: absolute; left: 0; top: 0; bottom: 0; width: 600px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        /* 分隔过渡：不用硬线，用渐变遮罩让右侧内容柔和渗入 */
+        .radar-zone::after {
+            content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 80px;
+            background: linear-gradient(90deg, transparent, rgba(13,13,26,0.85));
+            pointer-events: none; z-index: 5;
+        }
+
+        /* 替身名称块 */
+        .stand-title-block { position: absolute; top: 72px; left: 0; right: 0; text-align: center; z-index: 20; }
+        .stand-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 600; color: #818cf8; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; }
+        .stand-name { font-family: 'Noto Sans SC', sans-serif; font-size: 2.6rem; font-weight: 900; color: white; text-shadow: 3px 3px 0 #000, 0 0 30px rgba(139,92,246,0.4); letter-spacing: 0.03em; line-height: 1.1; }
+        .stand-sub { font-family: 'Noto Sans SC', sans-serif; font-size: 0.9rem; color: #a5b4fc; margin-top: 6px; letter-spacing: 0.05em; }
+
+        /* 雷达图画布 */
+        #radarCanvas { position: absolute; top: 50%; left: 52%; transform: translate(-50%, -50%); z-index: 10; }
+
+        /* 替身使者块 */
+        .master-block { position: absolute; bottom: 72px; left: 0; right: 0; text-align: center; z-index: 20; }
+        .master-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 600; color: #818cf8; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+        .master-name { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; font-weight: 700; color: white; text-shadow: 2px 2px 0 #000; }
+        .master-sub { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #6366f1; margin-top: 4px; }
+
+        /* ===== 右侧：信息面板 (占42%) ===== */
+        .info-zone {
+            position: absolute; right: 0; top: 0; bottom: 0; width: 480px;
+            display: flex; flex-direction: column;
+            padding: 72px 40px 56px;
+            z-index: 20;
+            /* 半透明背景，让雷达图若隐若现 */
+            background: linear-gradient(90deg, rgba(13,13,26,0.7) 0%, rgba(13,13,26,0.95) 100%);
+        }
+
+        /* 项目头部 */
+        .info-header { margin-bottom: 20px; }
+        .info-owner { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600; color: #6366f1; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+        .info-repo { font-family: 'Noto Sans SC', sans-serif; font-size: 2.6rem; font-weight: 900; color: white; line-height: 1.1; text-shadow: 2px 2px 0 #000; }
+        .lang-chip { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; background: rgba(139,92,246,0.25); border: 1px solid rgba(139,92,246,0.5); border-radius: 4px; padding: 4px 12px; }
+        .lang-dot { width: 8px; height: 8px; border-radius: 50%; background: #e8453c; flex-shrink: 0; }
+        .lang-name { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 700; color: white; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* 描述区 */
+        .info-desc-box { background: rgba(0,0,0,0.45); border-radius: 8px; padding: 18px 20px; border-left: 3px solid #7c3aed; margin-bottom: 18px; flex-shrink: 0; }
+        .desc-text { font-family: 'Noto Sans SC', sans-serif; font-size: 0.9rem; color: #c7d2fe; line-height: 1.7; }
+
+        /* 四格数据 */
+        .stats-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+        .stat-box { background: rgba(0,0,0,0.5); border-radius: 6px; padding: 12px 14px; border-top: 3px solid; }
+        .stat-box.gold   { border-top-color: #fbbf24; }
+        .stat-box.red    { border-top-color: #e8453c; }
+        .stat-box.blue  { border-top-color: #3b82f6; }
+        .stat-box.green { border-top-color: #10b981; }
+        .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 3px; }
+        .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 700; color: white; line-height: 1; }
+        .stat-grade { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #a5b4fc; margin-top: 3px; }
+
+        /* 维度图例：6个维度+GitHub指标对照 */
+        .dimension-legend { margin-bottom: 14px; }
+        .legend-title { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+        .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-grade { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 700; color: white; width: 16px; text-align: center; }
+        .legend-text { font-family: 'Noto Sans SC', sans-serif; font-size: 0.65rem; color: #94a3b8; }
+        .legend-metric { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: #6366f1; }
+
+        /* 元信息 */
+        .divider { height: 1px; background: rgba(255,255,255,0.1); margin: 10px 0; }
+        .meta-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        .meta-item { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #64748b; display: flex; align-items: center; gap: 4px; }
+
+        /* Footer */
+        .footer { position: absolute; bottom: 0; left: 0; right: 0; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; border-top: 1px solid rgba(139,92,246,0.25); z-index: 30; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); }
+        .footer-brand { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 700; color: #818cf8; letter-spacing: 2px; text-transform: uppercase; }
+        .footer-time { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #475569; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="card-bg"></div>
+    <div class="top-bar"></div>
+
+    <!-- 左侧：雷达图 -->
+    <div class="radar-zone">
+        <div class="stand-title-block">
+            <div class="stand-label">[ Stand Name ]</div>
+            <div class="stand-name">LangChain</div>
+            <div class="stand-sub">Chain of Thought · Stand</div>
+        </div>
+        <canvas id="radarCanvas" width="560" height="700"></canvas>
+        <div class="master-block">
+            <div class="master-label">[ Stand Master ]</div>
+            <div class="master-name">langchain-ai</div>
+            <div class="master-sub">github.com/langchain-ai</div>
+        </div>
+    </div>
+
+    <!-- 右侧：信息面板 -->
+    <div class="info-zone">
+
+        <div class="info-header">
+            <div class="info-owner">langchain-ai /</div>
+            <div class="info-repo">LangChain</div>
+            <div class="lang-chip">
+                <span class="lang-dot"></span>
+                <span class="lang-name">Python</span>
+            </div>
+        </div>
+
+        <div class="info-desc-box">
+            <div class="desc-text">Building context-aware reasoning applications with LLMs. Provides a standard interface for chains, tool integration, and memory management.</div>
+        </div>
+
+        <div class="stats-2col">
+            <div class="stat-box gold">
+                <div class="stat-label">Total Stars</div>
+                <div class="stat-value">68.2k</div>
+                <div class="stat-grade">A · Power</div>
+            </div>
+            <div class="stat-box red">
+                <div class="stat-label">Stars Today</div>
+                <div class="stat-value">+328</div>
+                <div class="stat-grade">A · Speed</div>
+            </div>
+            <div class="stat-box blue">
+                <div class="stat-label">Forks</div>
+                <div class="stat-value">9.1k+</div>
+                <div class="stat-grade">A · Range</div>
+            </div>
+            <div class="stat-box green">
+                <div class="stat-label">Contributors</div>
+                <div class="stat-value">2,100+</div>
+                <div class="stat-grade">A · Growth</div>
+            </div>
+        </div>
+
+        <!-- 维度对照图例 -->
+        <div class="dimension-legend">
+            <div class="legend-title">Power Dimensions / GitHub Metrics</div>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <span class="legend-grade" style="color:#fbbf24">A</span>
+                    <span class="legend-text">Power / </span>
+                    <span class="legend-metric">Stars</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-grade" style="color:#e8453c">A</span>
+                    <span class="legend-text">Speed / </span>
+                    <span class="legend-metric">Commits</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-grade" style="color:#3b82f6">A</span>
+                    <span class="legend-text">Range / </span>
+                    <span class="legend-metric">Forks</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-grade" style="color:#10b981">B</span>
+                    <span class="legend-text">Stamina / </span>
+                    <span class="legend-metric">Activity</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-grade" style="color:#8b5cf6">B</span>
+                    <span class="legend-text">Precision / </span>
+                    <span class="legend-metric">Issues Rate</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-grade" style="color:#ec4899">A</span>
+                    <span class="legend-text">Growth / </span>
+                    <span class="legend-metric">PRs</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="meta-row">
+            <div class="meta-item">MIT License</div>
+            <div class="meta-item">2,100+ Contributors</div>
+            <div class="meta-item">Est. 2022</div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-brand">★ GitHub Trending · Stand Profile</div>
+        <div class="footer-time">2026-04-03 · github.com/trending</div>
+    </div>
+</div>
+
+<script>
+function drawStandRadar(canvasId, stats) {
+    const canvas = document.getElementById(canvasId);
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width, height = canvas.height;
+    const cx = width * 0.5, cy = height * 0.5;
+    const radius = 155;
+
+    // 六维配置：中英双语维度名 + GitHub指标
+    const labels = [
+        { name: "Power", sub: "Destructive Power", metric: "Stars", grade: stats.power, value: stats.powerV },
+        { name: "Speed", sub: "Development Speed", metric: "Commits", grade: stats.speed, value: stats.speedV },
+        { name: "Range", sub: "Fork Spread", metric: "Forks", grade: stats.range, value: stats.rangeV },
+        { name: "Stamina", sub: "Maintenance", metric: "Activity", grade: stats.stamina, value: stats.staminaV },
+        { name: "Precision", sub: "Code Quality", metric: "Issues Rate", grade: stats.precision, value: stats.precisionV },
+        { name: "Growth", sub: "Dev Potential", metric: "PRs", grade: stats.potential, value: stats.potentialV }
+    ];
+    const gradeToNum = { 'A': 5, 'B': 4, 'C': 3, 'D': 2, 'E': 1 };
+    const gradeColors = { 'A': '#fbbf24', 'B': '#3b82f6', 'C': '#10b981', 'D': '#f97316', 'E': '#6b7280' };
+
+    // ---- 1. 同心圆网格 ----
+    ctx.lineWidth = 1;
+    for (let i = 1; i <= 5; i++) {
+        ctx.strokeStyle = i === 5 ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.12)";
+        ctx.beginPath(); ctx.arc(cx, cy, (radius/5)*i, 0, Math.PI*2); ctx.stroke();
+    }
+
+    // ---- 2. 外圈粗框 ----
+    ctx.beginPath(); ctx.lineWidth = 3.5;
+    ctx.strokeStyle = "rgba(255,255,255,0.85)"; ctx.arc(cx, cy, radius, 0, Math.PI*2); ctx.stroke();
+
+    // ---- 3. 刻度线 ----
+    for (let i = 0; i < 60; i++) {
+        const angle = (Math.PI*2/60)*i;
+        const isMajor = i%10===0;
+        const rStart = isMajor ? radius-10 : radius-5;
+        ctx.beginPath(); ctx.lineWidth = isMajor ? 2 : 0.8;
+        ctx.strokeStyle = isMajor ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.2)";
+        ctx.moveTo(cx+Math.cos(angle)*rStart, cy+Math.sin(angle)*rStart); ctx.lineTo(cx+Math.cos(angle)*radius, cy+Math.sin(angle)*radius); ctx.stroke();
+    }
+
+    // ---- 4. 轴线 ----
+    ctx.lineWidth = 1.5; ctx.strokeStyle = "rgba(255,255,255,0.3)";
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(angle)*radius, cy+Math.sin(angle)*radius); ctx.stroke();
+    }
+
+    // ---- 5. 等级标尺 (右侧) ----
+    ctx.fillStyle = "rgba(255,255,255,0.55)"; ctx.font = "bold 12px 'JetBrains Mono', monospace";
+    ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    ['E','D','C','B','A'].forEach((g,i) => {
+        ctx.fillText(g, cx + 12, cy - (radius/5)*(i+1) + 6);
+    });
+
+    // ---- 6. 数据多边形 ----
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        const r = (radius/5) * (gradeToNum[labels[i].grade]||0);
+        if (i===0) ctx.moveTo(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r);
+        else ctx.lineTo(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r);
+    }
+    ctx.closePath();
+    ctx.fillStyle = "rgba(139,92,246,0.35)"; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = "rgba(167,139,250,1)"; ctx.stroke();
+
+    // ---- 7. 数据顶点圆点 ----
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        const r = (radius/5) * (gradeToNum[labels[i].grade]||0);
+        const gc = gradeColors[labels[i].grade] || '#fff';
+        ctx.beginPath(); ctx.arc(cx+Math.cos(angle)*r, cy+Math.sin(angle)*r, 6, 0, Math.PI*2);
+        ctx.fillStyle = gc; ctx.fill(); ctx.strokeStyle = "rgba(255,255,255,0.8)"; ctx.lineWidth = 2; ctx.stroke();
+    }
+
+    // ---- 8. 外围标注 ----
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI/2 + (Math.PI*2/6)*i;
+        const textR = radius + 65;
+        const tx = cx + Math.cos(angle)*textR, ty = cy + Math.sin(angle)*textR;
+        const gc = gradeColors[labels[i].grade] || '#fff';
+
+        // 动态对齐
+        if (Math.cos(angle) > 0.15) ctx.textAlign = "left";
+        else if (Math.cos(angle) < -0.15) ctx.textAlign = "right";
+        else ctx.textAlign = "center";
+
+        ctx.textBaseline = "middle";
+        ctx.shadowColor = "black"; ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2;
+
+        // 维度名 (英文)
+        ctx.font = "bold 13px 'JetBrains Mono', monospace";
+        ctx.fillStyle = "#e2e8f0"; ctx.fillText(labels[i].name, tx, ty - 22);
+
+        // 等级大字
+        ctx.font = "bold 26px 'Noto Serif JP', serif";
+        ctx.fillStyle = gc; ctx.fillText(labels[i].grade, tx, ty + 2);
+
+        // GitHub 指标
+        ctx.font = "bold 10px 'JetBrains Mono', monospace";
+        ctx.fillStyle = "#818cf8"; ctx.fillText(labels[i].metric, tx, ty + 20);
+
+        // 具体数值
+        ctx.font = "11px 'JetBrains Mono', monospace";
+        ctx.fillStyle = "#94a3b8"; ctx.fillText(labels[i].value, tx, ty + 34);
+
+        ctx.shadowColor = "transparent";
+    }
+}
+
+const stats = {
+    power: 'A', powerV: '68.2k',
+    speed: 'A', speedV: '12.5k+',
+    range: 'A', rangeV: '9.1k+',
+    stamina: 'B', staminaV: 'Active',
+    precision: 'B', precisionV: '85%',
+    potential: 'A', potentialV: '2.1k+'
+};
+window.onload = () => { drawStandRadar('radarCanvas', stats); };
+</script>
+</body>
+</html>

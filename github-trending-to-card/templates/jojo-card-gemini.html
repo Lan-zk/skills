@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOJO Stand Panel - 背景优化版</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@700;900&family=JetBrains+Mono:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #050505;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'JetBrains Mono', 'Noto Sans SC', monospace;
+        }
+
+        .wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .card {
+            position: relative;
+            width: 1080px;
+            height: 1440px;
+            /* 调整为青蓝渐变底色，增加呼吸感 */
+            background: linear-gradient(135deg, #23d5e8 0%, #1094b0 100%);
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            transform-origin: center center;
+        }
+
+        /* ── 优化后的背景：漫画横向断裂线条 ── */
+        .bg-lines {
+            position: absolute;
+            inset: -50px; /* 略微外扩，防止滤镜边缘裁剪 */
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 6px,
+                rgba(1, 79, 107, 0.2) 6px,
+                rgba(1, 79, 107, 0.2) 12px
+            );
+            /* 应用横向拉伸的扭曲滤镜，模拟漫画网点纸/笔刷效果 */
+            filter: url(#rough-lines);
+            z-index: 1;
+            opacity: 0.8;
+        }
+
+        /* ── 优化后的背景：不规则的泼墨斑点 ── */
+        .bg-splatters {
+            position: absolute;
+            inset: -100px;
+            background-image:
+                radial-gradient(circle at 10% 10%, #014f6b 0%, #014f6b 140px, transparent 145px),
+                radial-gradient(circle at 88% 15%, #014f6b 0%, #014f6b 160px, transparent 165px),
+                radial-gradient(circle at 20% 35%, #014f6b 0%, #014f6b 100px, transparent 105px),
+                radial-gradient(circle at 85% 45%, #014f6b 0%, #014f6b 150px, transparent 155px),
+                radial-gradient(circle at 12% 70%, #014f6b 0%, #014f6b 180px, transparent 185px),
+                radial-gradient(circle at 82% 80%, #014f6b 0%, #014f6b 120px, transparent 125px),
+                radial-gradient(circle at 50% 95%, #014f6b 0%, #014f6b 200px, transparent 205px),
+                radial-gradient(circle at 50% -5%, #014f6b 0%, #014f6b 120px, transparent 125px);
+            /* 应用大尺度的飞溅扭曲滤镜，将圆变成具有张力的泼墨 */
+            filter: url(#ink-splatter);
+            z-index: 2;
+        }
+
+        /* ── 项目标题区块 ── */
+        .project-title {
+            position: absolute; top: 50px; left: 50px; z-index: 10;
+        }
+        .project-title__owner {
+            font-size: 26px; font-weight: 900; color: #fff;
+            text-shadow: 2px 2px 0 #000; letter-spacing: 2px;
+        }
+        .project-title__name {
+            font-size: 50px; font-weight: 900; color: #fff;
+            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 6px 6px 0 rgba(0,0,0,0.5);
+            line-height: 1.1; margin-top: 5px;
+        }
+
+        /* ── 描述框 ── */
+        .desc {
+            position: absolute; top: 60px; right: 50px;
+            width: 420px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 4px solid #fff;
+            padding: 24px;
+            z-index: 10;
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.5);
+            transform: rotate(2deg);
+        }
+        .desc__text {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 22px; color: #fff; line-height: 1.6; font-weight: 700;
+        }
+        .desc__footer {
+            margin-top: 15px; font-size: 18px; color: #1ebfd8; font-weight: 900;
+            border-top: 2px solid rgba(255,255,255,0.2); padding-top: 10px;
+        }
+
+        /* ── 雷达图容器 ── */
+        .radar-container {
+            position: absolute;
+            top: 48%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+            width: 750px; height: 750px;
+        }
+
+        /* ── 数据卡 (底部) ── */
+        .stats {
+            position: absolute; bottom: 320px;
+            left: 50px; right: 50px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px; z-index: 20;
+        }
+        .stat {
+            background: #000;
+            border: 3px solid #fff;
+            padding: 16px;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.6);
+            text-align: center;
+        }
+        .stat__label {
+            font-size: 18px; font-weight: 900; color: #1ebfd8;
+            text-transform: uppercase; margin-bottom: 8px;
+        }
+        .stat__value { font-size: 38px; font-weight: 900; color: white; text-shadow: 2px 2px 0 #111; }
+
+        /* ── 替身名称排版 ── */
+        .stand-name {
+            position: absolute; bottom: 80px; right: 50px; z-index: 25; text-align: right;
+        }
+        .bracket-label {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 38px; font-weight: 900;
+            color: transparent;
+            -webkit-text-stroke: 2px #fff;
+            letter-spacing: 6px;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
+        }
+        .main-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 95px; font-weight: 900; color: #ffffff;
+            text-shadow:
+                -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000, 3px 3px 0 #000,
+                -4px 0 0 #000, 4px 0 0 #000, 0 -4px 0 #000, 0 4px 0 #000,
+                8px 8px 0px rgba(0,0,0,0.6);
+            line-height: 1; letter-spacing: 2px;
+        }
+
+        /* ── 替身使者排版 ── */
+        .master {
+            position: absolute; bottom: 80px; left: 50px; z-index: 25; text-align: left;
+        }
+        .master .main-title { font-size: 70px; }
+
+    </style>
+</head>
+<body>
+
+<!-- 存放 SVG 滤镜的隐藏容器 -->
+<svg width="0" height="0" style="position: absolute; pointer-events: none;">
+    <defs>
+        <!-- 滤镜：用于生成断裂、不规则的横向漫画线条 -->
+        <filter id="rough-lines" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.05 0.15" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="35" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+        
+        <!-- 滤镜：用于将完美的圆形扭曲成具有张力的泼墨边缘 -->
+        <filter id="ink-splatter" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="4" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="160" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </defs>
+</svg>
+
+<div class="wrapper">
+    <div class="card" id="jojoCard">
+        <!-- 背景层拆分：线条层 + 泼墨层 -->
+        <div class="bg-lines"></div>
+        <div class="bg-splatters"></div>
+
+        <!-- 左上角标题 -->
+        <div class="project-title">
+            <div class="project-title__owner">GITHUB TRENDING //</div>
+            <div class="project-title__name">CLAUDE-CODE</div>
+        </div>
+
+        <!-- 右上角描述框 -->
+        <div class="desc">
+            <div class="desc__text">An AI coding assistant powered by Claude Sonnet — helps developers write, review, and refactor code across multiple languages.</div>
+            <div class="desc__footer">★ TypeScript / MIT</div>
+        </div>
+
+        <!-- 居中雷达图 -->
+        <div class="radar-container">
+            <canvas id="radarCanvas" width="750" height="750"></canvas>
+        </div>
+
+        <!-- 数据面板 -->
+        <div class="stats">
+            <div class="stat">
+                <div class="stat__label">Stars</div>
+                <div class="stat__value">28.4k</div>
+            </div>
+            <div class="stat">
+                <div class="stat__label">Today</div>
+                <div class="stat__value">+156</div>
+            </div>
+            <div class="stat">
+                <div class="stat__label">Forks</div>
+                <div class="stat__value">3.2k</div>
+            </div>
+            <div class="stat">
+                <div class="stat__label">Contribs</div>
+                <div class="stat__value">890</div>
+            </div>
+        </div>
+
+        <!-- 底部左侧：使者 -->
+        <div class="master">
+            <div class="bracket-label">[STAND MASTER]</div>
+            <div class="main-title">研发团队</div>
+        </div>
+
+        <!-- 底部右侧：替身 -->
+        <div class="stand-name">
+            <div class="bracket-label">[STAND NAME]</div>
+            <div class="main-title">克劳德·代码</div>
+        </div>
+    </div>
+</div>
+
+<script>
+// --- 尺寸适配逻辑 ---
+function resizeCard() {
+    const card = document.getElementById('jojoCard');
+    const wrapper = document.querySelector('.wrapper');
+    const scale = Math.min(wrapper.clientWidth / 1080, wrapper.clientHeight / 1440) * 0.98;
+    card.style.transform = `scale(${scale})`;
+}
+window.addEventListener('resize', resizeCard);
+resizeCard();
+
+// --- 数据处理 ---
+function parseNum(s) {
+    if (!s) return 0;
+    const cleaned = s.replace(/[,+]/g, '');
+    if (cleaned.endsWith('k')) return parseFloat(cleaned) * 1000;
+    return parseFloat(cleaned) || 0;
+}
+
+function grade(v, t) {
+    return v >= t[0] ? 'A' : v >= t[1] ? 'B' : v >= t[2] ? 'C' : v >= t[3] ? 'D' : 'E';
+}
+
+const powerG     = grade(parseNum('28.4k'), [10000, 5000, 1000, 100]);
+const speedG     = grade(parseNum('+156'),  [100,   50,   20,   5]);
+const rangeG     = grade(parseNum('3.2k'),  [2000,  1000, 100,  10]);
+const staminaG   = grade(parseNum('890'),   [500,   200,  50,   10]);
+const precisionG = grade(parseNum('890'),   [500,   100,  30,   5]);
+const potentialG = grade(parseNum('3.2k'),  [2000,  1000, 100,  10]);
+
+const gradeToNum = { 'A': 5, 'B': 4, 'C': 3, 'D': 2, 'E': 1 };
+
+/**
+ * 沿圆弧绘制弯曲文字
+ */
+function drawCurvedText(ctx, text, cx, cy, radius, startAngle, isBottom, fontSize = 20, fillStyle = "#ffffff", strokeStyle = "#000000") {
+    ctx.save();
+    ctx.translate(cx, cy);
+    
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = `900 ${fontSize}px 'JetBrains Mono', 'Noto Sans SC', sans-serif`;
+    
+    // 基于实际字符宽度动态计算角度（解决中英文混排宽度不一的问题）
+    let totalAngle = 0;
+    const charAngles = [];
+    const letterSpacing = fontSize * 0.08;
+
+    for (let i = 0; i < text.length; i++) {
+        let w = ctx.measureText(text[i]).width + letterSpacing;
+        let a = w / radius;
+        charAngles.push(a);
+        totalAngle += a;
+    }
+    
+    let currentAngle = startAngle - totalAngle / 2;
+
+    for (let i = 0; i < text.length; i++) {
+        ctx.save();
+        
+        let charAngle = currentAngle + charAngles[i] / 2;
+        const x = Math.cos(charAngle) * radius;
+        const y = Math.sin(charAngle) * radius;
+        ctx.translate(x, y);
+        
+        if (isBottom) {
+            ctx.rotate(charAngle - Math.PI / 2);
+        } else {
+            ctx.rotate(charAngle + Math.PI / 2);
+        }
+
+        ctx.lineWidth = fontSize > 16 ? 4 : 2.5;
+        ctx.strokeStyle = strokeStyle;
+        ctx.strokeText(text[i], 0, 0);
+        ctx.fillStyle = fillStyle;
+        ctx.fillText(text[i], 0, 0);
+        
+        ctx.restore();
+        currentAngle += charAngles[i];
+    }
+    ctx.restore();
+}
+
+// --- 雷达图绘制 ---
+function drawStandRadar() {
+    const canvas = document.getElementById('radarCanvas');
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    const cx = width / 2;
+    const cy = height / 2;
+    const maxRadius = 180; 
+
+    const stats = [
+        { label: '破坏力', sub: '影响力 (Stars)', grade: powerG, angle: -Math.PI / 2 },          
+        { label: '速度',   sub: '开发速度 (Commits)', grade: speedG, angle: -Math.PI / 6 },          
+        { label: '射程距离', sub: '辐射范围 (Forks)', grade: rangeG, angle: Math.PI / 6 },           
+        { label: '持久力', sub: '维护持久力 (Age/Activity)', grade: staminaG, angle: Math.PI / 2 },           
+        { label: '精密动作性', sub: '代码质量 (Issues Closed Rate)', grade: precisionG, angle: 5 * Math.PI / 6 },       
+        { label: '成长性', sub: '发展潜力 (Open PRs/Contributors)', grade: potentialG, angle: 7 * Math.PI / 6 }        
+    ];
+
+    ctx.clearRect(0, 0, width, height);
+
+    // 同心圆环
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.lineWidth = 1.5;
+    for (let i = 1; i <= 5; i++) {
+        ctx.beginPath();
+        ctx.arc(cx, cy, (maxRadius / 5) * i, 0, Math.PI * 2);
+        ctx.stroke();
+    }
+
+    // 内部雷达轴线
+    for (let i = 0; i < 6; i++) {
+        const angle = -Math.PI / 2 + (Math.PI * 2 / 6) * i;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + Math.cos(angle) * maxRadius, cy + Math.sin(angle) * maxRadius);
+        ctx.stroke();
+    }
+
+    // 外侧表盘刻度
+    const tickInnerR = maxRadius + 110;
+    const tickOuterR = maxRadius + 130;
+    
+    ctx.beginPath(); ctx.arc(cx, cy, tickInnerR, 0, Math.PI * 2);
+    ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)'; ctx.stroke();
+    
+    ctx.beginPath(); ctx.arc(cx, cy, tickOuterR, 0, Math.PI * 2);
+    ctx.lineWidth = 4; ctx.stroke();
+
+    for (let i = 0; i < 120; i++) {
+        const angle = (Math.PI * 2 / 120) * i;
+        const isMajor = i % 10 === 0;
+        const isMedium = i % 5 === 0 && !isMajor;
+        
+        let startR = tickInnerR;
+        let endR = tickInnerR + 8;
+        if (isMedium) endR = tickInnerR + 12;
+        if (isMajor) endR = tickOuterR;
+        
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(angle) * startR, cy + Math.sin(angle) * startR);
+        ctx.lineTo(cx + Math.cos(angle) * endR, cy + Math.sin(angle) * endR);
+        ctx.lineWidth = isMajor ? 2.5 : 1; 
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; 
+        ctx.stroke();
+    }
+
+    // 数据多边形面
+    ctx.beginPath();
+    stats.forEach((stat, i) => {
+        const val = gradeToNum[stat.grade] || 0;
+        const r = (maxRadius / 5) * val;
+        const x = cx + Math.cos(stat.angle) * r;
+        const y = cy + Math.sin(stat.angle) * r;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+
+    const gradient = ctx.createLinearGradient(cx, cy - maxRadius, cx, cy + maxRadius);
+    gradient.addColorStop(0, 'rgba(255, 235, 59, 0.9)'); 
+    gradient.addColorStop(1, 'rgba(249, 115, 22, 0.9)'); 
+    ctx.fillStyle = gradient; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#ffffff'; ctx.stroke();
+
+    // 评级字母与弯曲属性标签
+    stats.forEach((stat) => {
+        const gradeR = maxRadius + 30; 
+        const gx = cx + Math.cos(stat.angle) * gradeR;
+        const gy = cy + Math.sin(stat.angle) * gradeR;
+
+        ctx.font = "900 50px 'Noto Serif SC', serif";
+        ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        
+        ctx.lineWidth = 5; ctx.strokeStyle = "#000000";
+        ctx.strokeText(stat.grade, gx, gy); ctx.fillText(stat.grade, gx, gy);
+
+        const isBottom = stat.angle > 0 && stat.angle < Math.PI;
+        
+        // 1. 绘制主属性标签 (经典 JOJO 维度)
+        const mainRadius = maxRadius + 72;
+        drawCurvedText(ctx, stat.label, cx, cy, mainRadius, stat.angle, isBottom, 22, "#ffffff", "#000000");
+
+        // 2. 绘制副属性注释 (GitHub 指标映射)，使用青色突出显示
+        const subRadius = maxRadius + 96;
+        drawCurvedText(ctx, stat.sub, cx, cy, subRadius, stat.angle, isBottom, 12, "#23d5e8", "#000000");
+    });
+
+    // 中轴线标识
+    const scaleLetters = ['E', 'D', 'C', 'B', 'A'];
+    ctx.font = "bold 16px 'JetBrains Mono', monospace";
+    ctx.fillStyle = "rgba(255, 180, 0, 0.9)"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    scaleLetters.forEach((letter, i) => {
+        const r = (maxRadius / 5) * (i + 1);
+        ctx.fillText(letter, cx + 12, cy - r + 2);
+    });
+}
+
+window.onload = drawStandRadar;
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "skills": {
+    "first-principles-thinking": {
+      "source": "E:\\File\\self\\github\\skills",
+      "sourceType": "local",
+      "computedHash": "a40d80c0ac4c8ea6b26f1327bf46f3c5bc36caa687e622320c96305031b2552b"
+    },
+    "github-trending-to-card": {
+      "source": "Lan-zk/skills",
+      "sourceType": "github",
+      "computedHash": "58c38d18bf720a7fa4870a4bcc77c7f2523f7fc9e486db23caf23a3951e6c312"
+    },
+    "java-arch-designer": {
+      "source": "E:\\File\\self\\github\\skills",
+      "sourceType": "local",
+      "computedHash": "97c809ed87c0b9141bdb01000b033b27c5ef3f05f2805b55206b2fe09cbdd1e6"
+    },
+    "java-mermaid-analyzer": {
+      "source": "E:\\File\\self\\github\\skills",
+      "sourceType": "local",
+      "computedHash": "7b7473e6c1da9922352cf550eff758fe7eb0898ec0ca081ee53827fa67b5d1d0"
+    },
+    "skill-creator-with-validation": {
+      "source": "E:\\File\\self\\github\\skills",
+      "sourceType": "local",
+      "computedHash": "14471d78bebfba9f2dbc1395f073e5bba29ab8460ea752bdd3cdf75d45287e1d"
+    },
+    "visual-cast": {
+      "source": "E:\\File\\self\\github\\skills",
+      "sourceType": "local",
+      "computedHash": "31691d98143c99d3981fa2bfe758226243059b40bc59a9fa9eeb84cc58c209fa"
+    },
+    "why-writing": {
+      "source": "Lan-zk/skills",
+      "sourceType": "github",
+      "computedHash": "b51a600f54e30d27ffa7faf70c75aa920078cf4de74a5c4e16f7f0066744589f"
+    }
+  }
+}

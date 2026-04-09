@@ -2,6 +2,14 @@
 
 A collection of specialized AI skills for various software development tasks.
 
+## Install All Skills
+
+```bash
+npx skills add Lan-zk/skills
+```
+
+> Use `git pull` in the skills store directory to update all skills at once.
+
 ## Skills
 
 ### java-arch-designer
@@ -15,14 +23,12 @@ A **Complex Business Logic Architect / Design Pattern Specialist** that diagnose
 - Provides rigorous technical selection rationale for pattern choices
 - Strictly prohibits three-tier architecture boilerplate code
 
-**Usage:**
-This skill helps design complex business logic by:
-1. Diagnosing business scenarios from process descriptions
-2. Mapping business steps to design pattern roles
-3. Generating interface-first, zero-implementation code skeletons
-4. Providing clear comments explaining design decisions
+**Install / Update:**
+```bash
+npx skills add Lan-zk/skills --skill java-arch-designer
+```
 
-**Documentation:** See [`java-arch-designer/SKILL.md`](java-arch-designer/SKILL.md) for detailed specifications.
+**Documentation:** See [`skills/java-arch-designer/SKILL.md`](skills/java-arch-designer/SKILL.md) for detailed specifications.
 
 ---
 
@@ -38,14 +44,12 @@ A **Java Code Execution Path Analysis and Mermaid Diagram Generation** skill tha
 - Clearly marks external dependencies and unprovided implementations
 - Prevents hallucinations by strictly following provided code context
 
-**Usage:**
-This skill helps visualize and understand Java code by:
-1. Providing Java code context and specifying an entry method
-2. Analyzing execution logic and method call chains
-3. Generating comprehensive Mermaid flowcharts with proper annotations
-4. Documenting unknown dependencies for transparency
+**Install / Update:**
+```bash
+npx skills add Lan-zk/skills --skill java-mermaid-analyzer
+```
 
-**Documentation:** See [`java-mermaid-analyzer/SKILL.md`](java-mermaid-analyzer/SKILL.md) for detailed specifications.
+**Documentation:** See [`skills/java-mermaid-analyzer/SKILL.md`](skills/java-mermaid-analyzer/SKILL.md) for detailed specifications.
 
 ---
 
@@ -60,14 +64,12 @@ A **Rigorous Requirements Analysis and System Architecture Expert** that applies
 - **Rigorous Approach** - Rejects blind execution, maintains skepticism, and seeks the shortest path to solutions
 - **Comprehensive Examples** - Includes real-world scenarios for unclear requirements and suboptimal paths
 
-**Usage:**
-This skill helps ensure requirements are well-founded and solutions are optimal by:
-1. Questioning unclear or potentially flawed requirements before proceeding
-2. Suggesting simpler, more efficient implementation paths
-3. Breaking down validated requirements into clear, actionable tasks
-4. Identifying edge cases, risks, and success criteria
+**Install / Update:**
+```bash
+npx skills add Lan-zk/skills --skill first-principles-thinking
+```
 
-**Documentation:** See [`first-principles-thinking/SKILL.md`](first-principles-thinking/SKILL.md) for detailed specifications.
+**Documentation:** See [`skills/first-principles-thinking/SKILL.md`](skills/first-principles-thinking/SKILL.md) for detailed specifications.
 
 ---
 
@@ -83,15 +85,12 @@ An **Enhanced Skill Creator with Skills CLI Validation Expert** that guides user
 - **Real-World Examples** - Includes fixed examples of Java Mermaid Analyzer and Java Arch Designer skills
 - **Troubleshooting Guide** - Helps diagnose and fix common Skills CLI errors
 
-**Usage:**
-This skill helps create and fix Skills CLI compatible skills by:
-1. Validating SKILL.md format against strict specifications
-2. Identifying and fixing common formatting errors
-3. Providing concise, actionable feedback on skill structure
-4. Offering testing commands and debugging guidance
-5. Maintaining consistency across skill repositories
+**Install / Update:**
+```bash
+npx skills add Lan-zk/skills --skill skill-creator-with-validation
+```
 
-**Documentation:** See [`skill-creator-with-validation/SKILL.md`](skill-creator-with-validation/SKILL.md) for detailed specifications.
+**Documentation:** See [`skills/skill-creator-with-validation/SKILL.md`](skills/skill-creator-with-validation/SKILL.md) for detailed specifications.
 
 ---
 
@@ -107,22 +106,40 @@ A **Runnable OpenClaw Visual Rendering Skill** that converts upstream text, Mark
 - Accepts file input, stdin input, or bundled mock payloads
 - Returns either PNG file paths or base64 payloads for downstream OpenClaw nodes
 
-**Usage:**
-This skill helps OpenClaw workflows render visual outputs by:
-1. Accepting raw content or pre-normalized items
-2. Converting them into render-safe card data
-3. Generating one or more PNG images
-4. Returning structured metadata for downstream delivery
+**Install / Update:**
+```bash
+npx skills add Lan-zk/skills --skill visual-cast
+```
 
 **Quick Start:**
 ```bash
-cd visual-cast
+cd skills/visual-cast
 npm install
 node scripts/render_visual_cast.mjs --input examples/news-input.json --output-dir ./tmp/news
 node scripts/render_visual_cast.mjs --mock github --output-dir ./tmp/github
 ```
 
-**Documentation:** See [`visual-cast/SKILL.md`](visual-cast/SKILL.md) for the skill definition and [`visual-cast/references/openclaw-integration.md`](visual-cast/references/openclaw-integration.md) for runtime contract details.
+**Documentation:** See [`skills/visual-cast/SKILL.md`](skills/visual-cast/SKILL.md) for the skill definition and [`skills/visual-cast/references/openclaw-integration.md`](skills/visual-cast/references/openclaw-integration.md) for runtime contract details.
+
+---
+
+### github-trending-to-card
+
+A **GitHub Trending Visual Card Generator** that fetches the latest GitHub Trending data and generates high-resolution 1080×1440 PNG cards for each trending repository, suitable for social media distribution.
+
+**Features:**
+- Fetches live GitHub Trending data (daily / weekly / monthly)
+- Renders visually appealing PNG cards with language stats, star trends, and repo metadata
+- Supports multi-language trending (Go, Rust, Python, TypeScript, etc.)
+- Integrates translation via subagent for non-English card text
+- Designed for content operations and social media automation
+
+**Install / Update:**
+```bash
+npx skills add Lan-zk/skills --skill github-trending-to-card
+```
+
+**Documentation:** See [`skills/github-trending-to-card/SKILL.md`](skills/github-trending-to-card/SKILL.md) for detailed specifications.
 
 ---
 
@@ -138,10 +155,32 @@ A **Cognitive Reframing Long-Form Writing** skill that guides the creation of in
 - **Hard Taboos** — bans filler phrases like "说白了", "本质上", "换句话说"
 - **Inheritable Skills** — designed to work with `article-writing`, `writing-clearly-and-concisely`
 
-**Usage:**
-This skill guides writing where the first goal is **cognitive refresh** — readers should finish feeling they've been led to a deeper understanding, not just convinced.
+**Install / Update:**
+```bash
+npx skills add Lan-zk/skills --skill why-writing
+```
 
 **Documentation:** See [`why-writing/SKILL.md`](why-writing/SKILL.md) for detailed specifications.
+
+---
+
+### writing-to-card
+
+A **Markdown to Social Card Converter** that transforms long-form Markdown articles into multiple 1080×1440 PNG images optimized for Xiaohongshu (Little Red Book) publishing.
+
+**Features:**
+- Converts Markdown articles into card-style 1080×1440 PNG images
+- Optimized for Xiaohongshu platform aesthetic
+- Handles code snippets, syntax highlighting, and rich text formatting
+- Supports batch rendering of multiple articles
+- Designed for content creators and technical bloggers
+
+**Install / Update:**
+```bash
+npx skills add Lan-zk/skills --skill writing-to-card
+```
+
+**Documentation:** See [`writing-to-card/SKILL.md`](writing-to-card/SKILL.md) for detailed specifications.
 
 ---
 

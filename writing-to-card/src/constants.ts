@@ -63,13 +63,13 @@ export const FONT_SIZES = {
  * 估算单页最大可容纳字符数
  *
  * 计算逻辑：
- * - 可用内容高度 = 1440 - 80(顶部) - 100(底部署名) = 1260px
+ * - 可用内容高度 = 1440 - 80(顶部) - 100(底部padding+署名区) = 1260px
  * - 每行高度 = 44 × 1.8 = 80px
  * - 可排布行数 = 1260 / 80 ≈ 15 行
- * - 每行有效字数 = 840px / 44px ≈ 19 字（中文字符）
- * - 单页容量 ≈ 15 × 19 = 285 字，安全值取 280
+ * - 每行有效字数 = 840px / 44px ≈ 18 字（中文字符，44px Songti SC 实际偏宽）
+ * - 单页容量 ≈ 15 × 18 = 270 字，安全值取 255
  */
-export const CHARS_PER_PAGE = 280;
+export const CHARS_PER_PAGE = 255;
 
 /** 图片最大宽度（等于有效阅读宽度） */
 export const IMAGE_MAX_WIDTH = CONTENT_WIDTH;

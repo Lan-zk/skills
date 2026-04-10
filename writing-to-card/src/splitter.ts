@@ -188,34 +188,37 @@ function buildBlockCloseMarkup(openBlockStack: Token[]): string {
 
 /**
  * Prepend block open tags and inline open tags to the current page token list.
- * These restore the HTML structure at the top of the new page after a split.
+ * Block tags are prepended FIRST so they end up INSIDE inline tags after the
+ * token-to-HTML reversal — e.g. [p, strong] → rendered as <p><strong> (correct).
  */
 function prependOpenTags(
   tokens: Token[],
   openBlockStack: Token[],
   openInlineStack: Token[],
 ): void {
-  for (const openTag of openBlockStack) {
+  for (const openTag of openInlineStack) {
     tokens.unshift(openTag);
   }
-  for (const openTag of openInlineStack) {
+  for (const openTag of openBlockStack) {
     tokens.unshift(openTag);
   }
 }
 
 /**
  * Emit the current page to the pages array.
- * `inlineCloseMarkup` is appended (e.g. </strong> for safe inline closure).
- * `blockCloseMarkup` is appended too (e.g. </p> when flushing mid-paragraph).
+ * `inlineCloseMarkup` is NOT appended here — inline tags are kept open across page
+ * boundaries and only closed when the containing block is closed (in blockCloseMarkup).
+ * This ensures bold/italic text flows naturally across pages without orphan closes.
  */
 function flushPage(
   pages: string[],
   tokens: Token[],
-  inlineCloseMarkup: string,
+  _inlineCloseMarkup: string,
   blockCloseMarkup: string,
 ): void {
   const bodyHtml = tokensToHtml(tokens);
-  pages.push(bodyHtml + inlineCloseMarkup + blockCloseMarkup);
+  // Only append block close markup (e.g. </p>) — inline tags stay open across pages
+  pages.push(bodyHtml + blockCloseMarkup);
 }
 
 // ─── Main splitting algorithm ────────────────────────────────────────────────
@@ -323,6 +326,19 @@ export function splitTokensToPages(
         // NOTE: code_inline is self-contained and renders as <code>...</code> in one token,
         // so it does NOT need tracking in the openInlineStack.
         if (child.type.endsWith('_open') && COMPOUND_TAGS.has(child.tag)) {
+          // If page has content and this tag won't fit, flush first so tag opens new page
+          if (childLen > charsPerPage - currentChars && currentChars > 0) {
+            const savedInlineStack = [...openInlineStack];
+            const inlineClose = buildInlineCloseMarkup(savedInlineStack);
+            const blockClose = buildBlockCloseMarkup(openBlockStack);
+            flushPage(pages, currentPageTokens, inlineClose, blockClose);
+            currentPageTokens = [];
+            currentChars = 0;
+            openInlineStack.length = 0;
+            prependOpenTags(currentPageTokens, openBlockStack, savedInlineStack);
+            for (const t of savedInlineStack) openInlineStack.push(t);
+            // Do NOT continue — add tag to the now-current page below
+          }
           openInlineStack.push(child);
           currentPageTokens.push(child);
           currentChars += childLen;
@@ -330,8 +346,29 @@ export function splitTokensToPages(
           continue;
         }
 
-        // ── Inline formatting close (strong_close, em_close) ───────────────
+        // ── Inline formatting close (strong_close, em_close) ──────────────────
+        // IMPORTANT: save inline stack BEFORE adding the close token to currentPageTokens.
+        // This ensures that if a flush happens while adding this token, savedInlineStack
+        // still contains the matching open tag, so the new page correctly prepends <strong>
+        // before the close tag (correct HTML: <p><strong>bold</strong></p>).
+        // Without this, the close tag lands on the old page and the new page has no open tag.
         if (child.type.endsWith('_close') && COMPOUND_TAGS.has(child.tag)) {
+          // Save inline stack BEFORE modifying it or currentPageTokens.
+          // Use currentChars > 0 (not childLen) since close tags have length 0 —
+          // if page has content we must end it before the close tag so the new page
+          // prepends <strong> before </strong> (correct: <p><strong>x</strong></p>).
+          if (currentChars > 0) {
+            const savedInlineStack = [...openInlineStack];
+            const inlineClose = buildInlineCloseMarkup(savedInlineStack);
+            const blockClose = buildBlockCloseMarkup(openBlockStack);
+            flushPage(pages, currentPageTokens, inlineClose, blockClose);
+            currentPageTokens = [];
+            currentChars = 0;
+            openInlineStack.length = 0;
+            prependOpenTags(currentPageTokens, openBlockStack, savedInlineStack);
+            for (const t of savedInlineStack) openInlineStack.push(t);
+            // Fall through — add close tag to the new page below
+          }
           currentPageTokens.push(child);
           currentChars += childLen;
           // Pop matching open from stack (LIFO)

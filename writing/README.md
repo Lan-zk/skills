@@ -1,8 +1,6 @@
-# WHY-Writing Skill
+# writing
 
-WHY-Writing 是一种认知重构型写法。
-
-它不是为了把资料讲全，也不是为了把观点喊响，而是为了带读者走完一段真实的思考过程，最后站到一个更深的位置上。
+多模式写作技能，支持 why-deep / observe / craft / snippet 四种写作风格。
 
 ## 核心定位
 

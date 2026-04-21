@@ -1,6 +1,6 @@
 ---
-name: why-writing
-description: Use when writing insight-driven long-form articles, newsletter issues, or blog posts that should lead readers through a real thinking process, especially when the goal is cognitive reframing rather than information completeness or personal storytelling.
+name: writing
+description: Use when writing long-form articles, newsletter, personal essays, narrative nonfiction, or short-form commentary. Supports multiple writing modes — auto-detects genre and selects the appropriate style, or accepts manual mode override.
 version: 1.6.0
 source: manual-design
 analyzed_commits: 0

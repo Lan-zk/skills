@@ -143,24 +143,23 @@ npx skills add Lan-zk/skills --skill github-trending-to-card
 
 ---
 
-### why-writing
+### writing
 
-A **Cognitive Reframing Long-Form Writing** skill that guides the creation of insight-driven articles, newsletters, and blog posts designed to lead readers through a real thinking process — reframing their understanding of a familiar object rather than delivering information or personal stories.
+A **Multi-Mode Writing** skill that supports long-form articles, newsletters, personal essays, narrative nonfiction, and short-form commentary. Auto-detects genre and selects the appropriate style — or accepts manual mode override.
 
 **Features:**
-- **Drilling-Down Approach** — starts from a concrete scene/contradiction and excavates layers until reaching the hidden premise
-- **Four Core Tasks** — identify the unstated premise, explain why it's unstable, reframe the object, leave the reader at a deeper position
-- **Genre Classification** — distinguishes "A-class: local reframing" vs "S-class: premise-level reconstruction"
-- **Strict Quality Gates** — anti-redundancy, anti-fake-thinking, paragraph-level cognitive movement checks
-- **Hard Taboos** — bans filler phrases like "说白了", "本质上", "换句话说"
-- **Inheritable Skills** — designed to work with `article-writing`, `writing-clearly-and-concisely`
+- **Auto-detection** — recognizes genre from input and selects the optimal writing style
+- **Four Modes** — why-deep, observe, craft, snippet (each with distinct pacing, structure, and voice)
+- **Author Centric** — uses `AUTHOR.md` as the writing gravity center
+- **Quality Gates** — anti-redundancy, anti-fake-thinking, paragraph-level cognitive movement checks
+- **Style Inheritance** — inherits from `article-writing`, `writing-clearly-and-concisely`, `khazix-writer`
 
 **Install / Update:**
 ```bash
-npx skills add Lan-zk/skills --skill why-writing
+npx skills add Lan-zk/skills --skill writing
 ```
 
-**Documentation:** See [`why-writing/SKILL.md`](why-writing/SKILL.md) for detailed specifications.
+**Documentation:** See [`writing/SKILL.md`](writing/SKILL.md) for detailed specifications.
 
 ---
 

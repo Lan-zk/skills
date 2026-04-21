@@ -1,0 +1,59 @@
+<p class="subtitle">基于已确认的参数：1080×1440px · 正文 44px · 行高 1.8 · 左右留白 120px</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">封面模板（Cover）</div>
+    <div class="mockup-body" style="background:#faf9f7; display:flex; align-items:center; justify-content:center; height:480px; padding:40px;">
+      <div style="text-align:center; font-family:SimSun,serif;">
+        <div style="font-size:52px; font-weight:bold; color:#1a1a1a; line-height:1.4; margin-bottom:32px;">
+          用 Claude Code<br>做产品设计
+        </div>
+        <div style="font-size:22px; color:#666; margin-top:24px;">— · —</div>
+      </div>
+    </div>
+    <div class="mockup-caption">标题居中，110-120px，加粗，无正文内容</div>
+  </div>
+  <div class="mockup">
+    <div class="mockup-header">正文模板（Content）</div>
+    <div class="mockup-body" style="background:#ffffff; padding:80px 60px; height:480px; overflow:hidden;">
+      <div style="font-family:SimSun,serif; font-size:22px; line-height:1.8; color:#1a1a1a;">
+        <p style="margin:0 0 40px 0;">Claude Code 是 Anthropic 官方推出的命令行工具，帮助开发者通过 AI 辅助完成软件工程任务。</p>
+        <p style="margin:0 0 40px 0;">它不仅能<span style="font-weight:bold;">读写代码</span>、<span style="font-style:italic;">搜索文件</span>，还能调用工具、执行终端命令，<code style="background:#f5f5f5; padding:2px 6px; font-size:18px;">npm run build</code>。</p>
+        <p style="margin:0 0 40px 0; padding-left:24px; border-left:4px solid #e8453c;">引用块：支持在正文中嵌入引用段落，常用于观点强调。</p>
+        <div style="margin:0 0 32px 0;">
+          <div>· 列表项一</div>
+          <div>· 列表项二</div>
+          <div>· 列表项三</div>
+        </div>
+      </div>
+    </div>
+    <div class="mockup-caption">正文 44px，行高 1.8，段落间距 40px</div>
+  </div>
+</div>
+
+<h3>图片（Image）处理策略</h3>
+<p class="subtitle">本地图片如何融入正文分页流程？</p>
+
+<div class="options" data-multiselect>
+  <div class="option" data-choice="inline" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>行内图片（Inline）</h3>
+      <p>图片作为块级元素处理，高度纳入分页容量计算。图片前后自动断行，形成独立段落。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="float" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>浮动居中（Centered）</h3>
+      <p>图片独占一行，居中展示，宽度撑满有效阅读区（840px），高度参与分页容量计算。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="fullwidth" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>撑满全出血（Full-bleed）</h3>
+      <p>图片扩展到画布边缘（留白 120px），营造杂志大片感。需要调整图片宽高比以适应 1080px 宽度。</p>
+    </div>
+  </div>
+</div>

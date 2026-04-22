@@ -1,0 +1,42 @@
+{
+  "name": "md2card",
+  "version": "1.0.0",
+  "description": "将 Markdown 文件分页渲染为 PNG 图片卡片",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "md2card": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [
+    "markdown",
+    "png",
+    "card",
+    "playwright",
+    "pagination"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@playwright/test": "^1.40.0",
+    "handlebars": "^4.7.8",
+    "playwright": "^1.40.0",
+    "remark": "^15.0.1",
+    "remark-gfm": "^4.0.0",
+    "unified": "^11.0.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20.10.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.4.9",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

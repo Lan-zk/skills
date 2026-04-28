@@ -8,16 +8,21 @@ This is a **Skills repository** — a collection of Claude Code skills for AI-as
 
 ## Current Skills
 
-| Skill | Purpose |
-|-------|---------|
-| `github-trending-to-card/` | Scrapes GitHub Trending, renders 1080×1440 PNG cards (translation handled by invoking Agent) |
-| `visual-cast/` | Converts upstream text/Markdown into PNG cards or merged long images via Satori + resvg |
-| `java-arch-designer/` | Complex business logic architect — selects GoF design patterns and generates Service layer code skeletons |
-| `java-mermaid-analyzer/` | Analyzes Java execution paths and generates Mermaid flowcharts |
-| `first-principles-thinking/` | Rigorous requirements analysis with Socratic questioning and 3-phase validation |
-| `skill-creator-with-validation/` | Creates and validates Skills CLI-compatible skills |
+| Skill | Source | Purpose |
+|-------|--------|---------|
+| `first-principles-thinking/` | local | Rigorous requirements analysis with Socratic questioning and 3-phase validation |
+| `github-trending-to-card/` | GitHub (`Lan-zk/skills`) | Scrapes GitHub Trending, renders 1080×1440 PNG cards |
+| `java-arch-designer/` | local | Complex business logic architect — selects GoF design patterns, generates Service layer code skeletons |
+| `java-mermaid-analyzer/` | local | Analyzes Java execution paths and generates Mermaid flowcharts |
+| `md2card/` | local | Converts Markdown files to paginated PNG cards with dual themes (Apple/Claude) |
+| `skill-creator-with-validation/` | local | Creates and validates Skills CLI-compatible skills |
+| `visual-cast/` | local | Converts upstream text/Markdown into PNG cards or merged long images via Satori + resvg |
+| `why-writing/` | GitHub (`Lan-zk/skills`) | Cognitive reframing long-form writing for newsletters and blog posts |
+| `writing-to-card/` | local | Transforms Markdown articles into 1080×1440 PNG cards for Xiaohongshu |
 
 > Note: `github-trending-to-card/` has its own `CLAUDE.md` with detailed architecture docs.
+
+**Installed vs. local skills**: Skills installed from GitHub live in `skills/` (mirroring the source). Local skills live at the repo root. `skills-lock.json` tracks the source and hash of installed skills.
 
 ## Skill Format (Critical)
 
@@ -42,16 +47,48 @@ description: Brief description (under 200 characters, no blank lines before this
 
 See `skill-creator-with-validation/references/skills-cli-spec.md` for the full specification.
 
-## Commands
+## Development
 
+Each skill is self-contained; commands run from the skill's own directory.
+
+**github-trending-to-card** (Node.js/TypeScript):
 ```bash
-# Test if skills are recognized by Skills CLI
-npx skills add .
+cd github-trending-to-card
+npm install
+npm run build   # TypeScript compilation
+npm run test    # Jest test suite (30s timeout per integration test)
+npm run lint    # ESLint
+```
 
-# Test a specific skill
-npx skills add . --skill skill-name --force
+**visual-cast** (Node.js/mjs scripts):
+```bash
+cd visual-cast
+npm install
+node scripts/render_visual_cast.mjs --input examples/news-input.json --output-dir ./tmp/news
+node scripts/render_visual_cast.mjs --mock github --output-dir ./tmp/github
+```
 
-# List all skills in repo
+**writing-to-card** (Node.js):
+```bash
+cd writing-to-card
+npm install
+node src/index.js --help
+```
+
+**md2card** (Node.js/TypeScript):
+```bash
+cd md2card
+npm install
+npm run build   # TypeScript compilation
+npm test        # Jest test suite
+# Run from CLI
+node scripts/index.js <input.md> <outputDir> --theme apple
+node scripts/index.js <input.md> <outputDir> --theme claude
+```
+
+**Validate skills locally**:
+```bash
+npx skills add . --skill <skill-name> --force
 npx skills list .
 ```
 

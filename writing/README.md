@@ -4,51 +4,51 @@
 
 ## 核心定位
 
-- 第一目标是认知刷新
-- 默认节奏是钻井型，一层层往下挖
-- 优先掀开默认前提，再重写对象定义
-- 允许发散，但发散必须服务主线
-- 文章要先经过作者本人，不能直接替素材代言
+- `why-deep` 负责前提级重构和深度论辩
+- `observe` 负责随笔、观察笔记和个人非虚构
+- `craft` 负责以事件序列推进的个人叙事
+- `snippet` 负责短观点和图文内容
 - 使用技能目录里的 `AUTHOR.md` 作为默认作者底座
-- 可以有“我”，而且职业位置、经验和价值排序都可以进入正文
-- 借 `khazix-writer` 的阅读牵引力，但不借它的强公众号腔
-- “人味”默认存在，并允许更口语，但主要露在关键转折处
-- 成稿默认要给 `1` 个标题
+- 文章要先经过作者本人，不能直接替素材代言
+- 成稿默认只给 `1` 个标题
 
 ## 适用题材
 
 适合：
 
-- 观察类长文
-- 有默认前提可挖的话题
-- 新变化被旧框架误读的话题
-- 争论很大，但双方共享同一个前提的话题
+- 深度长文、newsletter、博客和个人观察
+- 随笔、散文、个人非虚构
+- 个人故事、经历类叙事
+- 小红书图文、短观点和轻量评论
 
 不适合：
 
 - 纯资料整理
 - 功能更新总结
-- 只有态度，没有地基
-- 只有故事，没有前提
+- 只有态度，没有对象或地基
+- 只有情绪排放，没有认识推进
 
 ## 判断标准
 
-一个题值不值得用 WHY 写，先问三件事：
+先用 `references/modes/mode-selector.md` 判断模式。完全不确定时，优先问三件事：
 
-1. 大家默认却没明说的前提是什么
-2. 这个前提为什么现在不稳了
-3. 前提一变，这个对象该被重新理解成什么
+1. 这篇靠逻辑下潜、感知校准、事件序列，还是即时观点推进？
+2. 材料里最能承重的是默认前提、具体细节、故事转折，还是一个短判断？
+3. 用户是否已经指定 `why-deep` / `observe` / `craft` / `snippet`？
 
-如果三问里答不出两问，先不要硬写成前提级重构。
+不要把所有题都硬写成 WHY。随笔题材优先进入 `observe`，让事实细节和自我校准承担推进。
 
 ## 配套文件
 
 | 文件 | 用途 |
 |------|------|
-| `SKILL.md` | WHY 的完整契约 |
-| `references/core-methodology.md` | 钻井型主线、受控发散、前提优先 |
-| `references/entry-types.md` | A/S 题材分级与入口判断 |
-| `references/voice-guide.md` | 文风特质与语言边界 |
+| `SKILL.md` | writing 的完整入口契约 |
+| `references/modes/mode-selector.md` | 模式检测与手动 override |
+| `references/modes/why-deep.md` | 论辩散文模式 |
+| `references/modes/observe.md` | 随笔模式 |
+| `references/modes/craft.md` | 叙事散文模式 |
+| `references/modes/snippet.md` | 微内容模式 |
+| `references/voice-guide.md` | 跨模式文风边界 |
 | `references/self-check.md` | 反重复、反伪推进、自检清单 |
-| `references/examples.md` | 开头、推进、发散、结尾示例 |
-| `AUTHOR.md` | WHY 专用作者底座 |
+| `references/examples.md` | 跨模式示例 |
+| `AUTHOR.md` | 跨模式作者底座 |

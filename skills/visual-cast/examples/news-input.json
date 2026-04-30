@@ -1,8 +1,0 @@
-{
-  "content": "今日 AI 新闻摘要：\n1. OpenClaw 发布新的自动化能力，支持更多后置处理节点。\n2. Vercel 更新了 Satori 文档，改进静态 SVG 渲染示例。\n3. 多个团队开始将日报从纯文本改为图片卡片，以提升可读性。",
-  "output_mode": "single_cards",
-  "theme_style": "glassmorphism",
-  "type_hint": "news",
-  "output_encoding": "file",
-  "width": 1200
-}

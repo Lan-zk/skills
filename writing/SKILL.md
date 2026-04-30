@@ -1,27 +1,27 @@
 ---
 name: writing
-description: Use when writing long-form articles, newsletter, personal essays, narrative nonfiction, or short-form commentary. Supports multiple writing modes — auto-detects genre and selects the appropriate style, or accepts manual mode override.
+description: Use when writing long-form articles, newsletter, personal essays, or narrative nonfiction. Converts ideas and collected materials into essay-like articles. Supports two modes — why-deep (logical deep-dive) and observe (perception-driven essay). Auto-detects mode from user's intent, or accepts manual override.
 ---
 
 # writing
 
-## 模式入口
+将你的 idea 和收集的素材，转写为随笔性文章。两种模式代表不同的认知切入方式，不是不同的体裁。
 
-writing 支持四种写作模式。详细定义、auto-detection 规则和 override 接口见 `references/modes/mode-selector.md`。
+## 模式
 
-| 模式 | 适用场景 |
-|------|----------|
-| `why-deep` | 深度长文、前提级重构 |
-| `observe` | newsletter、个人观察笔记 |
-| `craft` | 个人故事、经历类 |
-| `snippet` | 小红书图文、短观点 |
+| 模式 | 推进动力 | 适用场景 |
+|------|----------|----------|
+| `why-deep` | 逻辑链——enthymeme 推进 | 有前提可挖、旧解释开始漏水 |
+| `observe` | 感知秩序与自我校准 | 承重在细节、场景、不适感 |
+
+模式选择见 `references/modes/mode-selector.md`。
 
 ## 写作流程
 
 1. 读取 `AUTHOR.md` 作为作者底座
-2. 读取 `references/modes/mode-selector.md`，执行模式检测或确认 override
-3. 加载对应 `references/modes/<mode>.md`
-4. 应用 `references/vibe-voice-overrides.md`（snippet / observe 模式）
+2. 收集用户原始想法（自由描述，不答也行，技能兜底）
+3. 读取 `references/modes/mode-selector.md`，给出模式推荐 + 理由，用户确认
+4. 加载对应 `references/modes/<mode>.md`
 5. 写作
 6. 成稿前经 `references/self-check.md` 通用门控过滤
 
@@ -58,19 +58,16 @@ writing 支持四种写作模式。详细定义、auto-detection 规则和 overr
 ## 成稿质检
 
 执行成稿前，运行 `references/self-check.md` 的通用检查。
-why-deep 专属检查见 `references/modes/why-deep.md`。
+模式专属检查见各模式文档。
 
 ## 文件索引
 
 | 文件 | 内容 |
 |------|------|
-| `AUTHOR.md` | 作者底座，跨所有模式共享 |
-| `references/modes/mode-selector.md` | 模式定义、auto-detection、override |
+| `AUTHOR.md` | 作者底座，跨模式共享 |
+| `references/modes/mode-selector.md` | 模式选择流程 |
 | `references/modes/why-deep.md` | 论辩散文完整方法论 |
 | `references/modes/observe.md` | 随笔模式 |
-| `references/modes/craft.md` | 叙事散文模式 |
-| `references/modes/snippet.md` | 微内容模式 |
-| `references/vibe-voice-overrides.md` | AUTHOR.md tone 补丁 |
 | `references/voice-guide.md` | 跨模式通用文风规则 |
 | `references/self-check.md` | 跨模式通用质检清单 |
 | `references/examples.md` | 跨模式示例库 |

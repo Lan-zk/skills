@@ -9,7 +9,27 @@
       "Bash(sed:*)",
       "Bash(npx skills:*)",
       "Bash(rm:*)",
-      "Bash(ls -d skills/*/ why-writing/ writing-to-card/)"
+      "Bash(ls -d skills/*/ why-writing/ writing-to-card/)",
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(npm test:*)",
+      "Bash(npx playwright:*)",
+      "Bash(node -e ':*)",
+      "Bash(node debug-split.js)",
+      "Bash(awk '{print $NF}')",
+      "Bash(grep -v \"^$\")",
+      "Bash(node -e ' *)",
+      "Bash(node --input-type=module -e ' *)",
+      "Bash(node dist/index.js \"E:/File/icloudDrive2/iCloudDrive/iCloud~md~obsidian/writing/google stitch/设计，还是不是一种视觉工作？.md\" \"./tmp/test-output\")",
+      "Bash(node dist/index.js \"E:/File/icloudDrive2/iCloudDrive/iCloud~md~obsidian/writing/google stitch/设计，还是不是一种视觉工作？.md\" \"E:/File/self/github/skills/md2card/tmp/test-output\")",
+      "Bash(node --loader ts-node/esm -e ' *)",
+      "Bash(rm -rf E:/File/self/github/skills/md2card/tmp/test-output)",
+      "Bash(rm -rf tmp/test-output)",
+      "Bash(rm -rf E:/File/self/github/skills/md2card/tmp/test-output-*)",
+      "Bash(cmd *)",
+      "Bash(where git *)",
+      "Bash(D:/WorkLocal/HuanJ/Git/Git/cmd/git.exe pull *)",
+      "Read(//c/Users/lzk/.agents/skills/adapt/**)"
     ]
   }
 }

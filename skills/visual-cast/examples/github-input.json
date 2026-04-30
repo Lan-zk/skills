@@ -1,8 +1,0 @@
-{
-  "content": "# GitHub Trending\n- vercel/satori: React to SVG\n- thx/resvg-js: SVG to PNG renderer\n- shadcn-ui/ui: reusable UI components",
-  "output_mode": "merged_long_image",
-  "theme_style": "linear_vercel",
-  "type_hint": "github_trend",
-  "output_encoding": "file",
-  "width": 1200
-}

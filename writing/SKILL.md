@@ -22,8 +22,10 @@ description: Use when writing long-form articles, newsletter, personal essays, o
 2. 收集用户原始想法（自由描述，不答也行，技能兜底）
 3. 读取 `references/modes/mode-selector.md`，给出模式推荐 + 理由，用户确认
 4. 加载对应 `references/modes/<mode>.md`
-5. 写作
+5. 写作（骨架按默认路径走，工具箱按需取用）
 6. 成稿前经 `references/self-check.md` 通用门控过滤
+7. 中文重写：合上初稿，用中文读者的眼睛再写一遍（规则见 `references/voice-guide.md` 第六节）
+8. 输出原稿 + 重写稿，供用户挑选
 
 ## 通用成稿规则
 
@@ -41,11 +43,7 @@ description: Use when writing long-form articles, newsletter, personal essays, o
 
 ### 禁区红线（跨模式）
 
-高频踩雷词，零容忍：
-
-```
-说白了、意味着什么、本质上、换句话说、不可否认
-```
+高频踩雷词零容忍，完整清单见 `references/anti-ai-patterns.md` 第 1 类。
 
 ### 版式规则（跨模式）
 
@@ -68,6 +66,7 @@ description: Use when writing long-form articles, newsletter, personal essays, o
 | `references/modes/mode-selector.md` | 模式选择流程 |
 | `references/modes/why-deep.md` | 论辩散文完整方法论 |
 | `references/modes/observe.md` | 随笔模式 |
-| `references/voice-guide.md` | 跨模式通用文风规则 |
+| `references/voice-guide.md` | 跨模式通用文风规则 + 中文重写规则 |
 | `references/self-check.md` | 跨模式通用质检清单 |
+| `references/anti-ai-patterns.md` | AI 味识别与改写参考（9 类症状） |
 | `references/examples.md` | 跨模式示例库 |

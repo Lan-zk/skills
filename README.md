@@ -183,6 +183,27 @@ npx skills add Lan-zk/skills --skill writing-to-card
 
 ---
 
+### 纸短
+
+A **Qiaopi (侨批) Classical Chinese Letter Converter** that transforms modern vernacular Chinese into the style of overseas Chinese family letters (侨批/番批), preserving authentic salutations, vocabulary, sentence patterns, and emotional restraint.
+
+**Features:**
+- Converts modern Chinese into half-classical, half-vernacular 侨批 letter style
+- Authentic salutation and sign-off system matched to relationships (spouse, parent, child, sibling, friend)
+- Core 侨批 vocabulary (番银, 批局, 唐山, 南洋, etc.)
+- Emotional restraint through concrete details instead of direct sentiment
+- Supports multiple regional styles (潮汕, 闽南, 客家)
+- Includes reference examples covering diverse relationships and scenarios
+
+**Install / Update:**
+```bash
+npx skills add Lan-zk/skills --skill 纸短
+```
+
+**Documentation:** See [`纸短/SKILL.md`](纸短/SKILL.md) for detailed specifications.
+
+---
+
 ## Contributing
 
 This repository contains specialized skills for AI-assisted development. Each skill is contained in its own directory with a `SKILL.md` file describing its purpose and constraints.

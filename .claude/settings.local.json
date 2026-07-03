@@ -29,7 +29,9 @@
       "Bash(cmd *)",
       "Bash(where git *)",
       "Bash(D:/WorkLocal/HuanJ/Git/Git/cmd/git.exe pull *)",
-      "Read(//c/Users/lzk/.agents/skills/adapt/**)"
+      "Read(//c/Users/lzk/.agents/skills/adapt/**)",
+      "Bash(rm -rf ~/.zcode ~/.zencoder ~/.zwork ~/.vibe ~/.cc-switch ~/.lingma)",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }

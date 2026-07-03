@@ -1,0 +1,6 @@
+# Rendered card output — regenerable, kept out of git
+test-output*/
+
+# Local runtime artifacts
+tmp/
+node_modules/

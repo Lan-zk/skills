@@ -45,6 +45,12 @@ description: Use when writing long-form articles, newsletter, personal essays, o
 
 高频踩雷词零容忍，完整清单见 `references/anti-ai-patterns.md` 第 1 类。
 
+额外红线（跨模式）：
+- 无灵魂的干净（第 10 类）——去掉 AI 味不等于有灵魂，通篇没有"你"在场的证据就白写了
+- 同义词轮换（第 11 类）——精确的重复好过模糊的变化
+- 三连排比（第 12 类）——有几个说几个，不凑数
+- 引用权威但不出处（第 13 类）——要么给具体来源，要么改成自己的判断
+
 ### 版式规则（跨模式）
 
 - Markdown 用来扶住节奏，不是把文章切成说明书

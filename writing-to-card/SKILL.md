@@ -66,4 +66,4 @@ const result = await executeSkill({
 
 ## Reference
 
-详细设计文档：`docs/superpowers/specs/2026-04-08-writing-to-card-design.md`
+设计文档见 `skills-design/` 目录（Skills 设计规范与架构说明）。

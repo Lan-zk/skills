@@ -12,85 +12,41 @@ npx skills add Lan-zk/skills
 
 ## Skills
 
-### java-arch-designer
+### md2card
 
-A **Complex Business Logic Architect / Design Pattern Specialist** that diagnoses business scenarios, selects appropriate GoF design patterns, and generates scalable code skeletons for complex business logic within the Service layer.
+A **Markdown to Paginated Card** skill that renders Markdown files into paginated PNG images with dual themes (Apple / Claude), suitable for long-form content sharing.
 
 **Features:**
-- Analyzes business process descriptions or Mermaid flowcharts
-- Identifies the most suitable GoF design patterns (Strategy, State, Chain of Responsibility, Observer, Factory, etc.)
-- Generates highly scalable code skeletons focused on Service layer complexity
-- Provides rigorous technical selection rationale for pattern choices
-- Strictly prohibits three-tier architecture boilerplate code
+- Converts Markdown into paginated PNG cards
+- Dual theme support (Apple / Claude)
+- Handles code blocks, syntax highlighting, and rich text formatting
+- CLI-driven batch rendering
 
 **Install / Update:**
 ```bash
-npx skills add Lan-zk/skills --skill java-arch-designer
+npx skills add Lan-zk/skills --skill md2card
 ```
 
-**Documentation:** See [`skills/java-arch-designer/SKILL.md`](skills/java-arch-designer/SKILL.md) for detailed specifications.
+**Documentation:** See [`md2card/SKILL.md`](md2card/SKILL.md) for detailed specifications.
 
 ---
 
-### java-mermaid-analyzer
+### author
 
-A **Java Code Execution Path Analysis and Mermaid Diagram Generation** skill that deeply traces Java code execution logic and generates precise Mermaid flowcharts to visualize method call chains and business flows.
+A **Dynamic Persona Baseline** skill that maintains an `AUTHOR.md` persona profile through AI observation capture and conversational distillation, continuously approaching a more accurate persona description.
 
 **Features:**
-- Analyzes Java code and specified entry methods to trace execution paths
-- Identifies conditional branches (if/else/switch), loops (for/while), and exception handling
-- Extracts JavaDoc and inline comments to enrich flowchart nodes
-- Generates syntax-strict Mermaid flowchart TD diagrams
-- Clearly marks external dependencies and unprovided implementations
-- Prevents hallucinations by strictly following provided code context
+- Captures raw observations about the user during conversation
+- Distills observations into the `AUTHOR.md` persona baseline
+- Serves as the writing gravity center for the `writing` skill
+- Updates incrementally rather than rewriting from scratch
 
 **Install / Update:**
 ```bash
-npx skills add Lan-zk/skills --skill java-mermaid-analyzer
+npx skills add Lan-zk/skills --skill author
 ```
 
-**Documentation:** See [`skills/java-mermaid-analyzer/SKILL.md`](skills/java-mermaid-analyzer/SKILL.md) for detailed specifications.
-
----
-
-### first-principles-thinking
-
-A **Rigorous Requirements Analysis and System Architecture Expert** that applies first-principles thinking to critically examine requirements, optimize implementation paths, and provide structured breakdowns.
-
-**Features:**
-- **Phase 1: Motivation & Goal Review** - Validates requirements by asking Socratic questions to uncover root problems
-- **Phase 2: Path Optimization** - Evaluates proposed solutions and suggests better alternatives when suboptimal
-- **Phase 3: First Principles Breakdown** - Provides MECE-based module division and granular task breakdowns
-- **Rigorous Approach** - Rejects blind execution, maintains skepticism, and seeks the shortest path to solutions
-- **Comprehensive Examples** - Includes real-world scenarios for unclear requirements and suboptimal paths
-
-**Install / Update:**
-```bash
-npx skills add Lan-zk/skills --skill first-principles-thinking
-```
-
-**Documentation:** See [`skills/first-principles-thinking/SKILL.md`](skills/first-principles-thinking/SKILL.md) for detailed specifications.
-
----
-
-### skill-creator-with-validation
-
-An **Enhanced Skill Creator with Skills CLI Validation Expert** that guides users in creating, modifying, and validating skills for Skills CLI compatibility, ensuring proper format and avoiding common pitfalls.
-
-**Features:**
-- **Skills CLI Specification Analysis** - Validates SKILL.md front matter, YAML header, and description length constraints
-- **Common Pitfalls Detection** - Identifies issues like blank lines before YAML headers, overly long descriptions, missing fields
-- **Validation Checklist** - Provides comprehensive pre-publishing verification steps
-- **Testing Commands** - Offers local testing commands using `npx skills add .`
-- **Real-World Examples** - Includes fixed examples of Java Mermaid Analyzer and Java Arch Designer skills
-- **Troubleshooting Guide** - Helps diagnose and fix common Skills CLI errors
-
-**Install / Update:**
-```bash
-npx skills add Lan-zk/skills --skill skill-creator-with-validation
-```
-
-**Documentation:** See [`skills/skill-creator-with-validation/SKILL.md`](skills/skill-creator-with-validation/SKILL.md) for detailed specifications.
+**Documentation:** See [`author/SKILL.md`](author/SKILL.md) for detailed specifications.
 
 ---
 
@@ -113,13 +69,13 @@ npx skills add Lan-zk/skills --skill visual-cast
 
 **Quick Start:**
 ```bash
-cd skills/visual-cast
+cd visual-cast
 npm install
 node scripts/render_visual_cast.mjs --input examples/news-input.json --output-dir ./tmp/news
 node scripts/render_visual_cast.mjs --mock github --output-dir ./tmp/github
 ```
 
-**Documentation:** See [`skills/visual-cast/SKILL.md`](skills/visual-cast/SKILL.md) for the skill definition and [`skills/visual-cast/references/openclaw-integration.md`](skills/visual-cast/references/openclaw-integration.md) for runtime contract details.
+**Documentation:** See [`visual-cast/SKILL.md`](visual-cast/SKILL.md) for the skill definition and [`visual-cast/references/openclaw-integration.md`](visual-cast/references/openclaw-integration.md) for runtime contract details.
 
 ---
 
@@ -139,7 +95,7 @@ A **GitHub Trending Visual Card Generator** that fetches the latest GitHub Trend
 npx skills add Lan-zk/skills --skill github-trending-to-card
 ```
 
-**Documentation:** See [`skills/github-trending-to-card/SKILL.md`](skills/github-trending-to-card/SKILL.md) for detailed specifications.
+**Documentation:** See [`github-trending-to-card/SKILL.md`](github-trending-to-card/SKILL.md) for detailed specifications.
 
 ---
 

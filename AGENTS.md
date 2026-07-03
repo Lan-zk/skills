@@ -12,12 +12,13 @@ This is a **Skills repository** — a collection of Codex skills for AI-assisted
 |-------|---------|
 | `github-trending-to-card/` | Scrapes GitHub Trending, renders 1080×1440 PNG cards (translation handled by invoking Agent) |
 | `visual-cast/` | Converts upstream text/Markdown into PNG cards or merged long images via Satori + resvg |
-| `java-arch-designer/` | Complex business logic architect — selects GoF design patterns and generates Service layer code skeletons |
-| `java-mermaid-analyzer/` | Analyzes Java execution paths and generates Mermaid flowcharts |
-| `first-principles-thinking/` | Rigorous requirements analysis with Socratic questioning and 3-phase validation |
-| `skill-creator-with-validation/` | Creates and validates Skills CLI-compatible skills |
+| `md2card/` | Converts Markdown files to paginated PNG cards with dual themes (Apple/Claude) |
+| `writing-to-card/` | Transforms Markdown articles into 1080×1440 PNG cards for Xiaohongshu |
+| `writing/` | Multi-mode long-form writing (why-deep / observe) from ideas and collected materials |
+| `author/` | Maintains a dynamic persona baseline `AUTHOR.md` via AI observation capture |
+| `纸短/` | Converts modern Chinese into classical overseas Chinese letter (侨批) style |
 
-> Note: `github-trending-to-card/` has its own `AGENTS.md` with detailed architecture docs.
+> Note: `github-trending-to-card/` has its own `CLAUDE.md` with detailed architecture docs.
 
 ## Skill Format (Critical)
 
@@ -40,7 +41,7 @@ description: Brief description (under 200 characters, no blank lines before this
 - Use LF line endings (not CRLF)
 - Optional fields: `categories`, `tags`, `version`, `author`
 
-See `skill-creator-with-validation/references/skills-cli-spec.md` for the full specification.
+See `skills-design/Skill-Authoring-Spec.md` for the full specification.
 
 ## Commands
 
@@ -55,9 +56,9 @@ npx skills add . --skill skill-name --force
 npx skills list .
 ```
 
-## In-Progress Projects
+## Design Docs
 
-- **`docs/superpowers/`** — Planning and spec documents for new skills (e.g., `github-trending-to-card/` was designed here before implementation)
+- **`skills-design/`** — Skills design specs and authoring guidelines (research notes, design patterns, architecture, and the Skill Authoring Spec)
 
 ## Architecture Notes
 
